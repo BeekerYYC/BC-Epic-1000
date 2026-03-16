@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BC Epic 1000 — Route Planning 2026</title>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      /* Alpine theme (default) */
+      --bg-primary: #0a0f1a;
+      --bg-secondary: #111827;
+      --bg-card: #1a2332;
+      --bg-card-hover: #1f2b3d;
+      --text-primary: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --accent: #38bdf8;
+      --accent-glow: rgba(56, 189, 248, 0.15);
+      --accent-secondary: #22d3ee;
+      --gradient-start: #0ea5e9;
+      --gradient-end: #06b6d4;
+      --border: rgba(148, 163, 184, 0.1);
+      --danger: #f97316;
+      --success: #34d399;
+      --hero-gradient: linear-gradient(135deg, #0c1929 0%, #122036 40%, #0f2027 100%);
+      --card-shadow: 0 4px 24px rgba(0,0,0,0.3);
+      --elevation-gradient: linear-gradient(90deg, #22d3ee, #38bdf8, #818cf8, #c084fc);
+    }
+
+    [data-theme="sunset"] {
+      --bg-primary: #1a0f0a;
+      --bg-secondary: #271811;
+      --bg-card: #33201a;
+      --bg-card-hover: #3d281f;
+      --text-primary: #fef3c7;
+      --text-secondary: #d6a87c;
+      --text-muted: #a67c5b;
+      --accent: #f59e0b;
+      --accent-glow: rgba(245, 158, 11, 0.15);
+      --accent-secondary: #ef4444;
+      --gradient-start: #f59e0b;
+      --gradient-end: #ef4444;
+      --border: rgba(214, 168, 124, 0.1);
+      --danger: #ef4444;
+      --success: #84cc16;
+      --hero-gradient: linear-gradient(135deg, #1a0f0a 0%, #2d1810 40%, #1a1005 100%);
+      --card-shadow: 0 4px 24px rgba(0,0,0,0.4);
+      --elevation-gradient: linear-gradient(90deg, #f59e0b, #ef4444, #ec4899, #a855f7);
+    }
+
+    [data-theme="forest"] {
+      --bg-primary: #0a1a0f;
+      --bg-secondary: #112718;
+      --bg-card: #1a3322;
+      --bg-card-hover: #1f3d28;
+      --text-primary: #ecfdf5;
+      --text-secondary: #86efac;
+      --text-muted: #4ade80;
+      --accent: #34d399;
+      --accent-glow: rgba(52, 211, 153, 0.15);
+      --accent-secondary: #a3e635;
+      --gradient-start: #10b981;
+      --gradient-end: #34d399;
+      --border: rgba(134, 239, 172, 0.1);
+      --danger: #fb923c;
+      --success: #a3e635;
+      --hero-gradient: linear-gradient(135deg, #0a1a0f 0%, #112718 40%, #0a1a10 100%);
+      --card-shadow: 0 4px 24px rgba(0,0,0,0.35);
+      --elevation-gradient: linear-gradient(90deg, #a3e635, #34d399, #2dd4bf, #38bdf8);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-secondary); }
+    ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 4px; }
+
+    .fade-in {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 0 20px var(--accent-glow); }
+      50% { box-shadow: 0 0 40px var(--accent-glow), 0 0 60px var(--accent-glow); }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+
+    @keyframes mountain-drift {
+      0%, 100% { transform: translateX(0); }
+      50% { transform: translateX(5px); }
+    }
+  </style>
+</head>
+<body data-theme="alpine">
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState, useEffect, useRef, useCallback } = React;
+
+    // ─── Data ─────────────────────────────────────────────
+    const THEMES = [
+      { id: 'alpine', name: 'Alpine', icon: '🏔️' },
+      { id: 'sunset', name: 'Sunset', icon: '🌅' },
+      { id: 'forest', name: 'Forest', icon: '🌲' },
+    ];
+
+    const ROUTE_STATS = [
+      { label: 'Distance', value: '820', unit: 'km', icon: '📏' },
+      { label: 'Elevation', value: '8,443', unit: 'm', icon: '⛰️' },
+      { label: 'Days', value: '5', unit: 'days', icon: '🗓️' },
+      { label: 'Off-Road', value: '~80', unit: '%', icon: '🛤️' },
+    ];
+
+    const DAYS = [
+      {
+        day: 1,
+        title: 'Penticton → Kettle River',
+        distance: '190 km',
+        elevation: '~2,000 m',
+        terrain: 'Rail grade, gravel FSR',
+        highlights: [
+          'Start in Penticton — Okanagan vibes',
+          'Kettle Valley Rail Trail trestles & tunnels',
+          'Lunch stop at Beaverdell (~150 km)',
+          'Camp at Kettle River Provincial Park',
+        ],
+        resupply: 'Beaverdell (limited)',
+        difficulty: 4,
+        emoji: '🚀',
+        tip: 'Big first day — start early, pace yourself.',
+      },
+      {
+        day: 2,
+        title: 'Kettle River → Castlegar',
+        distance: '200 km',
+        elevation: '~1,800 m + 600 m climb',
+        terrain: 'Rail grade, some paved',
+        highlights: [
+          'Food stops at Rock Creek or Midway',
+          'Lunch in Grand Forks',
+          'Columbia & Western Rail Trail',
+          'Overnight near Castlegar',
+        ],
+        resupply: 'Rock Creek, Midway, Grand Forks, Castlegar',
+        difficulty: 4,
+        emoji: '💪',
+        tip: 'Longest day — multiple resupply options is a relief.',
+      },
+      {
+        day: 3,
+        title: 'Castlegar → Nelson',
+        distance: '140 km',
+        elevation: '~1,500 m',
+        terrain: 'Mixed — rail grade, singletrack',
+        highlights: [
+          'Great Northern Rail Trail',
+          'Singletrack sections (challenging!)',
+          'Arrive in Nelson by midday',
+          'Possible rest at friend\'s place',
+        ],
+        resupply: 'Nelson (full services)',
+        difficulty: 3,
+        emoji: '🏕️',
+        tip: 'Shorter day — good recovery. Nelson has great food & beer.',
+      },
+      {
+        day: 4,
+        title: 'Nelson → Kimberley',
+        distance: '130 km',
+        elevation: '~1,800 m',
+        terrain: 'Gravel FSR, significant climbing',
+        highlights: [
+          'Ferry crossing on Kootenay Lake',
+          'White Grouse Pass — big climb',
+          'Remote & scenic Purcell Mountains',
+          'Overnight in Kimberley',
+        ],
+        resupply: 'Kimberley',
+        difficulty: 5,
+        emoji: '🔥',
+        tip: 'Hardest climbing day. The ferry is a nice break mid-ride.',
+      },
+      {
+        day: 5,
+        title: 'Kimberley → Fernie',
+        distance: '170 km',
+        elevation: '~1,300 m',
+        terrain: 'Gravel, some paved finish',
+        highlights: [
+          'Elk Valley views',
+          'Rolling terrain with less climbing',
+          'Finish in Fernie! 🎉',
+          'Celebrate with local craft beer',
+        ],
+        resupply: 'Fernie (finish!)',
+        difficulty: 3,
+        emoji: '🏁',
+        tip: 'The homestretch! Savor the final kilometers.',
+      },
+    ];
+
+    const GEAR_ESSENTIALS = [
+      { item: 'Bear Spray', note: 'Mandatory — grizzly & black bear territory', icon: '🐻' },
+      { item: 'Tire Setup', note: 'Tubeless, 2.0"+ tires minimum (2.25" recommended)', icon: '🔧' },
+      { item: 'Water Filtration', note: 'Creeks & rivers available — filter/purify', icon: '💧' },
+      { item: 'Navigation', note: 'GPS + offline maps — cell service is rare', icon: '🗺️' },
+      { item: 'Repair Kit', note: 'Extra tubes, plugs, chain links, multi-tool', icon: '🛠️' },
+      { item: 'Layers', note: 'Mountain weather shifts fast — rain gear essential', icon: '🧥' },
+    ];
+
+    const DISCUSSION_TOPICS = [
+      { topic: 'Exact dates in June', detail: 'Targeting weeks 2-3 (June 8–21, 2026). Snow clears at passes by late June.', icon: '📅' },
+      { topic: 'Pace & daily targets', detail: 'Self-paced, not racing. 5-day plan is ambitious — could add a rest day.', icon: '⏱️' },
+      { topic: 'Gear & bike setup', detail: 'Gravel or hardtail MTB? Bikepacking bags vs panniers?', icon: '🚲' },
+      { topic: 'Logistics', detail: 'Getting to Penticton, shuttle from Fernie back. Accommodation vs full camping?', icon: '🚗' },
+      { topic: 'Training plan', detail: '3 months out — time to ramp up endurance rides.', icon: '🏋️' },
+      { topic: 'Food strategy', detail: 'Resupply towns vs carry everything? Meal planning.', icon: '🍕' },
+    ];
+
+    // ─── Hooks ────────────────────────────────────────────
+    function useIntersection(options = {}) {
+      const ref = useRef(null);
+      const [visible, setVisible] = useState(false);
+      useEffect(() => {
+        const observer = new IntersectionObserver(([entry]) => {
+          if (entry.isIntersecting) {
+            setVisible(true);
+            observer.unobserve(entry.target);
+          }
+        }, { threshold: 0.15, ...options });
+        if (ref.current) observer.observe(ref.current);
+        return () => observer.disconnect();
+      }, []);
+      return [ref, visible];
+    }
+
+    // ─── Components ───────────────────────────────────────
+
+    function ThemeSwitcher({ theme, setTheme }) {
+      return (
+        <div style={{
+          position: 'fixed', top: 20, right: 20, zIndex: 1000,
+          display: 'flex', gap: 8, background: 'var(--bg-card)',
+          padding: '8px 12px', borderRadius: 50,
+          border: '1px solid var(--border)',
+          backdropFilter: 'blur(10px)',
+          boxShadow: 'var(--card-shadow)',
+        }}>
+          {THEMES.map(t => (
+            <button key={t.id} onClick={() => setTheme(t.id)}
+              title={t.name}
+              style={{
+                background: theme === t.id ? 'var(--accent-glow)' : 'transparent',
+                border: theme === t.id ? '2px solid var(--accent)' : '2px solid transparent',
+                borderRadius: '50%', width: 36, height: 36,
+                fontSize: 18, cursor: 'pointer',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                transition: 'all 0.3s ease',
+              }}>
+              {t.icon}
+            </button>
+          ))}
+        </div>
+      );
+    }
+
+    function Nav({ activeSection }) {
+      const sections = [
+        { id: 'hero', label: 'Top' },
+        { id: 'overview', label: 'Overview' },
+        { id: 'route', label: 'Route' },
+        { id: 'terrain', label: 'Terrain' },
+        { id: 'gear', label: 'Gear' },
+        { id: 'discuss', label: 'Let\'s Talk' },
+      ];
+      return (
+        <nav style={{
+          position: 'fixed', left: 20, top: '50%', transform: 'translateY(-50%)',
+          zIndex: 999, display: 'flex', flexDirection: 'column', gap: 6,
+        }}>
+          {sections.map(s => (
+            <a key={s.id} href={`#${s.id}`} style={{
+              width: activeSection === s.id ? 40 : 10,
+              height: 10, borderRadius: 5,
+              background: activeSection === s.id ? 'var(--accent)' : 'var(--text-muted)',
+              transition: 'all 0.3s ease',
+              display: 'block',
+              opacity: activeSection === s.id ? 1 : 0.4,
+            }} title={s.label} />
+          ))}
+        </nav>
+      );
+    }
+
+    function MountainSVG() {
+      return (
+        <svg viewBox="0 0 1440 320" style={{
+          position: 'absolute', bottom: 0, left: 0, width: '100%',
+          opacity: 0.15, pointerEvents: 'none',
+        }}>
+          <path fill="var(--accent)" d="M0,224L60,213.3C120,203,240,181,360,186.7C480,192,600,224,720,218.7C840,213,960,171,1080,160C1200,149,1320,171,1380,181.3L1440,192L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z" />
+          <path fill="var(--accent-secondary)" opacity="0.5" d="M0,288L80,272C160,256,320,224,480,224C640,224,800,256,960,261.3C1120,267,1280,245,1360,234.7L1440,224L1440,320L1360,320C1280,320,1120,320,960,320C800,320,640,320,480,320C320,320,160,320,80,320L0,320Z" />
+        </svg>
+      );
+    }
+
+    function Hero() {
+      const [ref, visible] = useIntersection();
+      return (
+        <section id="hero" ref={ref} style={{
+          minHeight: '100vh',
+          background: 'var(--hero-gradient)',
+          display: 'flex', flexDirection: 'column',
+          alignItems: 'center', justifyContent: 'center',
+          position: 'relative', overflow: 'hidden',
+          padding: '40px 20px',
+        }}>
+          {/* Animated background particles */}
+          <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none' }}>
+            {[...Array(20)].map((_, i) => (
+              <div key={i} style={{
+                position: 'absolute',
+                width: Math.random() * 4 + 1,
+                height: Math.random() * 4 + 1,
+                background: 'var(--accent)',
+                borderRadius: '50%',
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                opacity: Math.random() * 0.3 + 0.1,
+                animation: `float ${Math.random() * 4 + 3}s ease-in-out infinite`,
+                animationDelay: `${Math.random() * 2}s`,
+              }} />
+            ))}
+          </div>
+
+          <MountainSVG />
+
+          <div className={`fade-in ${visible ? 'visible' : ''}`} style={{
+            textAlign: 'center', position: 'relative', zIndex: 1,
+            maxWidth: 900,
+          }}>
+            <div style={{
+              display: 'inline-block',
+              padding: '8px 20px', borderRadius: 50,
+              background: 'var(--accent-glow)',
+              border: '1px solid var(--accent)',
+              color: 'var(--accent)',
+              fontSize: 14, fontWeight: 600, letterSpacing: 2,
+              textTransform: 'uppercase',
+              marginBottom: 24,
+            }}>
+              Bikepacking 2026
+            </div>
+
+            <h1 style={{
+              fontFamily: "'Playfair Display', serif",
+              fontSize: 'clamp(48px, 8vw, 96px)',
+              fontWeight: 900,
+              lineHeight: 1.05,
+              marginBottom: 16,
+              background: `linear-gradient(135deg, var(--text-primary) 0%, var(--accent) 50%, var(--accent-secondary) 100%)`,
+              backgroundSize: '200% 200%',
+              animation: 'shimmer 6s linear infinite',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+            }}>
+              BC Epic 1000
+            </h1>
+
+            <p style={{
+              fontSize: 'clamp(18px, 3vw, 26px)',
+              color: 'var(--text-secondary)',
+              fontWeight: 300,
+              marginBottom: 8,
+              letterSpacing: 1,
+            }}>
+              Penticton → Fernie
+            </p>
+            <p style={{
+              fontSize: 16,
+              color: 'var(--text-muted)',
+              marginBottom: 40,
+            }}>
+              820 km &middot; 8,443 m elevation &middot; 5 days &middot; ~80% off-road gravel
+            </p>
+
+            <div style={{
+              display: 'flex', gap: 16, justifyContent: 'center', flexWrap: 'wrap',
+            }}>
+              <a href="#overview" style={{
+                padding: '14px 32px', borderRadius: 50,
+                background: `linear-gradient(135deg, var(--gradient-start), var(--gradient-end))`,
+                color: '#fff', textDecoration: 'none',
+                fontWeight: 600, fontSize: 16,
+                boxShadow: '0 4px 20px var(--accent-glow)',
+                transition: 'transform 0.2s, box-shadow 0.2s',
+              }}
+              onMouseOver={e => { e.target.style.transform = 'translateY(-2px)'; e.target.style.boxShadow = '0 8px 30px var(--accent-glow)'; }}
+              onMouseOut={e => { e.target.style.transform = 'translateY(0)'; e.target.style.boxShadow = '0 4px 20px var(--accent-glow)'; }}
+              >
+                Explore the Route ↓
+              </a>
+              <a href="#discuss" style={{
+                padding: '14px 32px', borderRadius: 50,
+                background: 'transparent',
+                border: '2px solid var(--accent)',
+                color: 'var(--accent)', textDecoration: 'none',
+                fontWeight: 600, fontSize: 16,
+                transition: 'all 0.2s',
+              }}
+              onMouseOver={e => { e.target.style.background = 'var(--accent-glow)'; }}
+              onMouseOut={e => { e.target.style.background = 'transparent'; }}
+              >
+                Discussion Points
+              </a>
+            </div>
+
+            <p style={{
+              marginTop: 48,
+              fontSize: 14,
+              color: 'var(--text-muted)',
+              fontStyle: 'italic',
+            }}>
+              June 2026 &middot; Self-paced, our own adventure
+            </p>
+          </div>
+        </section>
+      );
+    }
+
+    function StatCard({ stat, delay }) {
+      const [ref, visible] = useIntersection();
+      return (
+        <div ref={ref} className={`fade-in ${visible ? 'visible' : ''}`} style={{
+          background: 'var(--bg-card)',
+          borderRadius: 16, padding: 28,
+          border: '1px solid var(--border)',
+          textAlign: 'center', flex: '1 1 180px',
+          transition: 'all 0.3s ease',
+          transitionDelay: `${delay}ms`,
+          cursor: 'default',
+        }}
+        onMouseOver={e => { e.currentTarget.style.background = 'var(--bg-card-hover)'; e.currentTarget.style.borderColor = 'var(--accent)'; e.currentTarget.style.transform = 'translateY(-4px)'; }}
+        onMouseOut={e => { e.currentTarget.style.background = 'var(--bg-card)'; e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.transform = 'translateY(0)'; }}
+        >
+          <div style={{ fontSize: 32, marginBottom: 8 }}>{stat.icon}</div>
+          <div style={{ fontSize: 36, fontWeight: 800, color: 'var(--accent)', lineHeight: 1 }}>
+            {stat.value}<span style={{ fontSize: 16, fontWeight: 400, color: 'var(--text-muted)' }}> {stat.unit}</span>
+          </div>
+          <div style={{ fontSize: 14, color: 'var(--text-secondary)', marginTop: 6 }}>{stat.label}</div>
+        </div>
+      );
+    }
+
+    function Overview() {
+      const [ref, visible] = useIntersection();
+      return (
+        <section id="overview" style={{ padding: '100px 20px', maxWidth: 1100, margin: '0 auto' }}>
+          <div ref={ref} className={`fade-in ${visible ? 'visible' : ''}`}>
+            <h2 style={{
+              fontFamily: "'Playfair Display', serif",
+              fontSize: 'clamp(32px, 5vw, 48px)',
+              fontWeight: 800, marginBottom: 12, textAlign: 'center',
+            }}>
+              The Route at a Glance
+            </h2>
+            <p style={{
+              textAlign: 'center', color: 'var(--text-secondary)',
+              maxWidth: 700, margin: '0 auto 48px',
+              fontSize: 17, lineHeight: 1.7,
+            }}>
+              A portion of the legendary BC Epic 1000 — traversing South Central British Columbia along
+              historic Kettle Valley Rail Trail corridors, decommissioned railway grades,
+              and rugged gravel forest service roads through some of the most spectacular mountain scenery in Canada.
+            </p>
+          </div>
+
+          <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap', justifyContent: 'center' }}>
+            {ROUTE_STATS.map((stat, i) => (
+              <StatCard key={stat.label} stat={stat} delay={i * 100} />
+            ))}
+          </div>
+
+          {/* Elevation Profile Visualization */}
+          <div style={{ marginTop: 60 }}>
+            <ElevationProfile />
+          </div>
+        </section>
+      );
+    }
+
+    function ElevationProfile() {
+      const [ref, visible] = useIntersection();
+      // Simplified elevation profile data (approximate)
+      const points = [
+        { km: 0, elev: 390, label: 'Penticton' },
+        { km: 60, elev: 1250, label: '' },
+        { km: 100, elev: 1100, label: '' },
+        { km: 150, elev: 780, label: 'Beaverdell' },
+        { km: 190, elev: 520, label: 'Kettle River' },
+        { km: 230, elev: 600, label: 'Rock Creek' },
+        { km: 270, elev: 700, label: 'Midway' },
+        { km: 320, elev: 530, label: 'Grand Forks' },
+        { km: 390, elev: 480, label: 'Castlegar' },
+        { km: 440, elev: 680, label: '' },
+        { km: 490, elev: 560, label: '' },
+        { km: 530, elev: 540, label: 'Nelson' },
+        { km: 580, elev: 900, label: '' },
+        { km: 610, elev: 1650, label: 'White Grouse' },
+        { km: 650, elev: 1120, label: 'Kimberley' },
+        { km: 720, elev: 1300, label: '' },
+        { km: 770, elev: 1100, label: '' },
+        { km: 820, elev: 1010, label: 'Fernie' },
+      ];
+
+      const maxElev = 1800;
+      const minElev = 300;
+      const width = 1060;
+      const height = 200;
+
+      const pathPoints = points.map(p => {
+        const x = (p.km / 820) * width;
+        const y = height - ((p.elev - minElev) / (maxElev - minElev)) * height;
+        return { x, y, ...p };
+      });
+
+      const pathD = pathPoints.reduce((d, p, i) => {
+        if (i === 0) return `M ${p.x} ${p.y}`;
+        const prev = pathPoints[i - 1];
+        const cpx1 = prev.x + (p.x - prev.x) * 0.5;
+        const cpx2 = prev.x + (p.x - prev.x) * 0.5;
+        return `${d} C ${cpx1} ${prev.y}, ${cpx2} ${p.y}, ${p.x} ${p.y}`;
+      }, '');
+
+      const areaD = `${pathD} L ${width} ${height} L 0 ${height} Z`;
+
+      return (
+        <div ref={ref} className={`fade-in ${visible ? 'visible' : ''}`} style={{
+          background: 'var(--bg-card)', borderRadius: 16,
+          padding: '28px 28px 16px', border: '1px solid var(--border)',
+        }}>
+          <h3 style={{ fontSize: 18, fontWeight: 600, marginBottom: 20, color: 'var(--text-secondary)' }}>
+            Elevation Profile
+          </h3>
+          <div style={{ overflowX: 'auto' }}>
+            <svg viewBox={`-20 -30 ${width + 40} ${height + 60}`} style={{ width: '100%', minWidth: 600, height: 'auto' }}>
+              <defs>
+                <linearGradient id="elevGrad" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stopColor="var(--accent)" />
+                  <stop offset="50%" stopColor="var(--accent-secondary)" />
+                  <stop offset="100%" stopColor="var(--accent)" />
+                </linearGradient>
+                <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="var(--accent)" stopOpacity="0.3" />
+                  <stop offset="100%" stopColor="var(--accent)" stopOpacity="0.02" />
+                </linearGradient>
+              </defs>
+
+              {/* Grid lines */}
+              {[500, 1000, 1500].map(elev => {
+                const y = height - ((elev - minElev) / (maxElev - minElev)) * height;
+                return (
+                  <g key={elev}>
+                    <line x1={0} y1={y} x2={width} y2={y} stroke="var(--border)" strokeDasharray="4,4" />
+                    <text x={-8} y={y + 4} fill="var(--text-muted)" fontSize="10" textAnchor="end">{elev}m</text>
+                  </g>
+                );
+              })}
+
+              {/* Area fill */}
+              <path d={areaD} fill="url(#areaGrad)" />
+
+              {/* Line */}
+              <path d={pathD} fill="none" stroke="url(#elevGrad)" strokeWidth="3" strokeLinecap="round" />
+
+              {/* Day markers */}
+              {[0, 190, 390, 530, 650, 820].map((km, i) => {
+                const x = (km / 820) * width;
+                return (
+                  <line key={km} x1={x} y1={0} x2={x} y2={height}
+                    stroke="var(--accent)" strokeOpacity="0.2" strokeDasharray="2,4" />
+                );
+              })}
+
+              {/* Labeled points */}
+              {pathPoints.filter(p => p.label).map(p => (
+                <g key={p.label}>
+                  <circle cx={p.x} cy={p.y} r="4" fill="var(--accent)" />
+                  <circle cx={p.x} cy={p.y} r="7" fill="none" stroke="var(--accent)" strokeOpacity="0.3" />
+                  <text x={p.x} y={p.y - 14} fill="var(--text-secondary)" fontSize="10" textAnchor="middle" fontWeight="500">
+                    {p.label}
+                  </text>
+                </g>
+              ))}
+
+              {/* KM axis */}
+              {[0, 200, 400, 600, 800].map(km => {
+                const x = (km / 820) * width;
+                return (
+                  <text key={km} x={x} y={height + 20} fill="var(--text-muted)" fontSize="10" textAnchor="middle">
+                    {km} km
+                  </text>
+                );
+              })}
+            </svg>
+          </div>
+        </div>
+      );
+    }
+
+    function DifficultyBar({ level }) {
+      return (
+        <div style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
+          {[1,2,3,4,5].map(i => (
+            <div key={i} style={{
+              width: 20, height: 6, borderRadius: 3,
+              background: i <= level
+                ? (level >= 5 ? 'var(--danger)' : level >= 3 ? 'var(--accent)' : 'var(--success)')
+                : 'var(--border)',
+              transition: 'all 0.3s ease',
+            }} />
+          ))}
+          <span style={{ fontSize: 12, color: 'var(--text-muted)', marginLeft: 6 }}>
+            {level <= 2 ? 'Easy' : level <= 3 ? 'Moderate' : level <= 4 ? 'Hard' : 'Beast'}
+          </span>
+        </div>
+      );
+    }
+
+    function DayCard({ day, index }) {
+      const [ref, visible] = useIntersection();
+      const [expanded, setExpanded] = useState(false);
+
+      return (
+        <div ref={ref} className={`fade-in ${visible ? 'visible' : ''}`} style={{
+          background: 'var(--bg-card)',
+          borderRadius: 16, overflow: 'hidden',
+          border: '1px solid var(--border)',
+          transition: 'all 0.4s ease',
+          transitionDelay: `${index * 80}ms`,
+          cursor: 'pointer',
+        }}
+        onClick={() => setExpanded(!expanded)}
+        onMouseOver={e => { e.currentTarget.style.borderColor = 'var(--accent)'; e.currentTarget.style.boxShadow = '0 8px 32px rgba(0,0,0,0.3)'; }}
+        onMouseOut={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.boxShadow = 'none'; }}
+        >
+          {/* Header */}
+          <div style={{ padding: '24px 28px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+            <div style={{ flex: 1 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 8 }}>
+                <span style={{
+                  fontSize: 28,
+                  animation: expanded ? 'float 3s ease-in-out infinite' : 'none',
+                }}>{day.emoji}</span>
+                <div>
+                  <div style={{ fontSize: 12, color: 'var(--accent)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: 1.5 }}>
+                    Day {day.day}
+                  </div>
+                  <h3 style={{ fontSize: 20, fontWeight: 700 }}>{day.title}</h3>
+                </div>
+              </div>
+              <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap', marginTop: 12 }}>
+                <span style={{ fontSize: 14, color: 'var(--text-secondary)' }}>📏 {day.distance}</span>
+                <span style={{ fontSize: 14, color: 'var(--text-secondary)' }}>⛰️ {day.elevation}</span>
+                <span style={{ fontSize: 14, color: 'var(--text-secondary)' }}>🛤️ {day.terrain}</span>
+              </div>
+              <div style={{ marginTop: 10 }}>
+                <DifficultyBar level={day.difficulty} />
+              </div>
+            </div>
+            <div style={{
+              fontSize: 20, color: 'var(--text-muted)',
+              transform: expanded ? 'rotate(180deg)' : 'rotate(0)',
+              transition: 'transform 0.3s ease',
+            }}>▼</div>
+          </div>
+
+          {/* Expandable content */}
+          <div style={{
+            maxHeight: expanded ? 400 : 0,
+            overflow: 'hidden',
+            transition: 'max-height 0.4s ease',
+          }}>
+            <div style={{ padding: '0 28px 24px', borderTop: '1px solid var(--border)', paddingTop: 20 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
+                <div>
+                  <h4 style={{ fontSize: 13, color: 'var(--accent)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 10 }}>
+                    Highlights
+                  </h4>
+                  {day.highlights.map((h, i) => (
+                    <div key={i} style={{ fontSize: 14, color: 'var(--text-secondary)', marginBottom: 6, paddingLeft: 14, position: 'relative' }}>
+                      <span style={{ position: 'absolute', left: 0, color: 'var(--accent)' }}>•</span>
+                      {h}
+                    </div>
+                  ))}
+                </div>
+                <div>
+                  <h4 style={{ fontSize: 13, color: 'var(--accent)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 10 }}>
+                    Details
+                  </h4>
+                  <div style={{ fontSize: 14, color: 'var(--text-secondary)', marginBottom: 10 }}>
+                    <strong style={{ color: 'var(--text-primary)' }}>Resupply:</strong> {day.resupply}
+                  </div>
+                  <div style={{
+                    fontSize: 13, color: 'var(--danger)',
+                    background: 'rgba(249,115,22,0.1)',
+                    padding: '10px 14px', borderRadius: 8,
+                    border: '1px solid rgba(249,115,22,0.2)',
+                  }}>
+                    💡 {day.tip}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    function RouteSection() {
+      const [ref, visible] = useIntersection();
+      return (
+        <section id="route" style={{ padding: '100px 20px', maxWidth: 900, margin: '0 auto' }}>
+          <div ref={ref} className={`fade-in ${visible ? 'visible' : ''}`} style={{ textAlign: 'center', marginBottom: 48 }}>
+            <h2 style={{
+              fontFamily: "'Playfair Display', serif",
+              fontSize: 'clamp(32px, 5vw, 48px)',
+              fontWeight: 800, marginBottom: 12,
+            }}>
+              Day by Day
+            </h2>
+            <p style={{ color: 'var(--text-secondary)', maxWidth: 600, margin: '0 auto', fontSize: 16 }}>
+              Click each day to expand details. 5 days of epic riding through BC's interior ranges.
+            </p>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+            {DAYS.map((day, i) => (
+              <DayCard key={day.day} day={day} index={i} />
+            ))}
+          </div>
+        </section>
+      );
+    }
+
+    function TerrainSection() {
+      const [ref, visible] = useIntersection();
+      const terrain = [
+        { type: 'Rail Grade (KVR, Columbia Western, Great Northern)', pct: 55, color: 'var(--accent)' },
+        { type: 'Gravel Forest Service Road', pct: 20, color: 'var(--accent-secondary)' },
+        { type: 'Paved Road', pct: 12, color: 'var(--success)' },
+        { type: 'Singletrack', pct: 8, color: 'var(--danger)' },
+        { type: 'Mixed / Other', pct: 5, color: 'var(--text-muted)' },
+      ];
+
+      return (
+        <section id="terrain" style={{ padding: '100px 20px', maxWidth: 1000, margin: '0 auto' }}>
+          <div ref={ref} className={`fade-in ${visible ? 'visible' : ''}`}>
+            <h2 style={{
+              fontFamily: "'Playfair Display', serif",
+              fontSize: 'clamp(32px, 5vw, 48px)',
+              fontWeight: 800, marginBottom: 12, textAlign: 'center',
+            }}>
+              What to Expect
+            </h2>
+            <p style={{ textAlign: 'center', color: 'var(--text-secondary)', maxWidth: 700, margin: '0 auto 48px', fontSize: 16, lineHeight: 1.7 }}>
+              Historic rail beds, rugged gravel roads, and some gnarly singletrack.
+              Don't let the "rail grade" label fool you — the terrain is rough with loose gravel,
+              washouts, and washboard. Only 7 of 15 riders finished the inaugural event.
+            </p>
+          </div>
+
+          <div style={{
+            display: 'grid', gridTemplateColumns: '1fr 1fr',
+            gap: 24, marginBottom: 48,
+          }}>
+            {/* Terrain breakdown */}
+            <div style={{
+              background: 'var(--bg-card)', borderRadius: 16, padding: 28,
+              border: '1px solid var(--border)',
+            }}>
+              <h3 style={{ fontSize: 16, fontWeight: 600, marginBottom: 20, color: 'var(--text-secondary)' }}>
+                Surface Breakdown (approx.)
+              </h3>
+              {terrain.map((t, i) => {
+                const [barRef, barVis] = useIntersection();
+                return (
+                  <div key={i} ref={barRef} style={{ marginBottom: 16 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
+                      <span style={{ fontSize: 13, color: 'var(--text-secondary)' }}>{t.type}</span>
+                      <span style={{ fontSize: 13, fontWeight: 600, color: t.color }}>{t.pct}%</span>
+                    </div>
+                    <div style={{ height: 8, background: 'var(--bg-secondary)', borderRadius: 4, overflow: 'hidden' }}>
+                      <div style={{
+                        width: barVis ? `${t.pct}%` : '0%',
+                        height: '100%', borderRadius: 4,
+                        background: t.color,
+                        transition: `width 1s ease ${i * 0.15}s`,
+                      }} />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Key features */}
+            <div style={{
+              background: 'var(--bg-card)', borderRadius: 16, padding: 28,
+              border: '1px solid var(--border)',
+            }}>
+              <h3 style={{ fontSize: 16, fontWeight: 600, marginBottom: 20, color: 'var(--text-secondary)' }}>
+                Notable Features
+              </h3>
+              {[
+                { icon: '🌉', title: 'Historic Trestles', desc: 'Hundreds of feet high, spanning dramatic valleys' },
+                { icon: '🚇', title: 'Railway Tunnels', desc: 'Longest is almost 1 km — bring a headlamp!' },
+                { icon: '⛴️', title: 'Ferry Crossing', desc: 'Kootenay Lake ferry on Day 4' },
+                { icon: '🏔️', title: 'Mountain Passes', desc: 'White Grouse Pass, Farron Pass area' },
+                { icon: '🐻', title: 'Wildlife Country', desc: 'Grizzly, black bear, moose, elk territory' },
+                { icon: '📵', title: 'Off-Grid Sections', desc: 'No cell service for up to 8 hours between towns' },
+              ].map((f, i) => (
+                <div key={i} style={{
+                  display: 'flex', gap: 14, alignItems: 'flex-start',
+                  marginBottom: 16, padding: '10px 12px', borderRadius: 10,
+                  transition: 'background 0.2s',
+                }}
+                onMouseOver={e => e.currentTarget.style.background = 'var(--bg-card-hover)'}
+                onMouseOut={e => e.currentTarget.style.background = 'transparent'}
+                >
+                  <span style={{ fontSize: 22, flexShrink: 0 }}>{f.icon}</span>
+                  <div>
+                    <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary)' }}>{f.title}</div>
+                    <div style={{ fontSize: 13, color: 'var(--text-muted)' }}>{f.desc}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    function GearSection() {
+      const [ref, visible] = useIntersection();
+      return (
+        <section id="gear" style={{ padding: '100px 20px', maxWidth: 900, margin: '0 auto' }}>
+          <div ref={ref} className={`fade-in ${visible ? 'visible' : ''}`}>
+            <h2 style={{
+              fontFamily: "'Playfair Display', serif",
+              fontSize: 'clamp(32px, 5vw, 48px)',
+              fontWeight: 800, marginBottom: 12, textAlign: 'center',
+            }}>
+              Gear Essentials
+            </h2>
+            <p style={{ textAlign: 'center', color: 'var(--text-secondary)', maxWidth: 600, margin: '0 auto 48px', fontSize: 16 }}>
+              Gravel bike with 2"+ tires or hardtail MTB. Bikepacking bags recommended.
+              Cyclocross bikes with skinny tires won't cut it on this terrain.
+            </p>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 16 }}>
+            {GEAR_ESSENTIALS.map((g, i) => {
+              const [cardRef, cardVis] = useIntersection();
+              return (
+                <div key={i} ref={cardRef} className={`fade-in ${cardVis ? 'visible' : ''}`} style={{
+                  background: 'var(--bg-card)', borderRadius: 14, padding: 22,
+                  border: '1px solid var(--border)',
+                  transition: 'all 0.3s ease',
+                  transitionDelay: `${i * 60}ms`,
+                }}
+                onMouseOver={e => { e.currentTarget.style.borderColor = 'var(--accent)'; e.currentTarget.style.transform = 'translateY(-3px)'; }}
+                onMouseOut={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.transform = 'translateY(0)'; }}
+                >
+                  <span style={{ fontSize: 28 }}>{g.icon}</span>
+                  <h4 style={{ fontSize: 15, fontWeight: 700, marginTop: 10, marginBottom: 6 }}>{g.item}</h4>
+                  <p style={{ fontSize: 13, color: 'var(--text-muted)', lineHeight: 1.5 }}>{g.note}</p>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      );
+    }
+
+    function DiscussSection() {
+      const [ref, visible] = useIntersection();
+      return (
+        <section id="discuss" style={{
+          padding: '100px 20px 120px',
+          background: 'var(--bg-secondary)',
+        }}>
+          <div style={{ maxWidth: 900, margin: '0 auto' }}>
+            <div ref={ref} className={`fade-in ${visible ? 'visible' : ''}`} style={{ textAlign: 'center', marginBottom: 48 }}>
+              <h2 style={{
+                fontFamily: "'Playfair Display', serif",
+                fontSize: 'clamp(32px, 5vw, 48px)',
+                fontWeight: 800, marginBottom: 12,
+              }}>
+                Let's Talk
+              </h2>
+              <p style={{ color: 'var(--text-secondary)', maxWidth: 600, margin: '0 auto', fontSize: 16, lineHeight: 1.7 }}>
+                Lots to figure out together. Here's what's on the table for discussion.
+                Nothing is set in stone — this is our ride, our pace.
+              </p>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 16 }}>
+              {DISCUSSION_TOPICS.map((d, i) => {
+                const [cardRef, cardVis] = useIntersection();
+                return (
+                  <div key={i} ref={cardRef} className={`fade-in ${cardVis ? 'visible' : ''}`} style={{
+                    background: 'var(--bg-card)', borderRadius: 14, padding: 24,
+                    border: '1px solid var(--border)',
+                    transition: 'all 0.3s ease',
+                    transitionDelay: `${i * 80}ms`,
+                  }}
+                  onMouseOver={e => { e.currentTarget.style.borderColor = 'var(--accent)'; e.currentTarget.style.background = 'var(--bg-card-hover)'; }}
+                  onMouseOut={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.background = 'var(--bg-card)'; }}
+                  >
+                    <span style={{ fontSize: 28 }}>{d.icon}</span>
+                    <h4 style={{ fontSize: 16, fontWeight: 700, marginTop: 10, marginBottom: 8 }}>{d.topic}</h4>
+                    <p style={{ fontSize: 14, color: 'var(--text-muted)', lineHeight: 1.6 }}>{d.detail}</p>
+                  </div>
+                );
+              })}
+            </div>
+
+            <div style={{
+              marginTop: 56, textAlign: 'center',
+              background: 'var(--bg-card)', borderRadius: 16, padding: 36,
+              border: '1px solid var(--border)',
+            }}>
+              <h3 style={{ fontSize: 22, fontWeight: 700, marginBottom: 12 }}>Key Dates</h3>
+              <div style={{ display: 'flex', justifyContent: 'center', gap: 40, flexWrap: 'wrap' }}>
+                <div>
+                  <div style={{ fontSize: 32, fontWeight: 800, color: 'var(--accent)' }}>June 8–21</div>
+                  <div style={{ fontSize: 14, color: 'var(--text-muted)' }}>Target window (weeks 2-3)</div>
+                </div>
+                <div>
+                  <div style={{ fontSize: 32, fontWeight: 800, color: 'var(--accent-secondary)' }}>5 Days</div>
+                  <div style={{ fontSize: 14, color: 'var(--text-muted)' }}>Riding (+ potential rest day)</div>
+                </div>
+              </div>
+              <p style={{ marginTop: 20, fontSize: 14, color: 'var(--text-muted)', fontStyle: 'italic' }}>
+                Note: Snow at higher passes (Grey Creek, Farron) usually clears by late June.
+                Earlier dates mean higher snow risk.
+              </p>
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    function Footer() {
+      return (
+        <footer style={{
+          padding: '32px 20px',
+          textAlign: 'center',
+          borderTop: '1px solid var(--border)',
+          background: 'var(--bg-primary)',
+        }}>
+          <p style={{ fontSize: 14, color: 'var(--text-muted)', marginBottom: 8 }}>
+            BC Epic 1000 — Penticton to Fernie — June 2026
+          </p>
+          <div style={{ display: 'flex', justifyContent: 'center', gap: 20, fontSize: 13 }}>
+            <a href="https://www.strava.com/routes/3463368757543966168" target="_blank" rel="noopener noreferrer"
+              style={{ color: 'var(--accent)', textDecoration: 'none' }}>
+              View on Strava ↗
+            </a>
+            <a href="https://www.bcepic1000.com/route-map" target="_blank" rel="noopener noreferrer"
+              style={{ color: 'var(--accent)', textDecoration: 'none' }}>
+              Official Route Map ↗
+            </a>
+          </div>
+          <p style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 16, opacity: 0.5 }}>
+            Self-paced, self-supported. Not affiliated with the official BC Epic 1000 event.
+          </p>
+        </footer>
+      );
+    }
+
+    // ─── App ──────────────────────────────────────────────
+    function App() {
+      const [theme, setTheme] = useState('alpine');
+      const [activeSection, setActiveSection] = useState('hero');
+
+      useEffect(() => {
+        document.body.setAttribute('data-theme', theme);
+      }, [theme]);
+
+      useEffect(() => {
+        const sections = ['hero', 'overview', 'route', 'terrain', 'gear', 'discuss'];
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              setActiveSection(entry.target.id);
+            }
+          });
+        }, { threshold: 0.3 });
+
+        sections.forEach(id => {
+          const el = document.getElementById(id);
+          if (el) observer.observe(el);
+        });
+
+        return () => observer.disconnect();
+      }, []);
+
+      return (
+        <>
+          <ThemeSwitcher theme={theme} setTheme={setTheme} />
+          <Nav activeSection={activeSection} />
+          <Hero />
+          <Overview />
+          <RouteSection />
+          <TerrainSection />
+          <GearSection />
+          <DiscussSection />
+          <Footer />
+        </>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>
