@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Mangrove — Pre-Flight Checks</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f8fafc;
+    --card: #ffffff;
+    --text: #1e293b;
+    --text-secondary: #64748b;
+    --text-muted: #94a3b8;
+    --accent: #10b981;
+    --accent-dark: #059669;
+    --accent-light: #d1fae5;
+    --warning: #f59e0b;
+    --warning-light: #fef3c7;
+    --error: #ef4444;
+    --error-light: #fee2e2;
+    --info: #3b82f6;
+    --info-light: #dbeafe;
+    --border: #e2e8f0;
+    --border-light: #f1f5f9;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -2px rgba(0,0,0,0.05);
+    --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.04);
+    --radius: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+  }
+
+  html { font-size: 15px; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    min-height: 100vh;
+  }
+
+  .mono { font-family: 'JetBrains Mono', monospace; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeInFast {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes slideDown {
+    from { opacity: 0; max-height: 0; }
+    to { opacity: 1; max-height: 2000px; }
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+  @keyframes progressBar {
+    from { width: 0%; }
+    to { width: 100%; }
+  }
+  @keyframes checkDraw {
+    from { stroke-dashoffset: 24; }
+    to { stroke-dashoffset: 0; }
+  }
+  @keyframes scaleIn {
+    from { transform: scale(0.9); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+
+  #root { min-height: 100vh; }
+</style>
+<script type="text/babel">
+const { useState, useEffect, useRef, useCallback, useMemo } = React;
+
+/* ─── Icons (inline SVG) ─── */
+const Icons = {
+  check: (props = {}) => (
+    <svg width={props.size||16} height={props.size||16} viewBox="0 0 16 16" fill="none" stroke={props.color||"currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3.5 8.5L6.5 11.5L12.5 4.5"/></svg>
+  ),
+  x: (props = {}) => (
+    <svg width={props.size||16} height={props.size||16} viewBox="0 0 16 16" fill="none" stroke={props.color||"currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4L12 12M12 4L4 12"/></svg>
+  ),
+  warning: (props = {}) => (
+    <svg width={props.size||16} height={props.size||16} viewBox="0 0 16 16" fill="none" stroke={props.color||"currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M8 2L1.5 13.5h13L8 2z"/><path d="M8 6.5v3"/><circle cx="8" cy="11.5" r="0.5" fill={props.color||"currentColor"} stroke="none"/></svg>
+  ),
+  chevronDown: (props = {}) => (
+    <svg width={props.size||16} height={props.size||16} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={props.style}><path d="M4 6L8 10L12 6"/></svg>
+  ),
+  chevronRight: (props = {}) => (
+    <svg width={props.size||16} height={props.size||16} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 4L10 8L6 12"/></svg>
+  ),
+  shield: (props = {}) => (
+    <svg width={props.size||20} height={props.size||20} viewBox="0 0 20 20" fill="none" stroke={props.color||"currentColor"} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M10 2L3 5.5V10c0 4.5 3 7.5 7 9 4-1.5 7-4.5 7-9V5.5L10 2z"/>{props.inner}</svg>
+  ),
+  play: (props = {}) => (
+    <svg width={props.size||18} height={props.size||18} viewBox="0 0 18 18" fill="currentColor"><path d="M5 3.5L14.5 9L5 14.5V3.5z"/></svg>
+  ),
+  download: (props = {}) => (
+    <svg width={props.size||16} height={props.size||16} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M8 2v9M4.5 8L8 11.5L11.5 8M3 13.5h10"/></svg>
+  ),
+  refresh: (props = {}) => (
+    <svg width={props.size||16} height={props.size||16} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M2 8a6 6 0 0111.5-2.5M14 2v3.5h-3.5"/><path d="M14 8a6 6 0 01-11.5 2.5M2 14v-3.5h3.5"/></svg>
+  ),
+  file: (props = {}) => (
+    <svg width={props.size||16} height={props.size||16} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 1.5H4A1.5 1.5 0 002.5 3v10A1.5 1.5 0 004 14.5h8a1.5 1.5 0 001.5-1.5V5.5L9 1.5z"/><path d="M9 1.5V5.5h4"/></svg>
+  ),
+  send: (props = {}) => (
+    <svg width={props.size||16} height={props.size||16} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2L7 9M14 2L10 14L7 9L1 7L14 2z"/></svg>
+  ),
+  clock: (props = {}) => (
+    <svg width={props.size||14} height={props.size||14} viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><circle cx="7" cy="7" r="5.5"/><path d="M7 4v3.5l2 1.5"/></svg>
+  ),
+  flask: (props = {}) => (
+    <svg width={props.size||18} height={props.size||18} viewBox="0 0 18 18" fill="none" stroke={props.color||"currentColor"} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M6.5 2h5M7.5 2v5L3 15h12l-4.5-8V2"/></svg>
+  ),
+  scale: (props = {}) => (
+    <svg width={props.size||18} height={props.size||18} viewBox="0 0 18 18" fill="none" stroke={props.color||"currentColor"} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 2v14M3 6l6-2 6 2M3 6l-1 5h4L5 6M15 6l-1 5h-4l1-5"/></svg>
+  ),
+  leaf: (props = {}) => (
+    <svg width={props.size||18} height={props.size||18} viewBox="0 0 18 18" fill="none" stroke={props.color||"currentColor"} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 15S3 3 15 3c0 6-3 12-12 12z"/><path d="M7.5 10.5l4-4"/></svg>
+  ),
+  calculator: (props = {}) => (
+    <svg width={props.size||18} height={props.size||18} viewBox="0 0 18 18" fill="none" stroke={props.color||"currentColor"} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="2" width="12" height="14" rx="1.5"/><path d="M6 5h6M6 9h2M10 9h2M6 12h2M10 12h2"/></svg>
+  ),
+  folder: (props = {}) => (
+    <svg width={props.size||18} height={props.size||18} viewBox="0 0 18 18" fill="none" stroke={props.color||"currentColor"} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M2 5.5V14a1.5 1.5 0 001.5 1.5h11A1.5 1.5 0 0016 14V7a1.5 1.5 0 00-1.5-1.5H9L7.5 3.5h-4A1.5 1.5 0 002 5v.5z"/></svg>
+  ),
+  box: (props = {}) => (
+    <svg width={props.size||18} height={props.size||18} viewBox="0 0 18 18" fill="none" stroke={props.color||"currentColor"} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M2.5 5.5L9 2l6.5 3.5V12.5L9 16l-6.5-3.5z"/><path d="M2.5 5.5L9 9M9 9v7M9 9l6.5-3.5"/></svg>
+  ),
+  arrowRight: (props = {}) => (
+    <svg width={props.size||16} height={props.size||16} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+  ),
+  toggleView: (props = {}) => (
+    <svg width={props.size||16} height={props.size||16} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M2 4h12M2 8h12M2 12h12"/></svg>
+  ),
+};
+
+/* ─── Data ─── */
+const CHECKS = {
+  characterization: {
+    label: 'Biochar Characterization',
+    icon: 'flask',
+    items: [
+      {
+        id: 'PURO-BIO-001', status: 'fail', hardStop: true,
+        title: 'H/Corg Ratio Maximum',
+        rule: 'Molar H/Corg ratio must be < 0.7',
+        finding: 'Batch S-005 has H/Corg = 0.82 (exceeds threshold by 17%)',
+        methodRef: 'Section 1.1.6',
+        remediation: 'Review lab analysis for batch S-005. If confirmed, this batch is ineligible for CORCs. Remove from claim or request re-analysis.',
+      },
+      {
+        id: 'PURO-BIO-003', status: 'fail', hardStop: true,
+        title: 'Pyrolysis Temperature Within Range',
+        rule: 'Pyrolysis temperature must be 350\u2013900\u00b0C',
+        finding: 'Batch S-002 recorded 312\u00b0C (below minimum by 38\u00b0C)',
+        methodRef: 'Section 1.1.4',
+        remediation: 'Verify temperature sensor calibration for batch S-002. If reading is accurate, batch may indicate pyrolysis deficiency.',
+      },
+      {
+        id: 'PURO-BIO-002', status: 'pass',
+        title: 'Organic Carbon Content Present',
+        finding: 'All 5 batches have Corg values recorded',
+      },
+    ],
+  },
+  mass: {
+    label: 'Mass Measurement',
+    icon: 'scale',
+    items: [
+      {
+        id: 'PURO-BIO-004', status: 'fail',
+        title: 'Dry Biochar Mass Recorded',
+        rule: 'All production batches must have dry mass measurement',
+        finding: 'Batch S-003 missing dry mass value',
+        remediation: 'Enter dry mass measurement for batch S-003 in the production log.',
+      },
+      {
+        id: 'PURO-BIO-005', status: 'warn',
+        title: 'Moisture Content Recorded',
+        rule: 'Moisture percentage should be recorded for each batch',
+        finding: 'Batch S-004 missing moisture %',
+        remediation: 'Add moisture content reading for batch S-004.',
+      },
+      {
+        id: 'PURO-BIO-006', status: 'warn',
+        title: 'Wet Weight Recorded',
+        rule: 'Wet weight should be recorded alongside dry mass',
+        finding: 'Batch S-004 missing wet weight measurement',
+        remediation: 'Record wet weight for batch S-004 from scale logs.',
+      },
+      {
+        id: 'PURO-BIO-007', status: 'fail',
+        title: 'Scale Calibration Current',
+        rule: 'Measurement equipment calibration certificates must be valid',
+        finding: 'Scale calibration certificate expired 2025-06-30',
+        remediation: 'Upload a current calibration certificate. Schedule recalibration if overdue.',
+      },
+      {
+        id: 'PURO-BIO-010', status: 'pass',
+        title: 'Batch Identifiers Unique',
+        finding: 'All 5 batch IDs (S-001 through S-005) are unique and sequential',
+      },
+    ],
+  },
+  lca: {
+    label: 'LCA Completeness',
+    icon: 'leaf',
+    items: [
+      {
+        id: 'PURO-BIO-008', status: 'pass',
+        title: 'Core LCA Components Present',
+        finding: 'E_biomass, E_production, E_use all present in LCA submission',
+      },
+      {
+        id: 'PURO-BIO-009', status: 'pass',
+        title: 'Biomass Source Emissions',
+        finding: 'Biomass sourcing emissions documented with transport distances',
+      },
+      {
+        id: 'PURO-BIO-011', status: 'fail',
+        title: 'Diesel Equipment Emissions',
+        rule: 'All on-site combustion sources must be included in the LCA boundary',
+        finding: 'Diesel-powered equipment used on-site but not included in LCA calculation',
+        methodRef: 'Section 3.2.1',
+        remediation: 'Add diesel consumption data for on-site equipment to the LCA model. Include front-loader, generator, and any other diesel-powered machinery.',
+      },
+      {
+        id: 'PURO-BIO-012', status: 'warn',
+        title: 'Wastewater Treatment Emissions',
+        rule: 'If production generates wastewater, associated emissions should be accounted',
+        finding: 'Facility generates wastewater from quench process but emissions not accounted for',
+        remediation: 'Assess wastewater volume and treatment method. Include emissions if material (>1% of total).',
+      },
+      {
+        id: 'PURO-BIO-016', status: 'warn',
+        title: 'Grid Electricity Emission Factor',
+        rule: 'Electricity emission factor should reflect the actual grid region',
+        finding: 'Using national average (0.42 kgCO2/kWh) instead of regional grid factor for facility location',
+        remediation: 'Update grid emission factor to match facility grid region. Check eGRID or local registry data.',
+      },
+    ],
+  },
+  calculations: {
+    label: 'Calculation Accuracy',
+    icon: 'calculator',
+    items: [
+      {
+        id: 'PURO-BIO-013', status: 'fail',
+        title: 'Soil Temperature by Region',
+        rule: 'Mean annual soil temperature (MAST) must reflect actual application region',
+        finding: 'All 4 application sites use 15\u00b0C default. Sites span Maine (8\u00b0C), Florida (22\u00b0C), Guatemala (24\u00b0C), Mexico (21\u00b0C)',
+        methodRef: 'Table 1, Biochar Methodology',
+        remediation: 'Update soil temperature per application region. Use Puro\u2019s lookup tool or Table 1 of the Biochar Methodology for regression coefficients.',
+      },
+      {
+        id: 'PURO-BIO-014', status: 'fail',
+        title: 'Transport Distance Units',
+        rule: 'All distances must be in kilometres (km) per methodology requirements',
+        finding: 'Transport distance values (e.g., 186, 412) appear to be in miles rather than kilometres',
+        remediation: 'Convert all transport distances from miles to kilometres (multiply by 1.609). Update the LCA transport module.',
+      },
+      {
+        id: 'PURO-BIO-015', status: 'fail',
+        title: 'Net CORC Formula Verification',
+        rule: 'Net CORCs = E_stored - E_biomass - E_production - E_use',
+        finding: 'Reported 82.50 tCO2e, calculated 74.20 tCO2e (11.2% discrepancy)',
+        methodRef: 'Section 4.1',
+        remediation: 'Re-verify the CORC calculation: E_stored - E_biomass - E_production - E_use. Check that all emission values use consistent units (tCO2e).',
+      },
+    ],
+  },
+  records: {
+    label: 'Record-Keeping',
+    icon: 'folder',
+    items: [
+      {
+        id: 'PURO-BIO-018', status: 'fail',
+        title: 'Lab Report Currency',
+        rule: 'Lab analysis must be dated within the reporting period',
+        finding: 'Most recent lab report dated 2024-11-15, reporting period ends 2025-12-31',
+        remediation: 'Obtain updated lab analysis dated within the reporting period. Contact your laboratory for new testing.',
+      },
+      {
+        id: 'PURO-BIO-020', status: 'pass',
+        title: 'No Double Counting Declaration',
+        finding: 'Double counting declaration signed and present in records',
+      },
+    ],
+  },
+  reconciliation: {
+    label: 'Stock Reconciliation',
+    icon: 'box',
+    items: [
+      {
+        id: 'PURO-BIO-019', status: 'fail',
+        title: 'Opening Stock Match',
+        rule: 'Opening stock must equal prior period closing stock',
+        finding: 'Opening stock 12.8t but prior period closing was 8.5t (4.3t discrepancy)',
+        remediation: 'Reconcile stock figures. Verify if 4.3t difference is from production between periods or a data entry error.',
+      },
+      {
+        id: 'PURO-BIO-017', status: 'fail',
+        title: 'Closing Stock Calculation',
+        rule: 'Closing stock = opening + produced - dispatched',
+        finding: 'Reported closing 15.3t but calculated 11.0t based on production and dispatch records',
+        remediation: 'Verify all dispatch records are accounted for. Cross-check with delivery notes and weigh-bridge tickets.',
+      },
+    ],
+  },
+};
+
+const TOTAL_CHECKS = Object.values(CHECKS).reduce((s, c) => s + c.items.length, 0);
+const PASS_COUNT = Object.values(CHECKS).reduce((s, c) => s + c.items.filter(i => i.status === 'pass').length, 0);
+const FAIL_COUNT = Object.values(CHECKS).reduce((s, c) => s + c.items.filter(i => i.status === 'fail').length, 0);
+const WARN_COUNT = Object.values(CHECKS).reduce((s, c) => s + c.items.filter(i => i.status === 'warn').length, 0);
+const HARD_STOP_COUNT = Object.values(CHECKS).reduce((s, c) => s + c.items.filter(i => i.hardStop).length, 0);
+
+/* ─── Badge Component ─── */
+function Badge({ type, children, size = 'default' }) {
+  const styles = {
+    pass: { bg: '#d1fae5', color: '#065f46', border: '#a7f3d0' },
+    fail: { bg: '#fee2e2', color: '#991b1b', border: '#fecaca' },
+    warn: { bg: '#fef3c7', color: '#92400e', border: '#fde68a' },
+    hardstop: { bg: '#ef4444', color: '#ffffff', border: '#dc2626' },
+    draft: { bg: '#fef3c7', color: '#92400e', border: '#fde68a' },
+    info: { bg: '#dbeafe', color: '#1e40af', border: '#bfdbfe' },
+    critical: { bg: '#fee2e2', color: '#991b1b', border: '#fecaca' },
+    ready: { bg: '#d1fae5', color: '#065f46', border: '#a7f3d0' },
+    low: { bg: '#d1fae5', color: '#065f46', border: '#a7f3d0' },
+    neutral: { bg: '#f1f5f9', color: '#475569', border: '#e2e8f0' },
+  };
+  const s = styles[type] || styles.neutral;
+  const fontSize = size === 'lg' ? '0.8rem' : size === 'sm' ? '0.65rem' : '0.7rem';
+  const padding = size === 'lg' ? '4px 12px' : size === 'sm' ? '2px 6px' : '2px 8px';
+  return (
+    <span style={{
+      display: 'inline-flex', alignItems: 'center', gap: 4,
+      fontSize, fontWeight: 600, letterSpacing: '0.03em',
+      padding, borderRadius: 4,
+      background: s.bg, color: s.color, border: `1px solid ${s.border}`,
+      lineHeight: 1.4, whiteSpace: 'nowrap', textTransform: 'uppercase',
+    }}>
+      {children}
+    </span>
+  );
+}
+
+/* ─── Circular Progress ─── */
+function CircularProgress({ value, max, size = 64, strokeWidth = 5, color = 'var(--accent)' }) {
+  const radius = (size - strokeWidth) / 2;
+  const circumference = 2 * Math.PI * radius;
+  const progress = (value / max) * circumference;
+  return (
+    <svg width={size} height={size} style={{ transform: 'rotate(-90deg)' }}>
+      <circle cx={size/2} cy={size/2} r={radius} fill="none" stroke="var(--border)" strokeWidth={strokeWidth} />
+      <circle cx={size/2} cy={size/2} r={radius} fill="none" stroke={color} strokeWidth={strokeWidth}
+        strokeDasharray={circumference} strokeDashoffset={circumference - progress}
+        strokeLinecap="round" style={{ transition: 'stroke-dashoffset 1s ease' }} />
+      <text x={size/2} y={size/2} textAnchor="middle" dominantBaseline="central"
+        style={{ transform: 'rotate(90deg)', transformOrigin: 'center', fontSize: size * 0.26, fontWeight: 700, fontFamily: 'Inter', fill: 'var(--text)' }}>
+        {value}/{max}
+      </text>
+    </svg>
+  );
+}
+
+/* ─── Nav Bar ─── */
+function NavBar() {
+  return (
+    <header style={{
+      background: '#ffffff', borderBottom: '1px solid var(--border)',
+      padding: '0 24px', height: 56, display: 'flex', alignItems: 'center',
+      justifyContent: 'space-between', position: 'sticky', top: 0, zIndex: 100,
+      boxShadow: 'var(--shadow-sm)',
+    }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        <div style={{
+          width: 28, height: 28, borderRadius: 6,
+          background: 'linear-gradient(135deg, #10b981, #059669)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+        }}>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="white">
+            <path d="M8 1C4.5 1 2 4 2 7c0 2 .5 3.5 2 5 .5.5 1 1.5 1 2.5V15h6v-.5c0-1 .5-2 1-2.5 1.5-1.5 2-3 2-5 0-3-2.5-6-6-6z"/>
+          </svg>
+        </div>
+        <span style={{ fontWeight: 700, fontSize: '1.05rem', color: 'var(--text)', letterSpacing: '-0.02em' }}>Mangrove</span>
+      </div>
+      <nav style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+        <span style={{ cursor: 'pointer' }}>Projects</span>
+        <span style={{ color: 'var(--text-muted)', margin: '0 2px' }}>/</span>
+        <span style={{ cursor: 'pointer' }}>GreenChar Solutions</span>
+        <span style={{ color: 'var(--text-muted)', margin: '0 2px' }}>/</span>
+        <span style={{ color: 'var(--text)', fontWeight: 500 }}>Report Q1 2025</span>
+      </nav>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+        <div style={{
+          width: 32, height: 32, borderRadius: '50%',
+          background: 'linear-gradient(135deg, #94a3b8, #64748b)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          fontSize: '0.75rem', fontWeight: 600, color: 'white',
+        }}>SB</div>
+      </div>
+    </header>
+  );
+}
+
+/* ─── State 1: Report Submission ─── */
+function ReportSubmission({ onRunCheck }) {
+  const [hover, setHover] = useState(null);
+
+  return (
+    <div style={{ animation: 'fadeIn 0.4s ease', maxWidth: 860, margin: '0 auto', padding: '32px 24px' }}>
+      {/* Project Summary Card */}
+      <div style={{
+        background: 'var(--card)', borderRadius: 'var(--radius-lg)',
+        border: '1px solid var(--border)', boxShadow: 'var(--shadow)',
+        overflow: 'hidden',
+      }}>
+        <div style={{ padding: '24px 28px', borderBottom: '1px solid var(--border-light)' }}>
+          <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 4 }}>
+            <div>
+              <h1 style={{ fontSize: '1.35rem', fontWeight: 700, letterSpacing: '-0.02em', marginBottom: 4 }}>
+                GreenChar Solutions — Biochar Carbon Removal
+              </h1>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+                <span className="mono" style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', background: 'var(--border-light)', padding: '2px 8px', borderRadius: 4 }}>PURO-2025-GCS-0042</span>
+                <Badge type="draft">Draft</Badge>
+              </div>
+            </div>
+            <div style={{ textAlign: 'right' }}>
+              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 500, marginBottom: 4 }}>CORCs Claimed</div>
+              <div className="mono" style={{ fontSize: '1.6rem', fontWeight: 700, color: 'var(--accent-dark)', lineHeight: 1 }}>82.50</div>
+              <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: 2 }}>tCO2e</div>
+            </div>
+          </div>
+        </div>
+        <div style={{ padding: '20px 28px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px 32px', fontSize: '0.87rem' }}>
+          <div>
+            <span style={{ color: 'var(--text-muted)', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.04em', fontWeight: 500 }}>Methodology</span>
+            <div style={{ marginTop: 2, fontWeight: 500 }}>Puro.earth Biochar Methodology Ed. 2022 v3</div>
+          </div>
+          <div>
+            <span style={{ color: 'var(--text-muted)', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.04em', fontWeight: 500 }}>Reporting Period</span>
+            <div style={{ marginTop: 2, fontWeight: 500 }}>Jan 1 — Dec 31, 2025</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Data Summary */}
+      <div style={{
+        marginTop: 20,
+        display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12,
+      }}>
+        {[
+          { label: 'Biochar Produced', value: '48.2t', sub: '5 batches, dry weight', icon: Icons.flask },
+          { label: 'Lab Reports', value: '4', sub: 'Uploaded', icon: Icons.file },
+          { label: 'LCA', value: 'Complete', sub: 'All components present', icon: Icons.leaf },
+          { label: 'Evidence Files', value: '12', sub: 'Attached', icon: Icons.folder },
+        ].map((item, i) => (
+          <div key={i} style={{
+            background: 'var(--card)', borderRadius: 'var(--radius)',
+            border: '1px solid var(--border)', padding: '16px 18px',
+            boxShadow: 'var(--shadow-sm)',
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+              <div style={{ color: 'var(--text-muted)' }}>
+                <item.icon size={16} color="var(--text-muted)" />
+              </div>
+              <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.04em', fontWeight: 500 }}>{item.label}</span>
+            </div>
+            <div style={{ fontSize: '1.35rem', fontWeight: 700, letterSpacing: '-0.02em' }}>{item.value}</div>
+            <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', marginTop: 2 }}>{item.sub}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Actions */}
+      <div style={{ marginTop: 28, display: 'flex', gap: 12, justifyContent: 'flex-end' }}>
+        <div style={{ position: 'relative' }}
+          onMouseEnter={() => setHover('submit')}
+          onMouseLeave={() => setHover(null)}>
+          <button style={{
+            padding: '10px 22px', borderRadius: 'var(--radius)', border: '1px solid var(--border)',
+            background: '#f1f5f9', color: 'var(--text-muted)', fontSize: '0.9rem', fontWeight: 500,
+            cursor: 'not-allowed', fontFamily: 'Inter', display: 'flex', alignItems: 'center', gap: 8,
+          }} disabled>
+            {Icons.send({ size: 15 })}
+            Submit to Registry
+          </button>
+          {hover === 'submit' && (
+            <div style={{
+              position: 'absolute', bottom: '100%', left: '50%', transform: 'translateX(-50%)',
+              marginBottom: 8, padding: '6px 12px', borderRadius: 6,
+              background: 'var(--text)', color: 'white', fontSize: '0.75rem',
+              whiteSpace: 'nowrap', boxShadow: 'var(--shadow-lg)',
+            }}>
+              Run Pre-Flight Check first
+              <div style={{
+                position: 'absolute', top: '100%', left: '50%', transform: 'translateX(-50%)',
+                width: 0, height: 0, borderLeft: '5px solid transparent',
+                borderRight: '5px solid transparent', borderTop: '5px solid var(--text)',
+              }} />
+            </div>
+          )}
+        </div>
+        <button onClick={onRunCheck}
+          onMouseEnter={() => setHover('run')}
+          onMouseLeave={() => setHover(null)}
+          style={{
+            padding: '10px 24px', borderRadius: 'var(--radius)', border: 'none',
+            background: hover === 'run'
+              ? 'linear-gradient(135deg, #059669, #047857)'
+              : 'linear-gradient(135deg, #10b981, #059669)',
+            color: 'white', fontSize: '0.9rem', fontWeight: 600,
+            cursor: 'pointer', fontFamily: 'Inter',
+            display: 'flex', alignItems: 'center', gap: 8,
+            boxShadow: '0 1px 3px rgba(16,185,129,0.3)',
+            transition: 'all 0.2s ease',
+            transform: hover === 'run' ? 'translateY(-1px)' : 'none',
+          }}>
+          {Icons.shield({ size: 18, color: 'white', inner: <path d="M7 10l2 2 4-4" stroke="white" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"/> })}
+          Run Pre-Flight Check
+        </button>
+      </div>
+    </div>
+  );
+}
+
+/* ─── State 2: Loading ─── */
+function PreFlightLoading({ onComplete }) {
+  const steps = [
+    'Checking biochar characterization...',
+    'Checking mass measurements...',
+    'Checking LCA completeness...',
+    'Checking calculations...',
+    'Checking records...',
+    'Checking stock reconciliation...',
+    'Complete',
+  ];
+  const stepResults = ['fail', 'fail', 'fail', 'fail', 'fail', 'fail', 'done'];
+  const [currentStep, setCurrentStep] = useState(0);
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    const totalTime = 2800;
+    const stepTime = totalTime / steps.length;
+    const progressInterval = setInterval(() => {
+      setProgress(p => Math.min(p + 1.5, 100));
+    }, totalTime / 67);
+    const stepInterval = setInterval(() => {
+      setCurrentStep(s => {
+        if (s >= steps.length - 1) {
+          clearInterval(stepInterval);
+          clearInterval(progressInterval);
+          setProgress(100);
+          setTimeout(onComplete, 500);
+          return s;
+        }
+        return s + 1;
+      });
+    }, stepTime);
+    return () => { clearInterval(stepInterval); clearInterval(progressInterval); };
+  }, []);
+
+  return (
+    <div style={{
+      animation: 'fadeIn 0.3s ease', maxWidth: 560, margin: '0 auto',
+      padding: '80px 24px', textAlign: 'center',
+    }}>
+      <div style={{
+        background: 'var(--card)', borderRadius: 'var(--radius-xl)',
+        border: '1px solid var(--border)', padding: '48px 40px',
+        boxShadow: 'var(--shadow-md)',
+      }}>
+        <div style={{
+          width: 56, height: 56, borderRadius: '50%', margin: '0 auto 24px',
+          background: 'linear-gradient(135deg, #d1fae5, #a7f3d0)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+        }}>
+          {currentStep < steps.length - 1 ? (
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" style={{ animation: 'spin 1s linear infinite' }}>
+              <circle cx="12" cy="12" r="10" stroke="#d1fae5" strokeWidth="3" />
+              <path d="M12 2a10 10 0 019.8 8" stroke="#10b981" strokeWidth="3" strokeLinecap="round" />
+            </svg>
+          ) : (
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" style={{ animation: 'scaleIn 0.3s ease' }}>
+              <path d="M6 12L10.5 16.5L18 7.5" stroke="#059669" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          )}
+        </div>
+        <h2 style={{ fontSize: '1.15rem', fontWeight: 600, marginBottom: 24 }}>Running Pre-Flight Checks</h2>
+
+        {/* Progress bar */}
+        <div style={{
+          height: 6, borderRadius: 3, background: 'var(--border-light)',
+          overflow: 'hidden', marginBottom: 28,
+        }}>
+          <div style={{
+            height: '100%', borderRadius: 3,
+            background: 'linear-gradient(90deg, #10b981, #059669)',
+            width: `${progress}%`,
+            transition: 'width 0.15s linear',
+          }} />
+        </div>
+
+        {/* Steps */}
+        <div style={{ textAlign: 'left' }}>
+          {steps.map((step, i) => (
+            <div key={i} style={{
+              display: 'flex', alignItems: 'center', gap: 10,
+              padding: '6px 0', fontSize: '0.87rem',
+              opacity: i <= currentStep ? 1 : 0.3,
+              transition: 'opacity 0.3s ease',
+            }}>
+              <div style={{ width: 20, height: 20, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                {i < currentStep ? (
+                  stepResults[i] === 'fail' ? (
+                    <div style={{ width: 18, height: 18, borderRadius: '50%', background: '#fee2e2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      {Icons.x({ size: 11, color: '#ef4444' })}
+                    </div>
+                  ) : (
+                    <div style={{ width: 18, height: 18, borderRadius: '50%', background: '#d1fae5', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      {Icons.check({ size: 11, color: '#059669' })}
+                    </div>
+                  )
+                ) : i === currentStep && i < steps.length - 1 ? (
+                  <svg width="18" height="18" viewBox="0 0 18 18" fill="none" style={{ animation: 'spin 1s linear infinite' }}>
+                    <circle cx="9" cy="9" r="7" stroke="#e2e8f0" strokeWidth="2" />
+                    <path d="M9 2a7 7 0 016.9 5.8" stroke="#10b981" strokeWidth="2" strokeLinecap="round" />
+                  </svg>
+                ) : i === currentStep && i === steps.length - 1 ? (
+                  <div style={{ width: 18, height: 18, borderRadius: '50%', background: '#d1fae5', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    {Icons.check({ size: 11, color: '#059669' })}
+                  </div>
+                ) : (
+                  <div style={{ width: 18, height: 18, borderRadius: '50%', background: '#f1f5f9' }} />
+                )}
+              </div>
+              <span style={{
+                fontWeight: i === currentStep ? 500 : 400,
+                color: i <= currentStep ? 'var(--text)' : 'var(--text-muted)',
+              }}>{step}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── Check Item Component ─── */
+function CheckItem({ item, expanded, onToggle }) {
+  const hasDetail = item.rule || item.remediation || item.methodRef;
+  const isExpandable = hasDetail && item.status !== 'pass';
+
+  const statusIcon = item.status === 'pass'
+    ? <div style={{ width: 20, height: 20, borderRadius: '50%', background: '#d1fae5', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>{Icons.check({ size: 12, color: '#059669' })}</div>
+    : item.status === 'warn'
+    ? <div style={{ width: 20, height: 20, borderRadius: '50%', background: '#fef3c7', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>{Icons.warning({ size: 12, color: '#d97706' })}</div>
+    : <div style={{ width: 20, height: 20, borderRadius: '50%', background: '#fee2e2', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>{Icons.x({ size: 12, color: '#ef4444' })}</div>;
+
+  return (
+    <div style={{
+      borderBottom: '1px solid var(--border-light)',
+      transition: 'background 0.15s ease',
+    }}>
+      <div
+        onClick={isExpandable ? onToggle : undefined}
+        style={{
+          display: 'flex', alignItems: 'flex-start', gap: 10, padding: '12px 20px',
+          cursor: isExpandable ? 'pointer' : 'default',
+          background: expanded ? '#fafbfc' : 'transparent',
+        }}
+        onMouseEnter={e => { if (isExpandable) e.currentTarget.style.background = '#fafbfc'; }}
+        onMouseLeave={e => { if (!expanded) e.currentTarget.style.background = 'transparent'; }}
+      >
+        {statusIcon}
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+            {item.status !== 'pass' && (
+              <Badge type={item.status === 'fail' ? 'fail' : 'warn'} size="sm">
+                {item.status === 'fail' ? 'FAIL' : 'WARN'}
+              </Badge>
+            )}
+            {item.hardStop && <Badge type="hardstop" size="sm">HARD STOP</Badge>}
+            <span className="mono" style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{item.id}</span>
+            <span style={{ fontSize: '0.87rem', fontWeight: 600, color: 'var(--text)' }}>{item.title}</span>
+          </div>
+          <div style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', marginTop: 4 }}>
+            {item.finding}
+          </div>
+        </div>
+        {isExpandable && (
+          <div style={{
+            marginTop: 2, flexShrink: 0,
+            transform: expanded ? 'rotate(0deg)' : 'rotate(-90deg)',
+            transition: 'transform 0.2s ease', color: 'var(--text-muted)',
+          }}>
+            {Icons.chevronDown({ size: 14 })}
+          </div>
+        )}
+      </div>
+      {expanded && hasDetail && (
+        <div style={{
+          padding: '0 20px 16px 50px', animation: 'fadeInFast 0.2s ease',
+        }}>
+          <div style={{
+            background: item.status === 'fail' ? '#fef2f2' : '#fffbeb',
+            borderRadius: 'var(--radius)', padding: '14px 16px',
+            borderLeft: `3px solid ${item.status === 'fail' ? '#ef4444' : '#f59e0b'}`,
+            fontSize: '0.82rem',
+          }}>
+            {item.rule && (
+              <div style={{ marginBottom: 8 }}>
+                <span style={{ fontWeight: 600, color: 'var(--text)' }}>Rule: </span>
+                <span style={{ color: 'var(--text-secondary)' }}>{item.rule}</span>
+              </div>
+            )}
+            {item.methodRef && (
+              <div style={{ marginBottom: 8 }}>
+                <span style={{ fontWeight: 600, color: 'var(--text)' }}>Methodology Ref: </span>
+                <span className="mono" style={{ fontSize: '0.78rem', color: 'var(--info)' }}>{item.methodRef}</span>
+              </div>
+            )}
+            {item.remediation && (
+              <div>
+                <span style={{ fontWeight: 600, color: 'var(--text)' }}>Remediation: </span>
+                <span style={{ color: 'var(--text-secondary)' }}>{item.remediation}</span>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ─── Category Section ─── */
+function CategorySection({ catKey, category, defaultOpen = true }) {
+  const [open, setOpen] = useState(defaultOpen);
+  const [expandedItems, setExpandedItems] = useState({});
+
+  const fails = category.items.filter(i => i.status === 'fail').length;
+  const warns = category.items.filter(i => i.status === 'warn').length;
+  const passes = category.items.filter(i => i.status === 'pass').length;
+
+  const iconMap = {
+    flask: Icons.flask,
+    scale: Icons.scale,
+    leaf: Icons.leaf,
+    calculator: Icons.calculator,
+    folder: Icons.folder,
+    box: Icons.box,
+  };
+  const IconComp = iconMap[category.icon];
+  const catColor = fails > 0 ? '#ef4444' : warns > 0 ? '#f59e0b' : '#10b981';
+
+  return (
+    <div style={{
+      background: 'var(--card)', borderRadius: 'var(--radius-lg)',
+      border: '1px solid var(--border)', boxShadow: 'var(--shadow-sm)',
+      overflow: 'hidden', marginBottom: 12,
+    }}>
+      <div
+        onClick={() => setOpen(!open)}
+        style={{
+          display: 'flex', alignItems: 'center', gap: 12, padding: '14px 20px',
+          cursor: 'pointer', userSelect: 'none',
+          transition: 'background 0.15s ease',
+        }}
+        onMouseEnter={e => e.currentTarget.style.background = '#fafbfc'}
+        onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+      >
+        <div style={{
+          width: 32, height: 32, borderRadius: 8,
+          background: fails > 0 ? '#fee2e2' : warns > 0 ? '#fef3c7' : '#d1fae5',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+        }}>
+          <IconComp size={16} color={catColor} />
+        </div>
+        <div style={{ flex: 1 }}>
+          <span style={{ fontWeight: 600, fontSize: '0.92rem' }}>{category.label}</span>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          {fails > 0 && <Badge type="fail" size="sm">{fails} Failed</Badge>}
+          {warns > 0 && <Badge type="warn" size="sm">{warns} Warning{warns > 1 ? 's' : ''}</Badge>}
+          {passes > 0 && <Badge type="pass" size="sm">{passes} Passed</Badge>}
+        </div>
+        <div style={{
+          transform: open ? 'rotate(0deg)' : 'rotate(-90deg)',
+          transition: 'transform 0.2s ease', color: 'var(--text-muted)', flexShrink: 0,
+        }}>
+          {Icons.chevronDown({ size: 16 })}
+        </div>
+      </div>
+      {open && (
+        <div style={{ borderTop: '1px solid var(--border-light)' }}>
+          {category.items.map((item, i) => (
+            <CheckItem
+              key={item.id}
+              item={item}
+              expanded={!!expandedItems[item.id]}
+              onToggle={() => setExpandedItems(prev => ({ ...prev, [item.id]: !prev[item.id] }))}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ─── State 3: Results (Issues Found) ─── */
+function ResultsIssues({ onRerun, showClean, onToggleClean }) {
+  return (
+    <div style={{ animation: 'fadeIn 0.4s ease', maxWidth: 920, margin: '0 auto', padding: '28px 24px' }}>
+      {/* Top Summary Bar */}
+      <div style={{
+        background: 'var(--card)', borderRadius: 'var(--radius-lg)',
+        border: '1px solid var(--border)', boxShadow: 'var(--shadow)',
+        padding: '20px 28px', marginBottom: 20,
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
+            <CircularProgress value={showClean ? TOTAL_CHECKS : PASS_COUNT} max={TOTAL_CHECKS} size={68} strokeWidth={5}
+              color={showClean ? 'var(--accent)' : 'var(--error)'} />
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4 }}>
+                {showClean ? (
+                  <Badge type="ready" size="lg">READY FOR SUBMISSION</Badge>
+                ) : (
+                  <Badge type="critical" size="lg">ISSUES FOUND</Badge>
+                )}
+              </div>
+              <div style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: 6 }}>
+                {Icons.clock({ size: 13 })} Last run: Just now
+              </div>
+            </div>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+            {!showClean && (
+              <div style={{ display: 'flex', gap: 8 }}>
+                <div style={{ textAlign: 'center', padding: '4px 12px', borderRadius: 'var(--radius)', background: '#fee2e2' }}>
+                  <div style={{ fontSize: '1.2rem', fontWeight: 700, color: '#ef4444' }}>{FAIL_COUNT}</div>
+                  <div style={{ fontSize: '0.65rem', color: '#991b1b', textTransform: 'uppercase', fontWeight: 600, letterSpacing: '0.04em' }}>Critical</div>
+                </div>
+                <div style={{ textAlign: 'center', padding: '4px 12px', borderRadius: 'var(--radius)', background: '#fef3c7' }}>
+                  <div style={{ fontSize: '1.2rem', fontWeight: 700, color: '#f59e0b' }}>{WARN_COUNT}</div>
+                  <div style={{ fontSize: '0.65rem', color: '#92400e', textTransform: 'uppercase', fontWeight: 600, letterSpacing: '0.04em' }}>Warnings</div>
+                </div>
+                <div style={{ textAlign: 'center', padding: '4px 12px', borderRadius: 'var(--radius)', background: '#d1fae5' }}>
+                  <div style={{ fontSize: '1.2rem', fontWeight: 700, color: '#10b981' }}>{PASS_COUNT}</div>
+                  <div style={{ fontSize: '0.65rem', color: '#065f46', textTransform: 'uppercase', fontWeight: 600, letterSpacing: '0.04em' }}>Passed</div>
+                </div>
+              </div>
+            )}
+            <div style={{ borderLeft: '1px solid var(--border)', paddingLeft: 16, textAlign: 'center' }}>
+              <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600, letterSpacing: '0.04em', marginBottom: 2 }}>Audit Risk</div>
+              {showClean ? (
+                <Badge type="low" size="lg">LOW</Badge>
+              ) : (
+                <Badge type="critical" size="lg">CRITICAL</Badge>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Demo Toggle */}
+      <div style={{
+        display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 10,
+        marginBottom: 16, fontSize: '0.8rem',
+      }}>
+        <span style={{ color: 'var(--text-muted)', fontWeight: 500 }}>Demo view:</span>
+        <button onClick={onToggleClean} style={{
+          display: 'flex', alignItems: 'center', gap: 6,
+          padding: '5px 12px', borderRadius: 6,
+          border: '1px solid var(--border)',
+          background: showClean ? '#d1fae5' : 'var(--card)',
+          color: showClean ? '#065f46' : 'var(--text-secondary)',
+          fontSize: '0.78rem', fontWeight: 500, cursor: 'pointer',
+          fontFamily: 'Inter', transition: 'all 0.2s ease',
+        }}>
+          {showClean ? Icons.check({ size: 12, color: '#059669' }) : Icons.x({ size: 12, color: '#94a3b8' })}
+          {showClean ? 'All Clear' : 'Issues Found'}
+        </button>
+      </div>
+
+      {/* Results */}
+      {showClean ? <CleanResults /> : <IssueResults />}
+
+      {/* Bottom action bar */}
+      <div style={{
+        marginTop: 20, padding: '20px 24px',
+        background: 'var(--card)', borderRadius: 'var(--radius-lg)',
+        border: '1px solid var(--border)', boxShadow: 'var(--shadow-sm)',
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+      }}>
+        <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', maxWidth: 360 }}>
+          {showClean
+            ? 'All pre-flight checks passed. Your data appears compliant with Puro.earth Biochar Methodology v3.'
+            : 'Resolve all critical issues before submission. You may submit with warnings.'}
+        </div>
+        <div style={{ display: 'flex', gap: 10 }}>
+          <button style={{
+            padding: '9px 18px', borderRadius: 'var(--radius)', border: '1px solid var(--border)',
+            background: 'var(--card)', color: 'var(--text-secondary)', fontSize: '0.85rem', fontWeight: 500,
+            cursor: 'pointer', fontFamily: 'Inter', display: 'flex', alignItems: 'center', gap: 6,
+            transition: 'all 0.15s ease',
+          }}
+            onMouseEnter={e => { e.currentTarget.style.background = '#f8fafc'; e.currentTarget.style.borderColor = '#cbd5e1'; }}
+            onMouseLeave={e => { e.currentTarget.style.background = 'var(--card)'; e.currentTarget.style.borderColor = 'var(--border)'; }}
+          >
+            {Icons.download({ size: 14 })} Download Report (PDF)
+          </button>
+          {showClean ? (
+            <button style={{
+              padding: '9px 20px', borderRadius: 'var(--radius)', border: 'none',
+              background: 'linear-gradient(135deg, #10b981, #059669)',
+              color: 'white', fontSize: '0.85rem', fontWeight: 600,
+              cursor: 'pointer', fontFamily: 'Inter', display: 'flex', alignItems: 'center', gap: 6,
+              boxShadow: '0 1px 3px rgba(16,185,129,0.3)', transition: 'all 0.15s ease',
+            }}
+              onMouseEnter={e => { e.currentTarget.style.background = 'linear-gradient(135deg, #059669, #047857)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
+              onMouseLeave={e => { e.currentTarget.style.background = 'linear-gradient(135deg, #10b981, #059669)'; e.currentTarget.style.transform = 'none'; }}
+            >
+              {Icons.send({ size: 14 })} Submit to Registry
+            </button>
+          ) : (
+            <button onClick={onRerun} style={{
+              padding: '9px 20px', borderRadius: 'var(--radius)', border: 'none',
+              background: 'linear-gradient(135deg, #10b981, #059669)',
+              color: 'white', fontSize: '0.85rem', fontWeight: 600,
+              cursor: 'pointer', fontFamily: 'Inter', display: 'flex', alignItems: 'center', gap: 6,
+              boxShadow: '0 1px 3px rgba(16,185,129,0.3)', transition: 'all 0.15s ease',
+            }}
+              onMouseEnter={e => { e.currentTarget.style.background = 'linear-gradient(135deg, #059669, #047857)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
+              onMouseLeave={e => { e.currentTarget.style.background = 'linear-gradient(135deg, #10b981, #059669)'; e.currentTarget.style.transform = 'none'; }}
+            >
+              {Icons.refresh({ size: 14 })} Fix Issues & Re-run
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function IssueResults() {
+  const catKeys = Object.keys(CHECKS);
+  return (
+    <div>
+      {catKeys.map((key, i) => (
+        <CategorySection
+          key={key}
+          catKey={key}
+          category={CHECKS[key]}
+          defaultOpen={i === 0}
+        />
+      ))}
+    </div>
+  );
+}
+
+/* ─── State 4: All Clear ─── */
+function CleanResults() {
+  const catKeys = Object.keys(CHECKS);
+  return (
+    <div>
+      {/* Confidence banner */}
+      <div style={{
+        background: 'linear-gradient(135deg, #ecfdf5, #d1fae5)',
+        borderRadius: 'var(--radius-lg)',
+        border: '1px solid #a7f3d0',
+        padding: '20px 24px', marginBottom: 16,
+        display: 'flex', alignItems: 'center', gap: 16,
+      }}>
+        <div style={{
+          width: 44, height: 44, borderRadius: '50%',
+          background: '#10b981', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+        }}>
+          {Icons.shield({ size: 22, color: 'white', inner: <path d="M7 10.5l2.5 2.5 4.5-5" stroke="white" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"/> })}
+        </div>
+        <div>
+          <div style={{ fontWeight: 700, fontSize: '1rem', color: '#065f46', marginBottom: 2 }}>All Pre-Flight Checks Passed</div>
+          <div style={{ fontSize: '0.85rem', color: '#047857' }}>
+            Your data appears compliant with Puro.earth Biochar Methodology Ed. 2022 v3.
+            This report is ready for registry submission.
+          </div>
+        </div>
+      </div>
+
+      {/* All green categories */}
+      {catKeys.map(key => {
+        const cat = CHECKS[key];
+        const iconMap = { flask: Icons.flask, scale: Icons.scale, leaf: Icons.leaf, calculator: Icons.calculator, folder: Icons.folder, box: Icons.box };
+        const IconComp = iconMap[cat.icon];
+        return (
+          <div key={key} style={{
+            background: 'var(--card)', borderRadius: 'var(--radius-lg)',
+            border: '1px solid var(--border)', boxShadow: 'var(--shadow-sm)',
+            padding: '14px 20px', marginBottom: 8,
+            display: 'flex', alignItems: 'center', gap: 12,
+          }}>
+            <div style={{
+              width: 32, height: 32, borderRadius: 8,
+              background: '#d1fae5',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+            }}>
+              <IconComp size={16} color="#10b981" />
+            </div>
+            <span style={{ fontWeight: 600, fontSize: '0.9rem', flex: 1 }}>{cat.label}</span>
+            <Badge type="pass" size="sm">{cat.items.length} Passed</Badge>
+            <div style={{ width: 20, height: 20, borderRadius: '50%', background: '#d1fae5', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              {Icons.check({ size: 12, color: '#059669' })}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+/* ─── App ─── */
+function App() {
+  const [state, setState] = useState('submission'); // submission | loading | results
+  const [showClean, setShowClean] = useState(false);
+
+  const handleRunCheck = useCallback(() => setState('loading'), []);
+  const handleLoadingComplete = useCallback(() => setState('results'), []);
+  const handleRerun = useCallback(() => {
+    setState('loading');
+    // After loading, could switch to clean or issues again
+  }, []);
+
+  return (
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <NavBar />
+
+      {/* Sub-header: context bar */}
+      {state === 'results' && (
+        <div style={{
+          background: 'white', borderBottom: '1px solid var(--border-light)',
+          padding: '10px 24px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 16,
+          fontSize: '0.8rem', color: 'var(--text-secondary)',
+        }}>
+          <span>
+            <span style={{ fontWeight: 500, color: 'var(--text)' }}>GreenChar Solutions</span>
+            {' '}&mdash;{' '}
+            <span className="mono" style={{ fontSize: '0.75rem' }}>PURO-2025-GCS-0042</span>
+          </span>
+          <span style={{ color: 'var(--border)' }}>|</span>
+          <span>Puro.earth Biochar Methodology v3</span>
+          <span style={{ color: 'var(--border)' }}>|</span>
+          <span>
+            CORCs Claimed: <span className="mono" style={{ fontWeight: 600, color: 'var(--text)' }}>82.50 tCO2e</span>
+          </span>
+        </div>
+      )}
+
+      <main style={{ flex: 1, paddingBottom: 40 }}>
+        {state === 'submission' && <ReportSubmission onRunCheck={handleRunCheck} />}
+        {state === 'loading' && <PreFlightLoading onComplete={handleLoadingComplete} />}
+        {state === 'results' && (
+          <ResultsIssues
+            onRerun={handleRerun}
+            showClean={showClean}
+            onToggleClean={() => setShowClean(!showClean)}
+          />
+        )}
+      </main>
+
+      {/* Footer */}
+      <footer style={{
+        borderTop: '1px solid var(--border-light)',
+        padding: '12px 24px',
+        textAlign: 'center', fontSize: '0.72rem', color: 'var(--text-muted)',
+        background: 'white',
+      }}>
+        Mangrove Audit Intelligence &mdash; Pre-Flight Check Engine v2.1 &mdash; {TOTAL_CHECKS} rules loaded from Puro.earth Biochar Methodology
+      </footer>
+    </div>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+</script>
+</head>
+<body>
+  <div id="root"></div>
+</body>
+</html>

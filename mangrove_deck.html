@@ -1,0 +1,2257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pre-Flight Checks — Stephan Becker | Mangrove Case Study</title>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-primary: #0a0f0d;
+      --bg-secondary: #0d1412;
+      --bg-card: #111c18;
+      --bg-card-hover: #162420;
+      --bg-card-alt: #0f1a16;
+      --text-primary: #e8f0ec;
+      --text-secondary: #94b0a4;
+      --text-muted: #5a7a6c;
+      --accent: #10b981;
+      --accent-light: #34d399;
+      --accent-glow: rgba(16, 185, 129, 0.12);
+      --accent-glow-strong: rgba(16, 185, 129, 0.25);
+      --teal: #14b8a6;
+      --teal-glow: rgba(20, 184, 166, 0.15);
+      --amber: #f59e0b;
+      --amber-glow: rgba(245, 158, 11, 0.12);
+      --red: #ef4444;
+      --red-glow: rgba(239, 68, 68, 0.12);
+      --red-muted: #dc2626;
+      --blue: #3b82f6;
+      --blue-glow: rgba(59, 130, 246, 0.12);
+      --purple: #a78bfa;
+      --border: rgba(148, 176, 164, 0.08);
+      --border-accent: rgba(16, 185, 129, 0.2);
+      --gradient-main: linear-gradient(135deg, #10b981 0%, #14b8a6 100%);
+      --gradient-dark: linear-gradient(135deg, #0a0f0d 0%, #0d1916 40%, #0a120f 100%);
+      --card-shadow: 0 4px 24px rgba(0,0,0,0.4);
+      --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-snap-type: y proximity; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg-secondary); }
+    ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
+
+    .slide {
+      min-height: 100vh;
+      scroll-snap-align: start;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 80px 40px;
+    }
+
+    @media (max-width: 768px) {
+      .slide { padding: 60px 20px; }
+    }
+
+    .fade-in {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    }
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .fade-in-delay-1 { transition-delay: 0.1s; }
+    .fade-in-delay-2 { transition-delay: 0.2s; }
+    .fade-in-delay-3 { transition-delay: 0.3s; }
+    .fade-in-delay-4 { transition-delay: 0.4s; }
+    .fade-in-delay-5 { transition-delay: 0.5s; }
+    .fade-in-delay-6 { transition-delay: 0.6s; }
+
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 0 20px var(--accent-glow); }
+      50% { box-shadow: 0 0 40px var(--accent-glow-strong); }
+    }
+
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+
+    @keyframes blink-cursor {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    @keyframes scan-line {
+      0% { top: 0; }
+      100% { top: 100%; }
+    }
+
+    @keyframes fade-in-up {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes draw-line {
+      from { stroke-dashoffset: 1000; }
+      to { stroke-dashoffset: 0; }
+    }
+
+    @keyframes count-up {
+      from { opacity: 0; transform: scale(0.8); }
+      to { opacity: 1; transform: scale(1); }
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState, useEffect, useRef, useCallback, useMemo } = React;
+
+    // ========================================================================
+    // HOOKS
+    // ========================================================================
+
+    function useIntersection(options = {}) {
+      const ref = useRef(null);
+      const [visible, setVisible] = useState(false);
+      useEffect(() => {
+        const observer = new IntersectionObserver(([entry]) => {
+          if (entry.isIntersecting) {
+            setVisible(true);
+            observer.unobserve(entry.target);
+          }
+        }, { threshold: 0.12, ...options });
+        if (ref.current) observer.observe(ref.current);
+        return () => observer.disconnect();
+      }, []);
+      return [ref, visible];
+    }
+
+    function useKeyboardNav(slideIds) {
+      const [currentSlide, setCurrentSlide] = useState(0);
+
+      useEffect(() => {
+        const handleKey = (e) => {
+          if (e.key === 'ArrowDown' || e.key === 'ArrowRight' || e.key === 'PageDown') {
+            e.preventDefault();
+            setCurrentSlide(prev => {
+              const next = Math.min(prev + 1, slideIds.length - 1);
+              document.getElementById(slideIds[next])?.scrollIntoView({ behavior: 'smooth' });
+              return next;
+            });
+          }
+          if (e.key === 'ArrowUp' || e.key === 'ArrowLeft' || e.key === 'PageUp') {
+            e.preventDefault();
+            setCurrentSlide(prev => {
+              const next = Math.max(prev - 1, 0);
+              document.getElementById(slideIds[next])?.scrollIntoView({ behavior: 'smooth' });
+              return next;
+            });
+          }
+          if (e.key === 'Home') {
+            e.preventDefault();
+            setCurrentSlide(0);
+            document.getElementById(slideIds[0])?.scrollIntoView({ behavior: 'smooth' });
+          }
+          if (e.key === 'End') {
+            e.preventDefault();
+            const last = slideIds.length - 1;
+            setCurrentSlide(last);
+            document.getElementById(slideIds[last])?.scrollIntoView({ behavior: 'smooth' });
+          }
+        };
+
+        window.addEventListener('keydown', handleKey);
+        return () => window.removeEventListener('keydown', handleKey);
+      }, [slideIds]);
+
+      // Track scroll position to update current slide
+      useEffect(() => {
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              const idx = slideIds.indexOf(entry.target.id);
+              if (idx !== -1) setCurrentSlide(idx);
+            }
+          });
+        }, { threshold: 0.35 });
+
+        slideIds.forEach(id => {
+          const el = document.getElementById(id);
+          if (el) observer.observe(el);
+        });
+
+        return () => observer.disconnect();
+      }, [slideIds]);
+
+      return currentSlide;
+    }
+
+    // ========================================================================
+    // SLIDE IDS
+    // ========================================================================
+
+    const SLIDE_IDS = [
+      'title',
+      'problem',
+      'evidence',
+      'framework',
+      'solution',
+      'userflow',
+      'architecture',
+      'datamodel',
+      'risks',
+      'launch',
+      'scope',
+      'emerging',
+      'gtm',
+      'metrics',
+      'demo',
+      'thankyou',
+    ];
+
+    const SLIDE_LABELS = [
+      'Title',
+      'Problem',
+      'Evidence',
+      'Framework',
+      'Solution',
+      'User Flow',
+      'Architecture',
+      'Data Model',
+      'Risks',
+      'Launch Plan',
+      'Scope',
+      'Emerging',
+      'GTM',
+      'Metrics',
+      'Demo',
+      'Thank You',
+    ];
+
+    // ========================================================================
+    // SHARED COMPONENTS
+    // ========================================================================
+
+    function SlideNumber({ number, total }) {
+      return (
+        <div style={{
+          position: 'absolute', bottom: 24, right: 40,
+          fontSize: 13, fontFamily: 'var(--font-mono)',
+          color: 'var(--text-muted)', letterSpacing: 1,
+        }}>
+          {String(number).padStart(2, '0')} / {String(total).padStart(2, '0')}
+        </div>
+      );
+    }
+
+    function SectionLabel({ text, color }) {
+      return (
+        <div style={{
+          display: 'inline-block',
+          padding: '4px 14px',
+          borderRadius: 4,
+          background: color ? `${color}15` : 'var(--accent-glow)',
+          border: `1px solid ${color || 'var(--accent)'}40`,
+          color: color || 'var(--accent)',
+          fontSize: 11,
+          fontWeight: 700,
+          letterSpacing: 2.5,
+          textTransform: 'uppercase',
+          fontFamily: 'var(--font-mono)',
+          marginBottom: 16,
+        }}>
+          {text}
+        </div>
+      );
+    }
+
+    function SlideTitle({ children }) {
+      return (
+        <h2 style={{
+          fontSize: 'clamp(28px, 4.5vw, 48px)',
+          fontWeight: 800,
+          lineHeight: 1.1,
+          marginBottom: 8,
+          letterSpacing: '-0.02em',
+          color: 'var(--text-primary)',
+        }}>
+          {children}
+        </h2>
+      );
+    }
+
+    function SlideSubtitle({ children }) {
+      return (
+        <p style={{
+          fontSize: 'clamp(15px, 2vw, 19px)',
+          color: 'var(--text-secondary)',
+          lineHeight: 1.6,
+          maxWidth: 720,
+          marginBottom: 32,
+        }}>
+          {children}
+        </p>
+      );
+    }
+
+    function Callout({ children, icon, color, style: extraStyle }) {
+      const c = color || 'var(--accent)';
+      return (
+        <div style={{
+          background: `${c}08`,
+          borderLeft: `3px solid ${c}`,
+          padding: '16px 20px',
+          borderRadius: '0 8px 8px 0',
+          fontSize: 15,
+          color: 'var(--text-secondary)',
+          lineHeight: 1.7,
+          fontStyle: 'italic',
+          ...extraStyle,
+        }}>
+          {icon && <span style={{ marginRight: 8, fontStyle: 'normal' }}>{icon}</span>}
+          {children}
+        </div>
+      );
+    }
+
+    function Card({ children, style: extraStyle, hoverable, glow }) {
+      const [hovered, setHovered] = useState(false);
+      return (
+        <div
+          onMouseEnter={() => setHovered(true)}
+          onMouseLeave={() => setHovered(false)}
+          style={{
+            background: hovered && hoverable ? 'var(--bg-card-hover)' : 'var(--bg-card)',
+            borderRadius: 12,
+            padding: 24,
+            border: `1px solid ${hovered && hoverable ? 'var(--border-accent)' : 'var(--border)'}`,
+            transition: 'all 0.3s ease',
+            ...(glow && hovered ? { boxShadow: '0 0 24px var(--accent-glow)' } : {}),
+            ...extraStyle,
+          }}
+        >
+          {children}
+        </div>
+      );
+    }
+
+    function StatusBadge({ type, label }) {
+      const configs = {
+        pass: { bg: '#10b98118', border: '#10b98140', color: '#10b981', icon: '\u2713' },
+        fail: { bg: '#ef444418', border: '#ef444440', color: '#ef4444', icon: '\u2717' },
+        warn: { bg: '#f59e0b18', border: '#f59e0b40', color: '#f59e0b', icon: '\u26A0' },
+        info: { bg: '#3b82f618', border: '#3b82f640', color: '#3b82f6', icon: '\u2139' },
+      };
+      const c = configs[type] || configs.info;
+      return (
+        <span style={{
+          display: 'inline-flex', alignItems: 'center', gap: 5,
+          padding: '3px 10px', borderRadius: 4,
+          background: c.bg, border: `1px solid ${c.border}`,
+          color: c.color, fontSize: 12, fontWeight: 600,
+          fontFamily: 'var(--font-mono)',
+        }}>
+          {c.icon} {label}
+        </span>
+      );
+    }
+
+    // ========================================================================
+    // NAV SIDEBAR
+    // ========================================================================
+
+    function NavSidebar({ currentSlide }) {
+      return (
+        <nav style={{
+          position: 'fixed', left: 16, top: '50%', transform: 'translateY(-50%)',
+          zIndex: 1000, display: 'flex', flexDirection: 'column', gap: 4,
+        }}>
+          {SLIDE_IDS.map((id, i) => (
+            <a
+              key={id}
+              href={`#${id}`}
+              title={SLIDE_LABELS[i]}
+              style={{
+                width: currentSlide === i ? 28 : 8,
+                height: 8,
+                borderRadius: 4,
+                background: currentSlide === i ? 'var(--accent)' : 'var(--text-muted)',
+                opacity: currentSlide === i ? 1 : 0.3,
+                transition: 'all 0.3s ease',
+                display: 'block',
+              }}
+            />
+          ))}
+        </nav>
+      );
+    }
+
+    // ========================================================================
+    // SLIDE 1: TITLE
+    // ========================================================================
+
+    function TitleSlide() {
+      const [ref, visible] = useIntersection();
+      return (
+        <section id="title" className="slide" style={{
+          background: 'var(--gradient-dark)',
+          justifyContent: 'center',
+          alignItems: 'center',
+          textAlign: 'center',
+          position: 'relative',
+          overflow: 'hidden',
+        }}>
+          {/* Subtle grid background */}
+          <div style={{
+            position: 'absolute', inset: 0, opacity: 0.03,
+            backgroundImage: 'linear-gradient(var(--accent) 1px, transparent 1px), linear-gradient(90deg, var(--accent) 1px, transparent 1px)',
+            backgroundSize: '60px 60px',
+            pointerEvents: 'none',
+          }} />
+
+          {/* Radial glow */}
+          <div style={{
+            position: 'absolute', top: '40%', left: '50%', transform: 'translate(-50%, -50%)',
+            width: 600, height: 600, borderRadius: '50%',
+            background: 'radial-gradient(circle, var(--accent-glow) 0%, transparent 70%)',
+            pointerEvents: 'none', filter: 'blur(40px)',
+          }} />
+
+          <div ref={ref} style={{ position: 'relative', zIndex: 1, maxWidth: 900 }}>
+            <div className={`fade-in ${visible ? 'visible' : ''}`}>
+              <div style={{
+                display: 'inline-block', padding: '6px 18px', borderRadius: 4,
+                border: '1px solid var(--border-accent)',
+                background: 'var(--accent-glow)',
+                marginBottom: 32,
+              }}>
+                <span style={{
+                  fontSize: 12, fontWeight: 600, letterSpacing: 3,
+                  textTransform: 'uppercase', color: 'var(--accent)',
+                  fontFamily: 'var(--font-mono)',
+                }}>
+                  Product Lead Case Study
+                </span>
+              </div>
+            </div>
+
+            <h1 className={`fade-in fade-in-delay-1 ${visible ? 'visible' : ''}`} style={{
+              fontSize: 'clamp(32px, 5.5vw, 64px)',
+              fontWeight: 900,
+              lineHeight: 1.05,
+              letterSpacing: '-0.03em',
+              marginBottom: 16,
+            }}>
+              <span style={{ color: 'var(--text-primary)' }}>Pre-Flight Checks:</span><br/>
+              <span style={{
+                background: 'linear-gradient(135deg, var(--accent) 0%, var(--teal) 50%, var(--accent-light) 100%)',
+                backgroundSize: '200% 200%',
+                animation: 'shimmer 6s linear infinite',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+              }}>
+                Catching Verification Issues{' '}
+              </span>
+              <br/>
+              <span style={{ color: 'var(--text-primary)' }}>Before They Cost You</span>
+            </h1>
+
+            <p className={`fade-in fade-in-delay-2 ${visible ? 'visible' : ''}`} style={{
+              fontSize: 'clamp(16px, 2.2vw, 21px)',
+              color: 'var(--text-secondary)',
+              fontWeight: 300,
+              marginBottom: 48,
+              lineHeight: 1.5,
+            }}>
+              A Quality Intelligence System for Carbon Removal Reporting
+            </p>
+
+            <div className={`fade-in fade-in-delay-3 ${visible ? 'visible' : ''}`} style={{
+              display: 'flex', justifyContent: 'center', gap: 32,
+              fontSize: 14, color: 'var(--text-muted)',
+              flexWrap: 'wrap',
+            }}>
+              <span style={{ fontWeight: 600, color: 'var(--text-secondary)' }}>Stephan Becker</span>
+              <span style={{ color: 'var(--border-accent)' }}>|</span>
+              <span>Product Lead Case Study</span>
+              <span style={{ color: 'var(--border-accent)' }}>|</span>
+              <span>March 2026</span>
+            </div>
+
+            <div className={`fade-in fade-in-delay-4 ${visible ? 'visible' : ''}`} style={{
+              marginTop: 64,
+              fontSize: 13,
+              color: 'var(--text-muted)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+            }}>
+              <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11 }}>
+                Use arrow keys to navigate
+              </span>
+              <span style={{
+                display: 'inline-flex', alignItems: 'center', gap: 4,
+              }}>
+                <span style={{
+                  display: 'inline-block', padding: '2px 8px', borderRadius: 3,
+                  border: '1px solid var(--border)', fontSize: 11,
+                  fontFamily: 'var(--font-mono)',
+                }}>{'\u2190'}</span>
+                <span style={{
+                  display: 'inline-block', padding: '2px 8px', borderRadius: 3,
+                  border: '1px solid var(--border)', fontSize: 11,
+                  fontFamily: 'var(--font-mono)',
+                }}>{'\u2192'}</span>
+              </span>
+            </div>
+          </div>
+          <SlideNumber number={1} total={16} />
+        </section>
+      );
+    }
+
+    // ========================================================================
+    // SLIDE 2: THE PROBLEM
+    // ========================================================================
+
+    function ProblemSlide() {
+      const [ref, visible] = useIntersection();
+
+      const timelineSteps = [
+        { label: 'Submit Data', color: 'var(--accent)', icon: '\u2191' },
+        { label: 'Auditor Review', color: 'var(--amber)', icon: '\u23F3' },
+        { label: 'NCR Issued', color: 'var(--red)', icon: '\u2717' },
+        { label: 'Corrective Action', color: 'var(--amber)', icon: '\u21BB' },
+        { label: 'Re-Submit', color: 'var(--accent)', icon: '\u2191' },
+        { label: 'Second Review', color: 'var(--amber)', icon: '\u23F3' },
+        { label: 'Conditional Pass', color: 'var(--amber)', icon: '\u2713' },
+      ];
+
+      const preflightSteps = [
+        { label: 'Pre-Flight Check', color: 'var(--accent)', icon: '\u2713' },
+        { label: 'Fix Flagged Issues', color: 'var(--accent-light)', icon: '\u270E' },
+        { label: 'Submit Clean Data', color: 'var(--accent)', icon: '\u2191' },
+        { label: 'Auditor Review', color: 'var(--accent)', icon: '\u23F3' },
+        { label: 'Approved', color: 'var(--accent)', icon: '\u2713' },
+      ];
+
+      return (
+        <section id="problem" className="slide" ref={ref}>
+          <div style={{ maxWidth: 1100, margin: '0 auto', width: '100%' }}>
+            <div className={`fade-in ${visible ? 'visible' : ''}`}>
+              <SectionLabel text="The Problem" />
+              <SlideTitle>The Latency of Trust</SlideTitle>
+              <SlideSubtitle>
+                When carbon removal projects submit data for verification, they are flying blind.
+                The result is a costly game of ping-pong that delays credit issuance by weeks or months.
+              </SlideSubtitle>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 20, marginBottom: 40 }}>
+              {[
+                { num: '3-6', unit: 'months', desc: 'Average verification cycle time', color: 'var(--red)' },
+                { num: '2.4x', unit: 'avg', desc: 'Submissions before passing audit', color: 'var(--amber)' },
+                { num: '68%', unit: '', desc: 'First submissions receive NCRs', color: 'var(--amber)' },
+              ].map((stat, i) => (
+                <div key={i} className={`fade-in fade-in-delay-${i+1} ${visible ? 'visible' : ''}`}>
+                  <Card>
+                    <div style={{ fontSize: 36, fontWeight: 800, color: stat.color, fontFamily: 'var(--font-mono)' }}>
+                      {stat.num}<span style={{ fontSize: 16, fontWeight: 400, color: 'var(--text-muted)' }}> {stat.unit}</span>
+                    </div>
+                    <div style={{ fontSize: 14, color: 'var(--text-secondary)', marginTop: 6 }}>{stat.desc}</div>
+                  </Card>
+                </div>
+              ))}
+            </div>
+
+            {/* Timeline comparison */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
+              <div className={`fade-in fade-in-delay-3 ${visible ? 'visible' : ''}`}>
+                <Card style={{ padding: 20 }}>
+                  <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: 'var(--red)', marginBottom: 16, fontFamily: 'var(--font-mono)' }}>
+                    Current State
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                    {timelineSteps.map((step, i) => (
+                      <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                        <div style={{
+                          width: 24, height: 24, borderRadius: 4,
+                          background: `${step.color}18`, border: `1px solid ${step.color}40`,
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          fontSize: 12, color: step.color, flexShrink: 0,
+                        }}>
+                          {step.icon}
+                        </div>
+                        <div style={{
+                          flex: 1, height: 28, borderRadius: 4,
+                          background: `${step.color}10`, border: `1px solid ${step.color}15`,
+                          display: 'flex', alignItems: 'center', paddingLeft: 10,
+                          fontSize: 12, color: 'var(--text-secondary)',
+                        }}>
+                          {step.label}
+                        </div>
+                        {i < timelineSteps.length - 1 && (
+                          <div style={{ color: 'var(--text-muted)', fontSize: 10, width: 20, textAlign: 'center' }}>{'\u2193'}</div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                  <div style={{ marginTop: 12, fontSize: 12, color: 'var(--red)', fontFamily: 'var(--font-mono)', textAlign: 'center' }}>
+                    ~ 12-26 weeks
+                  </div>
+                </Card>
+              </div>
+
+              <div className={`fade-in fade-in-delay-4 ${visible ? 'visible' : ''}`}>
+                <Card style={{ padding: 20, borderColor: 'var(--border-accent)' }}>
+                  <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: 'var(--accent)', marginBottom: 16, fontFamily: 'var(--font-mono)' }}>
+                    With Pre-Flight
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                    {preflightSteps.map((step, i) => (
+                      <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                        <div style={{
+                          width: 24, height: 24, borderRadius: 4,
+                          background: `${step.color}18`, border: `1px solid ${step.color}40`,
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          fontSize: 12, color: step.color, flexShrink: 0,
+                        }}>
+                          {step.icon}
+                        </div>
+                        <div style={{
+                          flex: 1, height: 28, borderRadius: 4,
+                          background: `${step.color}10`, border: `1px solid ${step.color}15`,
+                          display: 'flex', alignItems: 'center', paddingLeft: 10,
+                          fontSize: 12, color: 'var(--text-secondary)',
+                        }}>
+                          {step.label}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <div style={{ marginTop: 12, fontSize: 12, color: 'var(--accent)', fontFamily: 'var(--font-mono)', textAlign: 'center' }}>
+                    ~ 4-8 weeks
+                  </div>
+                </Card>
+              </div>
+            </div>
+
+            <div className={`fade-in fade-in-delay-5 ${visible ? 'visible' : ''}`} style={{ marginTop: 24 }}>
+              <Callout>
+                The real cost is not just time. Every delayed verification cycle erodes customer confidence, slows credit issuance revenue, and gives competitors a window to close deals.
+              </Callout>
+            </div>
+          </div>
+          <SlideNumber number={2} total={16} />
+        </section>
+      );
+    }
+
+    // ========================================================================
+    // SLIDE 3: THE EVIDENCE
+    // ========================================================================
+
+    function EvidenceSlide() {
+      const [ref, visible] = useIntersection();
+
+      const findings = [
+        {
+          category: 'Calculation & Data Entry',
+          frequency: 'Most Common',
+          freqColor: 'var(--red)',
+          barWidth: 92,
+          examples: [
+            'Unit conversion failures (kgCO2e vs tCO2e)',
+            'Formula errors in net CORC calculation',
+            'Wrong soil temperature defaults across climate zones',
+          ],
+        },
+        {
+          category: 'Mass / Measurement Integrity',
+          frequency: 'Very Common',
+          freqColor: 'var(--amber)',
+          barWidth: 78,
+          examples: [
+            'Missing moisture content (6-20% of batches)',
+            'Expired scale calibration certificates',
+            'Dry mass estimation errors from missing wet weight',
+          ],
+        },
+        {
+          category: 'LCA Completeness',
+          frequency: 'Common',
+          freqColor: 'var(--amber)',
+          barWidth: 60,
+          examples: [
+            'Missing diesel equipment emissions',
+            'Wastewater treatment omitted from boundary',
+            'Transport distance in miles instead of kilometres',
+          ],
+        },
+        {
+          category: 'Record-Keeping & Traceability',
+          frequency: 'Common',
+          freqColor: 'var(--amber)',
+          barWidth: 55,
+          examples: [
+            'Fragmented spreadsheets causing copy-paste errors',
+            'Lab reports stale or outside reporting period',
+            'Opening stock mismatch with prior period closing',
+          ],
+        },
+      ];
+
+      return (
+        <section id="evidence" className="slide" ref={ref}>
+          <div style={{ maxWidth: 1100, margin: '0 auto', width: '100%' }}>
+            <div className={`fade-in ${visible ? 'visible' : ''}`}>
+              <SectionLabel text="The Evidence" />
+              <SlideTitle>What Verifiers Actually Flag</SlideTitle>
+              <SlideSubtitle>
+                Analyzed 6 audit reports across 4 Puro.earth biochar suppliers + 1 Isometric verification.
+                The patterns are systematic, predictable, and preventable.
+              </SlideSubtitle>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              {findings.map((f, i) => (
+                <div key={i} className={`fade-in fade-in-delay-${i+1} ${visible ? 'visible' : ''}`}>
+                  <Card style={{ padding: 20 }} hoverable>
+                    <div style={{ display: 'grid', gridTemplateColumns: '240px 120px 1fr', gap: 16, alignItems: 'start' }}>
+                      <div>
+                        <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 6 }}>
+                          {f.category}
+                        </div>
+                        <div style={{
+                          display: 'flex', alignItems: 'center', gap: 8,
+                        }}>
+                          <div style={{
+                            height: 4, borderRadius: 2, background: 'var(--bg-secondary)',
+                            width: 100, overflow: 'hidden',
+                          }}>
+                            <div style={{
+                              height: '100%', width: `${f.barWidth}%`,
+                              background: f.freqColor,
+                              borderRadius: 2,
+                            }} />
+                          </div>
+                        </div>
+                      </div>
+                      <div>
+                        <span style={{
+                          padding: '3px 10px', borderRadius: 4,
+                          background: `${f.freqColor}15`,
+                          border: `1px solid ${f.freqColor}30`,
+                          color: f.freqColor,
+                          fontSize: 11, fontWeight: 700,
+                          fontFamily: 'var(--font-mono)',
+                        }}>
+                          {f.frequency}
+                        </span>
+                      </div>
+                      <div>
+                        {f.examples.map((ex, j) => (
+                          <div key={j} style={{
+                            fontSize: 13, color: 'var(--text-secondary)',
+                            marginBottom: 4, paddingLeft: 14, position: 'relative',
+                          }}>
+                            <span style={{
+                              position: 'absolute', left: 0, color: f.freqColor, fontSize: 8, top: 5,
+                            }}>{'\u25CF'}</span>
+                            {ex}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </Card>
+                </div>
+              ))}
+            </div>
+
+            <div className={`fade-in fade-in-delay-5 ${visible ? 'visible' : ''}`} style={{ marginTop: 24 }}>
+              <Callout icon={'\u2192'} color="var(--accent)">
+                These are not exotic edge cases. They are systematic, predictable, and preventable. Every finding maps to a rule that can be checked before submission.
+              </Callout>
+            </div>
+          </div>
+          <SlideNumber number={3} total={16} />
+        </section>
+      );
+    }
+
+    // ========================================================================
+    // SLIDE 4: THREE TYPES OF FAILURE
+    // ========================================================================
+
+    function FrameworkSlide() {
+      const [ref, visible] = useIntersection();
+
+      const types = [
+        {
+          icon: '\u26D4',
+          title: 'Hard Stops',
+          color: 'var(--red)',
+          desc: 'The data violates a methodology requirement',
+          examples: ['H/Corg molar ratio > 0.7', 'Fossil fuel co-firing detected', 'Pyrolysis temp outside 350-900\u00B0C range'],
+          ux: 'Block submission. No ambiguity.',
+        },
+        {
+          icon: '\u26A0',
+          title: 'Calculation Errors',
+          color: 'var(--amber)',
+          desc: 'The math is wrong',
+          examples: ['Unit conversion (kgCO2e vs tCO2e)', 'Net CORC formula mismatch', 'Transport distance in wrong units'],
+          ux: 'Alert with recalculation suggestion.',
+        },
+        {
+          icon: '\u2139',
+          title: 'Completeness Gaps',
+          color: 'var(--blue)',
+          desc: 'Required data or evidence is missing',
+          examples: ['No lab report for batch', 'Missing moisture content', 'Stale calibration certificate'],
+          ux: 'Warning with guided remediation checklist.',
+        },
+      ];
+
+      return (
+        <section id="framework" className="slide" ref={ref}>
+          <div style={{ maxWidth: 1100, margin: '0 auto', width: '100%' }}>
+            <div className={`fade-in ${visible ? 'visible' : ''}`}>
+              <SectionLabel text="Framework" />
+              <SlideTitle>Three Types of Failure</SlideTitle>
+              <SlideSubtitle>
+                Each failure type demands a different UX response. Hard stops prevent submission. Calculation errors suggest fixes. Completeness gaps guide remediation.
+              </SlideSubtitle>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20 }}>
+              {types.map((t, i) => (
+                <div key={i} className={`fade-in fade-in-delay-${i+1} ${visible ? 'visible' : ''}`}>
+                  <Card style={{
+                    padding: 24, height: '100%',
+                    borderTop: `3px solid ${t.color}`,
+                  }} hoverable glow>
+                    <div style={{
+                      width: 40, height: 40, borderRadius: 8,
+                      background: `${t.color}15`, border: `1px solid ${t.color}30`,
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      fontSize: 18, marginBottom: 16,
+                    }}>
+                      {t.icon}
+                    </div>
+                    <h3 style={{ fontSize: 20, fontWeight: 800, color: t.color, marginBottom: 6 }}>
+                      {t.title}
+                    </h3>
+                    <p style={{ fontSize: 14, color: 'var(--text-secondary)', marginBottom: 16 }}>
+                      {t.desc}
+                    </p>
+                    <div style={{ marginBottom: 16 }}>
+                      {t.examples.map((ex, j) => (
+                        <div key={j} style={{
+                          fontSize: 12, color: 'var(--text-muted)',
+                          padding: '4px 0', paddingLeft: 12, position: 'relative',
+                          fontFamily: 'var(--font-mono)',
+                        }}>
+                          <span style={{ position: 'absolute', left: 0, color: t.color }}>{'\u203A'}</span>
+                          {ex}
+                        </div>
+                      ))}
+                    </div>
+                    <div style={{
+                      padding: '8px 12px', borderRadius: 6,
+                      background: `${t.color}08`,
+                      border: `1px solid ${t.color}15`,
+                      fontSize: 12, color: t.color, fontWeight: 600,
+                    }}>
+                      UX: {t.ux}
+                    </div>
+                  </Card>
+                </div>
+              ))}
+            </div>
+          </div>
+          <SlideNumber number={4} total={16} />
+        </section>
+      );
+    }
+
+    // ========================================================================
+    // SLIDE 5: THE SOLUTION
+    // ========================================================================
+
+    function SolutionSlide() {
+      const [ref, visible] = useIntersection();
+
+      const whyNow = [
+        {
+          title: 'The pattern already exists at Mangrove',
+          desc: 'Mangrove ships Data Rules for its Fuel product \u2014 fallback logic when primary data fails quality checks. Pre-Flight extends this proven pattern to carbon removal methodologies.',
+          icon: '\u{1F504}',
+        },
+        {
+          title: 'Mangrove already has the data',
+          desc: 'Customers collect operational data in the platform. Production volumes, lab reports, measurements \u2014 it is all there. The infrastructure to validate against is built.',
+          icon: '\u{1F4CA}',
+        },
+        {
+          title: 'The Implementation team has the domain knowledge',
+          desc: 'They configure project types per methodology. They know which rules matter. They are the natural rule authors and reviewers.',
+          icon: '\u{1F4D0}',
+        },
+        {
+          title: 'The gap is the connection',
+          desc: 'Running methodology requirements against the data BEFORE submission. Automated validation at the moment it matters most.',
+          icon: '\u{1F517}',
+        },
+        {
+          title: 'DAC timing is critical',
+          desc: 'DAC projects are about to hit their first verification cycles with zero audit history to learn from. Pre-Flight gives them confidence where none exists.',
+          icon: '\u23F1',
+        },
+      ];
+
+      return (
+        <section id="solution" className="slide" ref={ref}>
+          <div style={{ maxWidth: 1100, margin: '0 auto', width: '100%' }}>
+            <div className={`fade-in ${visible ? 'visible' : ''}`}>
+              <SectionLabel text="The Solution" />
+              <div style={{ marginBottom: 32 }}>
+                <h2 style={{
+                  fontSize: 'clamp(32px, 5vw, 56px)',
+                  fontWeight: 900, lineHeight: 1.05,
+                  letterSpacing: '-0.03em',
+                }}>
+                  <span style={{
+                    background: 'var(--gradient-main)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text',
+                  }}>Pre-Flight Checks</span>
+                </h2>
+                <p style={{
+                  fontSize: 'clamp(15px, 2vw, 19px)',
+                  color: 'var(--text-secondary)',
+                  lineHeight: 1.6, maxWidth: 720, marginTop: 12,
+                }}>
+                  Automated data validation that runs methodology compliance rules against project data before submission to registries and verifiers.
+                </p>
+              </div>
+            </div>
+
+            <div className={`fade-in fade-in-delay-1 ${visible ? 'visible' : ''}`} style={{ marginBottom: 32 }}>
+              <h3 style={{ fontSize: 14, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: 'var(--accent)', marginBottom: 16, fontFamily: 'var(--font-mono)' }}>
+                Why prioritize now
+              </h3>
+            </div>
+
+            {/* First card spans full width - the key insight */}
+            <div className={`fade-in fade-in-delay-2 ${visible ? 'visible' : ''}`} style={{ marginBottom: 16 }}>
+              <Card hoverable style={{ borderLeft: '3px solid var(--accent)' }}>
+                <div style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
+                  <div style={{
+                    fontSize: 24, flexShrink: 0, width: 44, height: 44,
+                    borderRadius: 8, background: 'var(--accent-glow)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  }}>
+                    {whyNow[0].icon}
+                  </div>
+                  <div>
+                    <h4 style={{ fontSize: 16, fontWeight: 700, marginBottom: 4, color: 'var(--accent)' }}>
+                      {whyNow[0].title}
+                    </h4>
+                    <p style={{ fontSize: 14, color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+                      {whyNow[0].desc}
+                    </p>
+                  </div>
+                </div>
+              </Card>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 16 }}>
+              {whyNow.slice(1).map((item, i) => (
+                <div key={i} className={`fade-in fade-in-delay-${i+3} ${visible ? 'visible' : ''}`}>
+                  <Card hoverable style={{ height: '100%' }}>
+                    <div style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
+                      <div style={{
+                        fontSize: 24, flexShrink: 0, width: 44, height: 44,
+                        borderRadius: 8, background: 'var(--accent-glow)',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      }}>
+                        {item.icon}
+                      </div>
+                      <div>
+                        <h4 style={{ fontSize: 16, fontWeight: 700, marginBottom: 4, color: 'var(--text-primary)' }}>
+                          {item.title}
+                        </h4>
+                        <p style={{ fontSize: 14, color: 'var(--text-muted)', lineHeight: 1.5 }}>
+                          {item.desc}
+                        </p>
+                      </div>
+                    </div>
+                  </Card>
+                </div>
+              ))}
+            </div>
+          </div>
+          <SlideNumber number={5} total={16} />
+        </section>
+      );
+    }
+
+    // ========================================================================
+    // SLIDE 6: USER FLOW
+    // ========================================================================
+
+    function UserFlowSlide() {
+      const [ref, visible] = useIntersection();
+
+      const steps = [
+        { num: '01', title: 'Collect', desc: 'Customer enters operational data in Mangrove: production volumes, lab reports, measurements, evidence files.', color: 'var(--text-muted)' },
+        { num: '02', title: 'Pre-Flight', desc: 'Before submission, customer clicks "Run Pre-Flight Check". The system validates all data against methodology-specific rules.', color: 'var(--accent)' },
+        { num: '03', title: 'Results', desc: 'Dashboard shows pass/fail/warning for each check, grouped by category. Severity classification highlights what to fix first.', color: 'var(--teal)' },
+        { num: '04', title: 'Remediate', desc: 'Customer fixes flagged issues with guided remediation. E.g., "Soil temperature: you used 15\u00B0C default, but your application sites span 4 climate zones."', color: 'var(--amber)' },
+        { num: '05', title: 'Submit', desc: 'Customer submits to registry/verifier with confidence. Pre-flight results can be shared with auditor as proof of diligence.', color: 'var(--accent-light)' },
+        { num: '06', title: 'Track', desc: 'Post-submission, track which pre-flight checks correlate with actual verifier findings. The feedback loop improves rules over time.', color: 'var(--purple)' },
+      ];
+
+      return (
+        <section id="userflow" className="slide" ref={ref}>
+          <div style={{ maxWidth: 1100, margin: '0 auto', width: '100%' }}>
+            <div className={`fade-in ${visible ? 'visible' : ''}`}>
+              <SectionLabel text="User Journey" />
+              <SlideTitle>User Flow</SlideTitle>
+              <SlideSubtitle>
+                Six steps from data collection to verified submission. The key interaction is the Pre-Flight check that transforms blind submission into informed confidence.
+              </SlideSubtitle>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
+              {steps.map((step, i) => (
+                <div key={i} className={`fade-in fade-in-delay-${Math.min(i+1, 6)} ${visible ? 'visible' : ''}`}>
+                  <Card style={{
+                    height: '100%',
+                    borderTop: `2px solid ${step.color}`,
+                  }} hoverable>
+                    <div style={{
+                      fontSize: 28, fontWeight: 900,
+                      fontFamily: 'var(--font-mono)',
+                      color: step.color,
+                      opacity: 0.5,
+                      marginBottom: 8,
+                    }}>
+                      {step.num}
+                    </div>
+                    <h4 style={{ fontSize: 18, fontWeight: 800, marginBottom: 8, color: 'var(--text-primary)' }}>
+                      {step.title}
+                    </h4>
+                    <p style={{ fontSize: 13, color: 'var(--text-muted)', lineHeight: 1.6 }}>
+                      {step.desc}
+                    </p>
+                  </Card>
+                </div>
+              ))}
+            </div>
+          </div>
+          <SlideNumber number={6} total={16} />
+        </section>
+      );
+    }
+
+    // ========================================================================
+    // SLIDE 7: TECHNICAL ARCHITECTURE
+    // ========================================================================
+
+    function ArchitectureSlide() {
+      const [ref, visible] = useIntersection();
+
+      const layers = [
+        {
+          num: '1',
+          name: 'Agentic Harvester',
+          subtitle: 'Rules Extraction',
+          color: 'var(--purple)',
+          items: [
+            'Ingests methodology PDFs (Puro Biochar, Isometric Standard, etc.)',
+            'LLM pipeline extracts compliance requirements into structured JSON rule schemas',
+            'Implementation team reviews and activates rules via configuration UI',
+          ],
+          note: 'For mature methodologies like Biochar: mine patterns from existing audit findings. For emerging methodologies like DAC: derive rules from the standard itself.',
+        },
+        {
+          num: '2',
+          name: 'Configuration Layer',
+          subtitle: 'Low-Code Rule Management',
+          color: 'var(--teal)',
+          items: [
+            'Non-engineers (Implementation team) can review, activate, and customize rules',
+            'Rules scoped per: methodology \u00D7 registry \u00D7 project type',
+            'Version-controlled, auditable change history',
+          ],
+          note: 'The Implementation team is the domain expert. They know which rules matter and can tune thresholds without engineering tickets.',
+        },
+        {
+          num: '3',
+          name: 'Execution Engine',
+          subtitle: 'Validation at Runtime',
+          color: 'var(--accent)',
+          items: [
+            'Validates customer data against active rule set in real time',
+            'Deterministic \u2014 no AI in the validation loop (trust & reproducibility)',
+            'Returns structured results: pass/fail/warning per rule, severity classification',
+          ],
+          note: 'AI extracts the rules. Deterministic code executes them. This separation is critical for auditor trust.',
+        },
+      ];
+
+      return (
+        <section id="architecture" className="slide" ref={ref}>
+          <div style={{ maxWidth: 1100, margin: '0 auto', width: '100%' }}>
+            <div className={`fade-in ${visible ? 'visible' : ''}`}>
+              <SectionLabel text="Architecture" />
+              <SlideTitle>Three-Layer System</SlideTitle>
+              <SlideSubtitle>
+                AI extracts the rules. Humans review them. Deterministic code executes them. Each layer has a clear boundary and responsibility.
+              </SlideSubtitle>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+              {layers.map((layer, i) => (
+                <div key={i} className={`fade-in fade-in-delay-${i+1} ${visible ? 'visible' : ''}`}>
+                  <Card style={{
+                    padding: 0, overflow: 'hidden',
+                    borderLeft: `4px solid ${layer.color}`,
+                  }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: '280px 1fr', minHeight: 140 }}>
+                      {/* Left label */}
+                      <div style={{
+                        background: `${layer.color}08`,
+                        padding: 24,
+                        display: 'flex', flexDirection: 'column', justifyContent: 'center',
+                        borderRight: `1px solid ${layer.color}15`,
+                      }}>
+                        <div style={{
+                          fontSize: 48, fontWeight: 900, color: layer.color,
+                          fontFamily: 'var(--font-mono)', opacity: 0.3, lineHeight: 1,
+                        }}>
+                          L{layer.num}
+                        </div>
+                        <div style={{ fontSize: 18, fontWeight: 800, color: layer.color, marginTop: 4 }}>
+                          {layer.name}
+                        </div>
+                        <div style={{ fontSize: 12, color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                          {layer.subtitle}
+                        </div>
+                      </div>
+                      {/* Right content */}
+                      <div style={{ padding: 24 }}>
+                        {layer.items.map((item, j) => (
+                          <div key={j} style={{
+                            fontSize: 14, color: 'var(--text-secondary)',
+                            marginBottom: 8, paddingLeft: 16, position: 'relative', lineHeight: 1.5,
+                          }}>
+                            <span style={{ position: 'absolute', left: 0, color: layer.color }}>{'\u2022'}</span>
+                            {item}
+                          </div>
+                        ))}
+                        <div style={{
+                          marginTop: 12, padding: '8px 12px', borderRadius: 6,
+                          background: `${layer.color}06`,
+                          borderLeft: `2px solid ${layer.color}30`,
+                          fontSize: 12, color: 'var(--text-muted)', fontStyle: 'italic', lineHeight: 1.5,
+                        }}>
+                          {layer.note}
+                        </div>
+                      </div>
+                    </div>
+                  </Card>
+                </div>
+              ))}
+            </div>
+
+            {/* Flow arrows between layers */}
+            <div className={`fade-in fade-in-delay-4 ${visible ? 'visible' : ''}`} style={{
+              display: 'flex', justifyContent: 'center', gap: 32, marginTop: 24,
+              fontSize: 12, color: 'var(--text-muted)', fontFamily: 'var(--font-mono)',
+              alignItems: 'center',
+            }}>
+              <span style={{ color: 'var(--purple)' }}>PDF Methodology</span>
+              <span>{'\u2192'}</span>
+              <span style={{ color: 'var(--teal)' }}>JSON Rule Schema</span>
+              <span>{'\u2192'}</span>
+              <span style={{ color: 'var(--accent)' }}>Validated Results</span>
+            </div>
+          </div>
+          <SlideNumber number={7} total={16} />
+        </section>
+      );
+    }
+
+    // ========================================================================
+    // SLIDE 8: DATA MODEL
+    // ========================================================================
+
+    function DataModelSlide() {
+      const [ref, visible] = useIntersection();
+
+      return (
+        <section id="datamodel" className="slide" ref={ref}>
+          <div style={{ maxWidth: 1100, margin: '0 auto', width: '100%' }}>
+            <div className={`fade-in ${visible ? 'visible' : ''}`}>
+              <SectionLabel text="Data Model" />
+              <SlideTitle>Integration with Mangrove</SlideTitle>
+              <SlideSubtitle>
+                Pre-Flight extends Mangrove's existing data model. No breaking changes. Five new entities connect validation rules to project data.
+              </SlideSubtitle>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
+              {/* Existing model */}
+              <div className={`fade-in fade-in-delay-1 ${visible ? 'visible' : ''}`}>
+                <Card style={{ height: '100%' }}>
+                  <div style={{
+                    fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase',
+                    color: 'var(--text-muted)', marginBottom: 16, fontFamily: 'var(--font-mono)',
+                  }}>
+                    Existing Mangrove Model
+                  </div>
+                  {[
+                    { name: 'Projects', desc: 'Carbon removal project instance', arrow: true },
+                    { name: 'Events', desc: 'Production events within a project', arrow: true },
+                    { name: 'Datapoints', desc: 'Individual measurements and values', arrow: true },
+                    { name: 'Evidence', desc: 'Supporting documents (lab reports, certs)', arrow: false },
+                    { name: 'Batches', desc: 'Production batch tracking', arrow: true },
+                    { name: 'Scores / Models', desc: 'Calculated removal scores', arrow: false },
+                    { name: 'Ledgers', desc: 'Mass balance reconciliation', arrow: false },
+                  ].map((entity, i) => (
+                    <div key={i} style={{
+                      display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8,
+                    }}>
+                      <div style={{
+                        width: 8, height: 8, borderRadius: 2,
+                        background: 'var(--text-muted)',
+                        flexShrink: 0,
+                      }} />
+                      <div style={{ flex: 1 }}>
+                        <span style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>
+                          {entity.name}
+                        </span>
+                        <span style={{ fontSize: 12, color: 'var(--text-muted)', marginLeft: 8 }}>
+                          {entity.desc}
+                        </span>
+                      </div>
+                      {entity.arrow && (
+                        <span style={{ color: 'var(--text-muted)', fontSize: 10 }}>{'\u2193'}</span>
+                      )}
+                    </div>
+                  ))}
+                </Card>
+              </div>
+
+              {/* Pre-Flight additions */}
+              <div className={`fade-in fade-in-delay-2 ${visible ? 'visible' : ''}`}>
+                <Card style={{
+                  height: '100%',
+                  borderColor: 'var(--border-accent)',
+                  background: 'linear-gradient(135deg, var(--bg-card) 0%, #111f1a 100%)',
+                }}>
+                  <div style={{
+                    fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase',
+                    color: 'var(--accent)', marginBottom: 16, fontFamily: 'var(--font-mono)',
+                  }}>
+                    Pre-Flight Additions (New)
+                  </div>
+                  {[
+                    { name: 'Rule Set', desc: 'Methodology-specific rule configurations', link: 'Linked to Project Type', color: 'var(--teal)' },
+                    { name: 'Rule', desc: 'Individual check definition', link: 'threshold | presence | consistency | formula', color: 'var(--teal)' },
+                    { name: 'Pre-Flight Run', desc: 'Execution of a rule set against a data snapshot', link: 'Linked to Project + Rule Set', color: 'var(--accent)' },
+                    { name: 'Check Result', desc: 'Individual pass/fail/warning per rule per run', link: 'Linked to Run + Rule', color: 'var(--accent)' },
+                    { name: 'Remediation', desc: 'Suggested fix for a failed check', link: 'Linked to Check Result', color: 'var(--accent-light)' },
+                  ].map((entity, i) => (
+                    <div key={i} style={{
+                      padding: '10px 12px', borderRadius: 8,
+                      background: `${entity.color}06`,
+                      border: `1px solid ${entity.color}15`,
+                      marginBottom: 8,
+                    }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <div style={{
+                          width: 8, height: 8, borderRadius: 2,
+                          background: entity.color, flexShrink: 0,
+                        }} />
+                        <span style={{
+                          fontSize: 14, fontWeight: 700, color: entity.color,
+                          fontFamily: 'var(--font-mono)',
+                        }}>
+                          {entity.name}
+                        </span>
+                      </div>
+                      <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2, marginLeft: 16 }}>
+                        {entity.desc}
+                      </div>
+                      <div style={{
+                        fontSize: 11, color: 'var(--text-muted)', marginTop: 2, marginLeft: 16,
+                        fontFamily: 'var(--font-mono)', opacity: 0.7,
+                      }}>
+                        {entity.link}
+                      </div>
+                    </div>
+                  ))}
+                </Card>
+              </div>
+            </div>
+
+            {/* Relationship diagram */}
+            <div className={`fade-in fade-in-delay-3 ${visible ? 'visible' : ''}`} style={{ marginTop: 20 }}>
+              <Card style={{ padding: 16 }}>
+                <div style={{
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  gap: 12, flexWrap: 'wrap',
+                  fontFamily: 'var(--font-mono)', fontSize: 12,
+                }}>
+                  <span style={{ padding: '4px 10px', borderRadius: 4, background: 'var(--bg-secondary)', border: '1px solid var(--border)', color: 'var(--text-muted)' }}>Project</span>
+                  <span style={{ color: 'var(--text-muted)' }}>{'\u2192'}</span>
+                  <span style={{ padding: '4px 10px', borderRadius: 4, background: 'var(--teal)12', border: '1px solid var(--teal)30', color: 'var(--teal)' }}>Rule Set</span>
+                  <span style={{ color: 'var(--text-muted)' }}>{'\u2192'}</span>
+                  <span style={{ padding: '4px 10px', borderRadius: 4, background: 'var(--teal)12', border: '1px solid var(--teal)30', color: 'var(--teal)' }}>Rules</span>
+                  <span style={{ color: 'var(--text-muted)' }}>{'\u2192'}</span>
+                  <span style={{ padding: '4px 10px', borderRadius: 4, background: 'var(--accent)12', border: '1px solid var(--accent)30', color: 'var(--accent)' }}>Pre-Flight Run</span>
+                  <span style={{ color: 'var(--text-muted)' }}>{'\u2192'}</span>
+                  <span style={{ padding: '4px 10px', borderRadius: 4, background: 'var(--accent)12', border: '1px solid var(--accent)30', color: 'var(--accent)' }}>Check Results</span>
+                  <span style={{ color: 'var(--text-muted)' }}>{'\u2192'}</span>
+                  <span style={{ padding: '4px 10px', borderRadius: 4, background: 'var(--accent-light)12', border: '1px solid var(--accent-light)30', color: 'var(--accent-light)' }}>Remediation</span>
+                </div>
+              </Card>
+            </div>
+          </div>
+          <SlideNumber number={8} total={16} />
+        </section>
+      );
+    }
+
+    // ========================================================================
+    // SLIDE 9: TECHNICAL RISKS
+    // ========================================================================
+
+    function RisksSlide() {
+      const [ref, visible] = useIntersection();
+
+      return (
+        <section id="risks" className="slide" ref={ref}>
+          <div style={{ maxWidth: 1000, margin: '0 auto', width: '100%' }}>
+            <div className={`fade-in ${visible ? 'visible' : ''}`}>
+              <SectionLabel text="Risk Assessment" color="var(--amber)" />
+              <SlideTitle>Technical Risks</SlideTitle>
+              <SlideSubtitle>
+                Two primary risks that could undermine the system. Both are manageable with deliberate architectural choices.
+              </SlideSubtitle>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, marginBottom: 32 }}>
+              <div className={`fade-in fade-in-delay-1 ${visible ? 'visible' : ''}`}>
+                <Card style={{
+                  height: '100%',
+                  borderTop: '3px solid var(--red)',
+                }}>
+                  <div style={{
+                    display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12,
+                  }}>
+                    <StatusBadge type="fail" label="HIGH RISK" />
+                  </div>
+                  <h3 style={{ fontSize: 20, fontWeight: 800, marginBottom: 8 }}>False Positives</h3>
+                  <p style={{ fontSize: 14, color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: 16 }}>
+                    If the system flags valid data as failing, customers lose trust in the entire feature. One bad call erases ten good ones.
+                  </p>
+                  <div style={{
+                    fontSize: 12, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase',
+                    color: 'var(--accent)', marginBottom: 8, fontFamily: 'var(--font-mono)',
+                  }}>
+                    Mitigation
+                  </div>
+                  <ul style={{ listStyle: 'none', padding: 0 }}>
+                    {[
+                      'Start with hard stops only \u2014 clear methodology violations',
+                      'Add softer checks gradually, validated by verifier feedback',
+                      'Every rule must cite its methodology source (auditable)',
+                      'Target: <5% false positive rate before expanding rule types',
+                    ].map((item, i) => (
+                      <li key={i} style={{
+                        fontSize: 13, color: 'var(--text-muted)', marginBottom: 6,
+                        paddingLeft: 14, position: 'relative',
+                      }}>
+                        <span style={{ position: 'absolute', left: 0, color: 'var(--accent)' }}>{'\u2713'}</span>
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </Card>
+              </div>
+
+              <div className={`fade-in fade-in-delay-2 ${visible ? 'visible' : ''}`}>
+                <Card style={{
+                  height: '100%',
+                  borderTop: '3px solid var(--amber)',
+                }}>
+                  <div style={{
+                    display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12,
+                  }}>
+                    <StatusBadge type="warn" label="MEDIUM RISK" />
+                  </div>
+                  <h3 style={{ fontSize: 20, fontWeight: 800, marginBottom: 8 }}>Rule Drift</h3>
+                  <p style={{ fontSize: 14, color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: 16 }}>
+                    Methodologies update (Puro v3 to v4, Isometric versioning). Rules must track methodology versions. Stale rules produce wrong results.
+                  </p>
+                  <div style={{
+                    fontSize: 12, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase',
+                    color: 'var(--accent)', marginBottom: 8, fontFamily: 'var(--font-mono)',
+                  }}>
+                    Mitigation
+                  </div>
+                  <ul style={{ listStyle: 'none', padding: 0 }}>
+                    {[
+                      'Version-controlled rule sets linked to methodology versions',
+                      'Automated alerts when a new methodology version is published',
+                      'Rule audit trail: who changed what, when, and why',
+                      'Deprecation workflow for obsolete rules',
+                    ].map((item, i) => (
+                      <li key={i} style={{
+                        fontSize: 13, color: 'var(--text-muted)', marginBottom: 6,
+                        paddingLeft: 14, position: 'relative',
+                      }}>
+                        <span style={{ position: 'absolute', left: 0, color: 'var(--accent)' }}>{'\u2713'}</span>
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </Card>
+              </div>
+            </div>
+
+            <div className={`fade-in fade-in-delay-3 ${visible ? 'visible' : ''}`}>
+              <Callout color="var(--amber)" style={{ textAlign: 'center' }}>
+                "False positives destroy verifier trust. The math must be flawless before we automate."
+              </Callout>
+            </div>
+          </div>
+          <SlideNumber number={9} total={16} />
+        </section>
+      );
+    }
+
+    // ========================================================================
+    // SLIDE 10: LAUNCH PLAN
+    // ========================================================================
+
+    function LaunchSlide() {
+      const [ref, visible] = useIntersection();
+
+      const phases = [
+        {
+          phase: 'Phase 1',
+          title: 'MVP',
+          timeline: '4-6 weeks',
+          color: 'var(--accent)',
+          items: [
+            'One methodology: Puro Biochar (most data, most projects, clearest rules)',
+            'Hard stops only: clear methodology violations (H/Corg, pyrolysis temp, LCA completeness)',
+            'Manual rule authoring by Implementation team',
+            '2-3 beta customers for feedback',
+          ],
+        },
+        {
+          phase: 'Phase 2',
+          title: 'Expand',
+          timeline: '6-10 weeks',
+          color: 'var(--teal)',
+          items: [
+            'Add Isometric Biochar methodology',
+            'Add calculation checks (unit validation, formula verification)',
+            'Introduce completeness warnings',
+            'Verifier feedback loop: which pre-flight checks correlate with real findings?',
+          ],
+        },
+        {
+          phase: 'Phase 3',
+          title: 'Scale',
+          timeline: '10+ weeks',
+          color: 'var(--purple)',
+          items: [
+            'Agentic Harvester for new methodology onboarding',
+            'DAC and BECCS methodologies',
+            'Auto-remediation suggestions',
+            'Confidence scoring for submissions',
+          ],
+        },
+      ];
+
+      return (
+        <section id="launch" className="slide" ref={ref}>
+          <div style={{ maxWidth: 1100, margin: '0 auto', width: '100%' }}>
+            <div className={`fade-in ${visible ? 'visible' : ''}`}>
+              <SectionLabel text="Roadmap" />
+              <SlideTitle>Pilot & Launch Plan</SlideTitle>
+              <SlideSubtitle>
+                Start narrow, validate fast, expand with data. Each phase unlocks the next through verifier feedback.
+              </SlideSubtitle>
+            </div>
+
+            {/* Timeline visual */}
+            <div style={{ position: 'relative', marginBottom: 32 }}>
+              {/* Timeline bar */}
+              <div className={`fade-in fade-in-delay-1 ${visible ? 'visible' : ''}`} style={{
+                height: 4, background: 'var(--bg-card)',
+                borderRadius: 2, margin: '0 0 32px 0',
+                position: 'relative',
+              }}>
+                <div style={{
+                  position: 'absolute', left: 0, top: 0, height: '100%',
+                  width: '35%', background: 'var(--accent)', borderRadius: 2,
+                }} />
+                <div style={{
+                  position: 'absolute', left: '35%', top: 0, height: '100%',
+                  width: '30%', background: 'var(--teal)', borderRadius: '0 2px 2px 0',
+                }} />
+                <div style={{
+                  position: 'absolute', left: '65%', top: 0, height: '100%',
+                  width: '35%', background: 'var(--purple)', borderRadius: '0 2px 2px 0',
+                  opacity: 0.5,
+                }} />
+                {/* Phase markers */}
+                {[0, 35, 65, 100].map((pos, i) => (
+                  <div key={i} style={{
+                    position: 'absolute', left: `${pos}%`, top: -4,
+                    width: 12, height: 12, borderRadius: '50%',
+                    background: i === 3 ? 'var(--purple)' : i === 2 ? 'var(--teal)' : i === 1 ? 'var(--accent)' : 'var(--accent)',
+                    border: '2px solid var(--bg-primary)',
+                    transform: 'translateX(-50%)',
+                  }} />
+                ))}
+                {/* Week labels */}
+                {[
+                  { pos: 0, label: 'Week 0' },
+                  { pos: 35, label: 'Week 6' },
+                  { pos: 65, label: 'Week 10' },
+                  { pos: 100, label: 'Ongoing' },
+                ].map((m, i) => (
+                  <div key={i} style={{
+                    position: 'absolute', left: `${m.pos}%`, top: 16,
+                    transform: 'translateX(-50%)',
+                    fontSize: 10, color: 'var(--text-muted)', fontFamily: 'var(--font-mono)',
+                    whiteSpace: 'nowrap',
+                  }}>
+                    {m.label}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16, marginTop: 16 }}>
+              {phases.map((p, i) => (
+                <div key={i} className={`fade-in fade-in-delay-${i+2} ${visible ? 'visible' : ''}`}>
+                  <Card style={{
+                    height: '100%',
+                    borderTop: `3px solid ${p.color}`,
+                  }}>
+                    <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, marginBottom: 4 }}>
+                      <span style={{
+                        fontSize: 11, fontWeight: 700, color: p.color,
+                        fontFamily: 'var(--font-mono)', letterSpacing: 1,
+                      }}>
+                        {p.phase}
+                      </span>
+                      <span style={{
+                        fontSize: 11, color: 'var(--text-muted)',
+                        fontFamily: 'var(--font-mono)',
+                      }}>
+                        {p.timeline}
+                      </span>
+                    </div>
+                    <h4 style={{ fontSize: 20, fontWeight: 800, marginBottom: 12, color: p.color }}>
+                      {p.title}
+                    </h4>
+                    {p.items.map((item, j) => (
+                      <div key={j} style={{
+                        fontSize: 13, color: 'var(--text-muted)', marginBottom: 8,
+                        paddingLeft: 14, position: 'relative', lineHeight: 1.5,
+                      }}>
+                        <span style={{ position: 'absolute', left: 0, color: p.color }}>{'\u2022'}</span>
+                        {item}
+                      </div>
+                    ))}
+                  </Card>
+                </div>
+              ))}
+            </div>
+          </div>
+          <SlideNumber number={10} total={16} />
+        </section>
+      );
+    }
+
+    // ========================================================================
+    // SLIDE 11: SCOPE DECISIONS
+    // ========================================================================
+
+    function ScopeSlide() {
+      const [ref, visible] = useIntersection();
+
+      const inScope = [
+        'Deterministic rule checks',
+        'Puro Biochar only',
+        'Hard stops and calculation alerts',
+        'Manual rule authoring',
+        'Basic pass/fail UI',
+        'Implementation-team managed',
+      ];
+
+      const outScope = [
+        'AI-powered checks',
+        'Multi-methodology',
+        'Auto-remediation',
+        'Agentic Harvester',
+        'Confidence scoring',
+        'Self-service rules',
+      ];
+
+      return (
+        <section id="scope" className="slide" ref={ref}>
+          <div style={{ maxWidth: 1000, margin: '0 auto', width: '100%' }}>
+            <div className={`fade-in ${visible ? 'visible' : ''}`}>
+              <SectionLabel text="Scope" />
+              <SlideTitle>What's IN v1 vs What's NOT</SlideTitle>
+              <SlideSubtitle>
+                Deliberately narrow scope to maximize speed-to-launch. We need verifier feedback data before we can build the smart features.
+              </SlideSubtitle>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, marginBottom: 32 }}>
+              <div className={`fade-in fade-in-delay-1 ${visible ? 'visible' : ''}`}>
+                <Card style={{ borderTop: '3px solid var(--accent)' }}>
+                  <div style={{
+                    fontSize: 12, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase',
+                    color: 'var(--accent)', marginBottom: 16, fontFamily: 'var(--font-mono)',
+                    display: 'flex', alignItems: 'center', gap: 8,
+                  }}>
+                    <span style={{ fontSize: 16 }}>{'\u2713'}</span> IN (MVP)
+                  </div>
+                  {inScope.map((item, i) => (
+                    <div key={i} style={{
+                      display: 'flex', alignItems: 'center', gap: 10,
+                      padding: '8px 12px', borderRadius: 6,
+                      background: i % 2 === 0 ? 'var(--accent-glow)' : 'transparent',
+                      marginBottom: 4,
+                    }}>
+                      <span style={{ color: 'var(--accent)', fontSize: 14 }}>{'\u2713'}</span>
+                      <span style={{ fontSize: 14, color: 'var(--text-secondary)' }}>{item}</span>
+                    </div>
+                  ))}
+                </Card>
+              </div>
+
+              <div className={`fade-in fade-in-delay-2 ${visible ? 'visible' : ''}`}>
+                <Card style={{ borderTop: '3px solid var(--text-muted)' }}>
+                  <div style={{
+                    fontSize: 12, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase',
+                    color: 'var(--text-muted)', marginBottom: 16, fontFamily: 'var(--font-mono)',
+                    display: 'flex', alignItems: 'center', gap: 8,
+                  }}>
+                    <span style={{ fontSize: 16 }}>{'\u23F3'}</span> OUT (Later)
+                  </div>
+                  {outScope.map((item, i) => (
+                    <div key={i} style={{
+                      display: 'flex', alignItems: 'center', gap: 10,
+                      padding: '8px 12px', borderRadius: 6,
+                      background: i % 2 === 0 ? 'rgba(90,122,108,0.06)' : 'transparent',
+                      marginBottom: 4,
+                    }}>
+                      <span style={{ color: 'var(--text-muted)', fontSize: 14 }}>{'\u23F3'}</span>
+                      <span style={{ fontSize: 14, color: 'var(--text-muted)' }}>{item}</span>
+                    </div>
+                  ))}
+                </Card>
+              </div>
+            </div>
+
+            <div className={`fade-in fade-in-delay-3 ${visible ? 'visible' : ''}`} style={{ marginTop: 8 }}>
+              <Card style={{ borderLeft: '3px solid var(--amber)' }}>
+                <div style={{
+                  fontSize: 12, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase',
+                  color: 'var(--amber)', marginBottom: 10, fontFamily: 'var(--font-mono)',
+                }}>
+                  Speed vs Robustness
+                </div>
+                <p style={{ fontSize: 14, color: 'var(--text-secondary)', lineHeight: 1.7, marginBottom: 10 }}>
+                  I would prioritize <strong style={{ color: 'var(--text-primary)' }}>speed to launch</strong> for the MVP. The core reason: we need real verifier feedback data before we can build robust features.
+                  Without knowing which pre-flight checks actually correlate with real audit outcomes, investing in auto-remediation or confidence scoring would be building on assumptions.
+                </p>
+                <p style={{ fontSize: 14, color: 'var(--text-secondary)', lineHeight: 1.7 }}>
+                  The exception: <strong style={{ color: 'var(--text-primary)' }}>the execution engine must be flawless from day one</strong>.
+                  False positives are more damaging than missing features. We ship fewer rules but make each one bulletproof.
+                  The feedback loop IS the product moat — every verification cycle teaches the system.
+                </p>
+              </Card>
+            </div>
+          </div>
+          <SlideNumber number={11} total={16} />
+        </section>
+      );
+    }
+
+    // ========================================================================
+    // SLIDE 12: EMERGING METHODOLOGY ARGUMENT
+    // ========================================================================
+
+    function EmergingSlide() {
+      const [ref, visible] = useIntersection();
+
+      return (
+        <section id="emerging" className="slide" ref={ref}>
+          <div style={{ maxWidth: 1100, margin: '0 auto', width: '100%' }}>
+            <div className={`fade-in ${visible ? 'visible' : ''}`}>
+              <SectionLabel text="Strategic Insight" />
+              <SlideTitle>Two Modes: Mature vs Emerging</SlideTitle>
+              <SlideSubtitle>
+                The system must support two fundamentally different operating modes. For Biochar, we are reactive. For DAC, we are predictive.
+              </SlideSubtitle>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, marginBottom: 24 }}>
+              <div className={`fade-in fade-in-delay-1 ${visible ? 'visible' : ''}`}>
+                <Card style={{
+                  borderTop: '3px solid var(--accent)',
+                  height: '100%',
+                }}>
+                  <div style={{
+                    fontSize: 12, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase',
+                    color: 'var(--accent)', marginBottom: 16, fontFamily: 'var(--font-mono)',
+                  }}>
+                    Biochar (Mature)
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                    {[
+                      { label: 'Audit history', value: 'Rich \u2014 dozens of completed verifications' },
+                      { label: 'Rule source', value: 'Mine patterns from existing audit findings' },
+                      { label: 'Customer pain', value: '"We keep getting the same NCRs"' },
+                      { label: 'Value', value: 'Prevents known failures' },
+                      { label: 'Approach', value: 'Reactive \u2014 learning from past failures' },
+                    ].map((row, i) => (
+                      <div key={i}>
+                        <div style={{ fontSize: 11, color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 2 }}>
+                          {row.label}
+                        </div>
+                        <div style={{ fontSize: 14, color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+                          {row.value}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </Card>
+              </div>
+
+              <div className={`fade-in fade-in-delay-2 ${visible ? 'visible' : ''}`}>
+                <Card style={{
+                  borderTop: '3px solid var(--purple)',
+                  height: '100%',
+                }}>
+                  <div style={{
+                    fontSize: 12, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase',
+                    color: 'var(--purple)', marginBottom: 16, fontFamily: 'var(--font-mono)',
+                  }}>
+                    DAC (Emerging)
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                    {[
+                      { label: 'Audit history', value: 'Near-zero \u2014 first verifications are just beginning' },
+                      { label: 'Rule source', value: 'Derive rules from methodology standard itself' },
+                      { label: 'Customer pain', value: '"We have no idea what the verifier will look for"' },
+                      { label: 'Value', value: 'Provides confidence where none exists' },
+                      { label: 'Approach', value: 'Predictive \u2014 deriving rules before the first audit' },
+                    ].map((row, i) => (
+                      <div key={i}>
+                        <div style={{ fontSize: 11, color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 2 }}>
+                          {row.label}
+                        </div>
+                        <div style={{ fontSize: 14, color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+                          {row.value}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </Card>
+              </div>
+            </div>
+
+            <div className={`fade-in fade-in-delay-3 ${visible ? 'visible' : ''}`}>
+              <Callout color="var(--purple)">
+                For Biochar, we are reactive \u2014 learning from past failures. For DAC, we are predictive \u2014 deriving rules before the first audit. The system must support both modes from day one.
+              </Callout>
+            </div>
+          </div>
+          <SlideNumber number={12} total={16} />
+        </section>
+      );
+    }
+
+    // ========================================================================
+    // SLIDE 13: GO TO MARKET
+    // ========================================================================
+
+    function GTMSlide() {
+      const [ref, visible] = useIntersection();
+
+      const impacts = [
+        {
+          team: 'Sales',
+          color: 'var(--accent)',
+          desc: '"Pre-Flight reduces verification cycle time" becomes a competitive differentiator. Shorten the sales cycle by showing audit-ready infrastructure.',
+          icon: '\u{1F4C8}',
+        },
+        {
+          team: 'Customer Retention',
+          color: 'var(--teal)',
+          desc: 'Fewer verification surprises equals happier customers. Reduce churn from frustrated project developers who feel unsupported.',
+          icon: '\u{1F91D}',
+        },
+        {
+          team: 'Market Position',
+          color: 'var(--blue)',
+          desc: 'Position Mangrove as the platform that ensures "audit-ready" data, not just data collection. Move up the value chain.',
+          icon: '\u{1F3AF}',
+        },
+        {
+          team: 'Data Moat',
+          color: 'var(--purple)',
+          desc: 'Every pre-flight run + verifier feedback pair creates training data for smarter rules. Competitors cannot replicate this dataset.',
+          icon: '\u{1F512}',
+        },
+        {
+          team: 'Pricing',
+          color: 'var(--amber)',
+          desc: 'Premium tier feature or value-based pricing. Charge per successful pre-flight-to-credit-issuance cycle. Align price with customer value.',
+          icon: '\u{1F4B0}',
+        },
+      ];
+
+      return (
+        <section id="gtm" className="slide" ref={ref}>
+          <div style={{ maxWidth: 1100, margin: '0 auto', width: '100%' }}>
+            <div className={`fade-in ${visible ? 'visible' : ''}`}>
+              <SectionLabel text="Go-to-Market" />
+              <SlideTitle>Post-Release Impact</SlideTitle>
+              <SlideSubtitle>
+                Pre-Flight extends Mangrove's value proposition across every business function. This is not just a product feature \u2014 it is a strategic lever.
+              </SlideSubtitle>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: 16 }}>
+              {impacts.map((item, i) => (
+                <div key={i} className={`fade-in fade-in-delay-${Math.min(i+1, 5)} ${visible ? 'visible' : ''}`}>
+                  <Card hoverable style={{ height: '100%', borderLeft: `3px solid ${item.color}` }}>
+                    <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+                      <div style={{
+                        fontSize: 22, flexShrink: 0,
+                        width: 40, height: 40, borderRadius: 8,
+                        background: `${item.color}12`,
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      }}>
+                        {item.icon}
+                      </div>
+                      <div>
+                        <h4 style={{ fontSize: 16, fontWeight: 700, color: item.color, marginBottom: 4 }}>
+                          {item.team}
+                        </h4>
+                        <p style={{ fontSize: 13, color: 'var(--text-muted)', lineHeight: 1.6 }}>
+                          {item.desc}
+                        </p>
+                      </div>
+                    </div>
+                  </Card>
+                </div>
+              ))}
+            </div>
+          </div>
+          <SlideNumber number={13} total={16} />
+        </section>
+      );
+    }
+
+    // ========================================================================
+    // SLIDE 14: SUCCESS METRICS
+    // ========================================================================
+
+    function MetricsSlide() {
+      const [ref, visible] = useIntersection();
+
+      const metrics = [
+        { metric: 'Verification cycle time', target: '-30%', why: 'Direct customer value \u2014 faster credit issuance', color: 'var(--accent)', width: 70 },
+        { metric: 'NCR rate (first submission)', target: '-50%', why: 'Measures prediction accuracy', color: 'var(--accent-light)', width: 50 },
+        { metric: 'Pre-flight adoption', target: '80%', why: 'Proves product-market fit', color: 'var(--teal)', width: 80 },
+        { metric: 'Rule coverage', target: '90%', why: 'System completeness vs common findings', color: 'var(--blue)', width: 90 },
+        { metric: 'False positive rate', target: '<5%', why: 'Trust metric \u2014 the most important one', color: 'var(--red)', width: 5 },
+        { metric: 'Methodology onboarding', target: '<2 wk', why: 'Scalability of the platform', color: 'var(--purple)', width: 15 },
+      ];
+
+      return (
+        <section id="metrics" className="slide" ref={ref}>
+          <div style={{ maxWidth: 1000, margin: '0 auto', width: '100%' }}>
+            <div className={`fade-in ${visible ? 'visible' : ''}`}>
+              <SectionLabel text="Measurement" />
+              <SlideTitle>Success Metrics</SlideTitle>
+              <SlideSubtitle>
+                Six metrics that tell us if Pre-Flight is working. The false positive rate is the most critical \u2014 it determines whether customers trust the system.
+              </SlideSubtitle>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {metrics.map((m, i) => (
+                <div key={i} className={`fade-in fade-in-delay-${Math.min(i+1, 6)} ${visible ? 'visible' : ''}`}>
+                  <Card style={{ padding: '16px 20px' }} hoverable>
+                    <div style={{
+                      display: 'grid', gridTemplateColumns: '200px 80px 1fr',
+                      gap: 16, alignItems: 'center',
+                    }}>
+                      <div>
+                        <div style={{ fontSize: 15, fontWeight: 600, color: 'var(--text-primary)' }}>
+                          {m.metric}
+                        </div>
+                      </div>
+                      <div style={{
+                        fontSize: 20, fontWeight: 800, color: m.color,
+                        fontFamily: 'var(--font-mono)', textAlign: 'center',
+                      }}>
+                        {m.target}
+                      </div>
+                      <div>
+                        <div style={{ fontSize: 13, color: 'var(--text-muted)' }}>
+                          {m.why}
+                        </div>
+                        <div style={{
+                          height: 3, background: 'var(--bg-secondary)',
+                          borderRadius: 2, marginTop: 6, overflow: 'hidden',
+                        }}>
+                          <div style={{
+                            height: '100%', width: `${m.width}%`,
+                            background: m.color, borderRadius: 2,
+                            transition: 'width 1s ease',
+                          }} />
+                        </div>
+                      </div>
+                    </div>
+                  </Card>
+                </div>
+              ))}
+            </div>
+
+            <div className={`fade-in fade-in-delay-6 ${visible ? 'visible' : ''}`} style={{ marginTop: 20 }}>
+              <Card style={{ borderLeft: '3px solid var(--teal)' }}>
+                <div style={{
+                  fontSize: 12, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase',
+                  color: 'var(--teal)', marginBottom: 10, fontFamily: 'var(--font-mono)',
+                }}>
+                  Investment Decision Framework
+                </div>
+                <p style={{ fontSize: 14, color: 'var(--text-secondary)', lineHeight: 1.7, marginBottom: 12 }}>
+                  How do we know whether to invest more resources in Pre-Flight?
+                </p>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                  <div style={{ padding: '10px 14px', borderRadius: 6, background: 'var(--accent-glow)', border: '1px solid var(--border-accent)' }}>
+                    <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--accent)', marginBottom: 4, fontFamily: 'var(--font-mono)' }}>DOUBLE DOWN IF</div>
+                    <div style={{ fontSize: 12, color: 'var(--text-muted)', lineHeight: 1.6 }}>
+                      Adoption {'>'}80% AND NCR reduction {'>'}30% AND false positive rate {'<'}5% {'\u2192'} Invest in Agentic Harvester + multi-methodology expansion
+                    </div>
+                  </div>
+                  <div style={{ padding: '10px 14px', borderRadius: 6, background: 'var(--red-glow)', border: '1px solid rgba(239,68,68,0.2)' }}>
+                    <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--red)', marginBottom: 4, fontFamily: 'var(--font-mono)' }}>PIVOT IF</div>
+                    <div style={{ fontSize: 12, color: 'var(--text-muted)', lineHeight: 1.6 }}>
+                      Low adoption despite availability OR false positive rate {'>'}10% {'\u2192'} Re-evaluate rule quality, consider advisory-only mode vs hard stops
+                    </div>
+                  </div>
+                </div>
+              </Card>
+            </div>
+          </div>
+          <SlideNumber number={14} total={16} />
+        </section>
+      );
+    }
+
+    // ========================================================================
+    // SLIDE 15: DEMO
+    // ========================================================================
+
+    function DemoSlide() {
+      const [ref, visible] = useIntersection();
+
+      return (
+        <section id="demo" className="slide" ref={ref} style={{ background: 'var(--bg-secondary)' }}>
+          <div style={{ maxWidth: 1000, margin: '0 auto', width: '100%' }}>
+            <div className={`fade-in ${visible ? 'visible' : ''}`}>
+              <SectionLabel text="Live Demo" color="var(--accent-light)" />
+              <SlideTitle>Working Prototype</SlideTitle>
+              <SlideSubtitle>
+                I built a working prototype this weekend to pressure-test the architecture. Pure Python, zero dependencies, production-quality validation engine.
+              </SlideSubtitle>
+            </div>
+
+            {/* Terminal mockup */}
+            <div className={`fade-in fade-in-delay-1 ${visible ? 'visible' : ''}`}>
+              <div style={{
+                background: '#0c0c0c',
+                borderRadius: 12,
+                overflow: 'hidden',
+                border: '1px solid #1a1a1a',
+                boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
+                marginBottom: 24,
+              }}>
+                {/* Terminal title bar */}
+                <div style={{
+                  display: 'flex', alignItems: 'center', gap: 8,
+                  padding: '10px 16px',
+                  background: '#161616',
+                  borderBottom: '1px solid #1a1a1a',
+                }}>
+                  <div style={{ width: 12, height: 12, borderRadius: '50%', background: '#ff5f57' }} />
+                  <div style={{ width: 12, height: 12, borderRadius: '50%', background: '#febc2e' }} />
+                  <div style={{ width: 12, height: 12, borderRadius: '50%', background: '#28c840' }} />
+                  <span style={{
+                    marginLeft: 12, fontSize: 12, color: '#666',
+                    fontFamily: 'var(--font-mono)',
+                  }}>
+                    prototype/
+                  </span>
+                </div>
+
+                {/* Terminal content */}
+                <div style={{
+                  padding: '20px 24px',
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: 13,
+                  lineHeight: 1.8,
+                  color: '#a0a0a0',
+                  overflowX: 'auto',
+                }}>
+                  <div style={{ marginBottom: 20 }}>
+                    <span style={{ color: '#10b981' }}>$</span>{' '}
+                    <span style={{ color: '#e0e0e0' }}>python3 harvester_mock.py</span>
+                    <div style={{ color: '#666', marginTop: 4, fontSize: 11 }}>
+                      # Simulates LLM pipeline: PDF methodology {'\u2192'} JSON rule schemas
+                    </div>
+                    <div style={{ color: '#a78bfa', marginTop: 4 }}>
+                      {'\u2713'} Extracted 22 compliance requirements{'\n'}
+                      {'\u2713'} Generated 20 machine-readable rules across 6 categories
+                    </div>
+                  </div>
+
+                  <div style={{ marginBottom: 20 }}>
+                    <span style={{ color: '#10b981' }}>$</span>{' '}
+                    <span style={{ color: '#e0e0e0' }}>python3 pre_flight_engine.py --rules rules.json --payload issues.json</span>
+                    <div style={{ color: '#666', marginTop: 4, fontSize: 11 }}>
+                      # Run pre-flight checks against a payload with known issues
+                    </div>
+                    <div style={{ marginTop: 8 }}>
+                      <div><span style={{ color: '#ef4444' }}>{'\u2717'} FAIL</span> <span style={{ color: '#e0e0e0' }}>PURO-BIO-001</span> H/Corg Molar Ratio Check <span style={{ background: '#ef4444', color: '#fff', padding: '1px 6px', borderRadius: 2, fontSize: 10, fontWeight: 700 }}>HARD STOP</span></div>
+                      <div style={{ color: '#666', marginLeft: 20 }}>1 item(s) exceed threshold: S-005 = 0.82 {'\u2265'} 0.7</div>
+                      <div style={{ marginTop: 4 }}><span style={{ color: '#f59e0b' }}>{'\u26A0'} WARN</span> <span style={{ color: '#e0e0e0' }}>PURO-BIO-008</span> Soil Temperature Default Detection</div>
+                      <div style={{ color: '#666', marginLeft: 20 }}>All 4 sites use identical value 15 {'\u2014'} likely a blanket default</div>
+                      <div style={{ marginTop: 4 }}><span style={{ color: '#ef4444' }}>{'\u2717'} FAIL</span> <span style={{ color: '#e0e0e0' }}>PURO-BIO-013</span> Net CORC Formula Validation</div>
+                      <div style={{ color: '#666', marginLeft: 20 }}>Reported 82.50, expected 74.20 (diff 11.2%)</div>
+                      <div style={{ marginTop: 4 }}><span style={{ color: '#10b981' }}>{'\u2713'} PASS</span> <span style={{ color: '#e0e0e0' }}>PURO-BIO-003</span> Pyrolysis Temperature Range</div>
+                    </div>
+                    <div style={{ marginTop: 12, padding: '8px 12px', background: '#1a1a1a', borderRadius: 4 }}>
+                      <span style={{ color: '#ef4444', fontWeight: 700 }}>Audit Risk: HIGH</span>
+                      <span style={{ color: '#666', marginLeft: 12 }}>12/20 passed {'\u2022'} 5 critical {'\u2022'} 3 warnings</span>
+                    </div>
+                  </div>
+
+                  <div>
+                    <span style={{ color: '#10b981' }}>$</span>{' '}
+                    <span style={{ color: '#e0e0e0' }}>python3 pre_flight_engine.py --rules rules.json --payload clean.json</span>
+                    <div style={{ color: '#666', marginTop: 4, fontSize: 11 }}>
+                      # Run pre-flight checks against a clean payload
+                    </div>
+                    <div style={{ marginTop: 8, padding: '8px 12px', background: '#1a1a1a', borderRadius: 4 }}>
+                      <span style={{ color: '#10b981', fontWeight: 700 }}>Audit Risk: LOW</span>
+                      <span style={{ color: '#666', marginLeft: 12 }}>20/20 passed {'\u2022'} 0 critical {'\u2022'} 0 warnings</span>
+                    </div>
+                    <div style={{ color: '#10b981', marginTop: 8 }}>
+                      {'\u2713'} Payload appears ready for verifier submission.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Prototype highlights */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
+              {[
+                { label: '20', desc: 'Validation rules', sub: 'Across 6 categories' },
+                { label: '11', desc: 'Check types', sub: 'threshold, range, formula, date, unit...' },
+                { label: '0', desc: 'Dependencies', sub: 'Pure Python 3.9+, production-ready' },
+              ].map((item, i) => (
+                <div key={i} className={`fade-in fade-in-delay-${i+2} ${visible ? 'visible' : ''}`}>
+                  <Card style={{ textAlign: 'center' }}>
+                    <div style={{ fontSize: 32, fontWeight: 900, color: 'var(--accent)', fontFamily: 'var(--font-mono)' }}>
+                      {item.label}
+                    </div>
+                    <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary)', marginTop: 4 }}>
+                      {item.desc}
+                    </div>
+                    <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>
+                      {item.sub}
+                    </div>
+                  </Card>
+                </div>
+              ))}
+            </div>
+          </div>
+          <SlideNumber number={15} total={16} />
+        </section>
+      );
+    }
+
+    // ========================================================================
+    // SLIDE 16: THANK YOU
+    // ========================================================================
+
+    function ThankYouSlide() {
+      const [ref, visible] = useIntersection();
+      return (
+        <section id="thankyou" className="slide" style={{
+          background: 'var(--gradient-dark)',
+          justifyContent: 'center',
+          alignItems: 'center',
+          textAlign: 'center',
+          position: 'relative',
+          overflow: 'hidden',
+        }}>
+          {/* Subtle grid */}
+          <div style={{
+            position: 'absolute', inset: 0, opacity: 0.02,
+            backgroundImage: 'linear-gradient(var(--accent) 1px, transparent 1px), linear-gradient(90deg, var(--accent) 1px, transparent 1px)',
+            backgroundSize: '60px 60px',
+            pointerEvents: 'none',
+          }} />
+
+          {/* Glow */}
+          <div style={{
+            position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
+            width: 500, height: 500, borderRadius: '50%',
+            background: 'radial-gradient(circle, var(--accent-glow) 0%, transparent 70%)',
+            pointerEvents: 'none', filter: 'blur(60px)',
+          }} />
+
+          <div ref={ref} style={{ position: 'relative', zIndex: 1, maxWidth: 700 }}>
+            <div className={`fade-in ${visible ? 'visible' : ''}`}>
+              <h2 style={{
+                fontSize: 'clamp(36px, 6vw, 64px)',
+                fontWeight: 900,
+                lineHeight: 1.1,
+                letterSpacing: '-0.03em',
+                marginBottom: 16,
+              }}>
+                Thank You
+              </h2>
+            </div>
+
+            <div className={`fade-in fade-in-delay-1 ${visible ? 'visible' : ''}`} style={{
+              marginBottom: 40,
+            }}>
+              <p style={{
+                fontSize: 20, color: 'var(--text-secondary)', fontWeight: 300,
+                marginBottom: 8,
+              }}>
+                Stephan Becker
+              </p>
+              <p style={{
+                fontSize: 16, color: 'var(--accent)', fontWeight: 500,
+              }}>
+                Pre-Flight Checks: Making every submission audit-ready.
+              </p>
+            </div>
+
+            <div className={`fade-in fade-in-delay-2 ${visible ? 'visible' : ''}`} style={{
+              display: 'inline-block',
+              padding: '16px 32px',
+              borderRadius: 8,
+              background: 'var(--bg-card)',
+              border: '1px solid var(--border)',
+            }}>
+              <div style={{ fontSize: 13, color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                stephan.becker@arolytics.com
+              </div>
+            </div>
+
+            <div className={`fade-in fade-in-delay-3 ${visible ? 'visible' : ''}`} style={{
+              marginTop: 48, display: 'flex', justifyContent: 'center', gap: 24,
+              flexWrap: 'wrap',
+            }}>
+              <div style={{
+                padding: '8px 16px', borderRadius: 6,
+                background: 'var(--accent-glow)',
+                border: '1px solid var(--border-accent)',
+                fontSize: 12, color: 'var(--accent)',
+                fontFamily: 'var(--font-mono)',
+              }}>
+                Questions & Discussion
+              </div>
+            </div>
+          </div>
+          <SlideNumber number={16} total={16} />
+        </section>
+      );
+    }
+
+    // ========================================================================
+    // APP
+    // ========================================================================
+
+    function App() {
+      const currentSlide = useKeyboardNav(SLIDE_IDS);
+
+      return (
+        <>
+          <NavSidebar currentSlide={currentSlide} />
+          <TitleSlide />
+          <ProblemSlide />
+          <EvidenceSlide />
+          <FrameworkSlide />
+          <SolutionSlide />
+          <UserFlowSlide />
+          <ArchitectureSlide />
+          <DataModelSlide />
+          <RisksSlide />
+          <LaunchSlide />
+          <ScopeSlide />
+          <EmergingSlide />
+          <GTMSlide />
+          <MetricsSlide />
+          <DemoSlide />
+          <ThankYouSlide />
+        </>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>
