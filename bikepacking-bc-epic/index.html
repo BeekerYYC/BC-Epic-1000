@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Penticton → Kimberley — BC Epic 1000 Bikepacking Plan</title>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-primary: #0a1a0f;
+      --bg-secondary: #112718;
+      --bg-card: #1a3322;
+      --bg-card-hover: #1f3d28;
+      --text-primary: #ecfdf5;
+      --text-secondary: #a7f3d0;
+      --text-muted: #6ee7b7;
+      --accent: #34d399;
+      --accent-glow: rgba(52, 211, 153, 0.15);
+      --accent-secondary: #fbbf24;
+      --gradient-start: #10b981;
+      --gradient-end: #34d399;
+      --border: rgba(134, 239, 172, 0.12);
+      --danger: #f87171;
+      --warning: #fbbf24;
+      --success: #34d399;
+      --info: #60a5fa;
+      --hero-gradient: linear-gradient(135deg, #0a1a0f 0%, #112718 40%, #0a1a10 100%);
+      --card-shadow: 0 4px 24px rgba(0,0,0,0.35);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+    .container { max-width: 960px; margin: 0 auto; padding: 0 24px; }
+
+    /* ========== HERO ========== */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      background: var(--hero-gradient);
+      position: relative;
+      overflow: hidden;
+      padding: 40px 24px;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(ellipse at 30% 50%, rgba(52, 211, 153, 0.06) 0%, transparent 60%),
+                  radial-gradient(ellipse at 70% 30%, rgba(251, 191, 36, 0.04) 0%, transparent 50%);
+      animation: float 20s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      50% { transform: translate(-2%, 2%) rotate(1deg); }
+    }
+    .hero-content { position: relative; z-index: 1; }
+    .hero-badge {
+      display: inline-block;
+      padding: 6px 16px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-muted);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      font-weight: 900;
+      line-height: 1.1;
+      margin-bottom: 16px;
+      background: linear-gradient(135deg, var(--text-primary), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero-subtitle {
+      font-size: clamp(1rem, 2.5vw, 1.3rem);
+      color: var(--text-secondary);
+      margin-bottom: 40px;
+      font-weight: 300;
+    }
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 20px;
+      max-width: 700px;
+      width: 100%;
+    }
+    .hero-stat {
+      text-align: center;
+      padding: 20px 12px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 16px;
+      border: 1px solid var(--border);
+    }
+    .hero-stat-value {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1;
+    }
+    .hero-stat-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+    .scroll-indicator {
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 12px;
+      color: var(--text-muted);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      animation: bounce 2s ease infinite;
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(8px); }
+    }
+
+    /* ========== SECTIONS ========== */
+    section { padding: 80px 0; }
+    .section-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 4vw, 2.5rem);
+      font-weight: 800;
+      margin-bottom: 40px;
+    }
+
+    /* ========== ELEVATION PROFILE ========== */
+    .elevation-card {
+      background: var(--bg-card);
+      border-radius: 20px;
+      padding: 32px;
+      border: 1px solid var(--border);
+      margin-bottom: 40px;
+    }
+    .elevation-card h3 {
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+    .elevation-svg { width: 100%; height: auto; }
+    .elevation-labels {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 12px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    /* ========== DAY CARDS ========== */
+    .day-card {
+      background: var(--bg-card);
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      margin-bottom: 20px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    .day-card:hover { border-color: rgba(52, 211, 153, 0.3); }
+    .day-card.expanded { border-color: var(--accent); }
+    .day-header {
+      padding: 24px 28px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .day-number {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 20px;
+      color: #fff;
+      flex-shrink: 0;
+    }
+    .day-number.crux {
+      background: linear-gradient(135deg, #f59e0b, #ef4444);
+    }
+    .day-info { flex: 1; min-width: 0; }
+    .day-route {
+      font-weight: 700;
+      font-size: 1.1rem;
+      margin-bottom: 4px;
+    }
+    .day-meta {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+    .day-meta span { white-space: nowrap; }
+    .day-expand-icon {
+      font-size: 20px;
+      color: var(--text-muted);
+      transition: transform 0.3s;
+      flex-shrink: 0;
+    }
+    .day-card.expanded .day-expand-icon { transform: rotate(180deg); }
+    .day-details {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease;
+    }
+    .day-card.expanded .day-details { max-height: 2000px; }
+    .day-details-inner { padding: 0 28px 28px; }
+
+    .terrain-bar {
+      height: 8px;
+      border-radius: 4px;
+      display: flex;
+      overflow: hidden;
+      margin: 16px 0 8px;
+    }
+    .terrain-bar div { height: 100%; }
+    .terrain-legend {
+      display: flex;
+      gap: 16px;
+      font-size: 11px;
+      color: var(--text-muted);
+      flex-wrap: wrap;
+    }
+    .terrain-legend span::before {
+      content: '';
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 3px;
+      margin-right: 4px;
+      vertical-align: middle;
+    }
+    .terrain-gravel::before { background: #34d399 !important; }
+    .terrain-paved::before { background: #60a5fa !important; }
+    .terrain-singletrack::before { background: #f59e0b !important; }
+    .terrain-fsr::before { background: #a78bfa !important; }
+
+    .waypoint-list { margin-top: 20px; }
+    .waypoint {
+      display: flex;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+    }
+    .waypoint:last-child { border-bottom: none; }
+    .wp-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+    .wp-camp { background: rgba(52, 211, 153, 0.2); }
+    .wp-resupply { background: rgba(96, 165, 250, 0.2); }
+    .wp-hazard { background: rgba(248, 113, 113, 0.2); }
+    .wp-shortcut { background: rgba(251, 191, 36, 0.2); }
+    .wp-poi { background: rgba(255, 255, 255, 0.08); }
+    .wp-water { background: rgba(56, 189, 248, 0.2); }
+    .wp-ferry { background: rgba(167, 139, 250, 0.2); }
+    .wp-name { font-weight: 600; color: var(--text-primary); }
+    .wp-desc { color: var(--text-secondary); font-size: 13px; }
+
+    .day-tip {
+      margin-top: 20px;
+      padding: 16px;
+      border-radius: 12px;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .day-tip.tip-warning {
+      background: rgba(251, 191, 36, 0.1);
+      border: 1px solid rgba(251, 191, 36, 0.2);
+      color: var(--warning);
+    }
+    .day-tip.tip-danger {
+      background: rgba(248, 113, 113, 0.1);
+      border: 1px solid rgba(248, 113, 113, 0.2);
+      color: var(--danger);
+    }
+    .day-tip.tip-info {
+      background: rgba(96, 165, 250, 0.1);
+      border: 1px solid rgba(96, 165, 250, 0.2);
+      color: var(--info);
+    }
+    .day-tip.tip-success {
+      background: rgba(52, 211, 153, 0.1);
+      border: 1px solid rgba(52, 211, 153, 0.2);
+      color: var(--success);
+    }
+    .tip-label { font-weight: 700; text-transform: uppercase; font-size: 11px; letter-spacing: 1px; margin-bottom: 4px; }
+
+    /* ========== SHORTCUTS SECTION ========== */
+    .shortcut-card {
+      background: var(--bg-card);
+      border-radius: 16px;
+      border: 1px solid rgba(251, 191, 36, 0.2);
+      padding: 24px;
+      margin-bottom: 16px;
+    }
+    .shortcut-card h4 {
+      color: var(--warning);
+      font-size: 1rem;
+      margin-bottom: 8px;
+    }
+    .shortcut-compare {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 12px;
+      align-items: center;
+      margin: 16px 0;
+    }
+    .shortcut-option {
+      padding: 12px;
+      border-radius: 10px;
+      text-align: center;
+      font-size: 13px;
+    }
+    .shortcut-option.trail { background: rgba(248, 113, 113, 0.1); border: 1px solid rgba(248, 113, 113, 0.2); }
+    .shortcut-option.highway { background: rgba(52, 211, 153, 0.1); border: 1px solid rgba(52, 211, 153, 0.2); }
+    .shortcut-vs { font-weight: 700; color: var(--text-muted); font-size: 12px; }
+    .shortcut-verdict {
+      font-size: 13px;
+      color: var(--text-secondary);
+      padding-top: 8px;
+      border-top: 1px solid var(--border);
+    }
+    .shortcut-verdict strong { color: var(--accent); }
+
+    /* ========== ALERTS SECTION ========== */
+    .alert-card {
+      background: var(--bg-card);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 16px;
+      border-left: 4px solid;
+    }
+    .alert-card.alert-red { border-left-color: var(--danger); }
+    .alert-card.alert-yellow { border-left-color: var(--warning); }
+    .alert-card.alert-blue { border-left-color: var(--info); }
+    .alert-card h4 { margin-bottom: 8px; font-size: 1rem; }
+    .alert-card p { font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
+    .alert-card .action-items {
+      margin-top: 12px;
+      padding: 12px;
+      background: rgba(0,0,0,0.2);
+      border-radius: 10px;
+      font-size: 13px;
+    }
+    .alert-card .action-items li {
+      margin-left: 16px;
+      margin-bottom: 4px;
+      color: var(--text-secondary);
+    }
+
+    /* ========== RESUPPLY TABLE ========== */
+    .resupply-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    .resupply-table th {
+      text-align: left;
+      padding: 12px 16px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border);
+    }
+    .resupply-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-secondary);
+    }
+    .resupply-table tr:hover td { background: rgba(255,255,255,0.02); }
+    .resupply-major { color: var(--accent) !important; font-weight: 600; }
+
+    /* ========== GEAR CHECKLIST ========== */
+    .gear-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+    }
+    .gear-category {
+      background: var(--bg-card);
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      padding: 24px;
+    }
+    .gear-category h4 {
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+    .gear-category li {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-left: 16px;
+      margin-bottom: 6px;
+      line-height: 1.4;
+    }
+    .gear-category li strong { color: var(--text-primary); }
+
+    /* ========== FOOTER ========== */
+    .footer {
+      padding: 40px 0;
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border);
+    }
+    .footer a { color: var(--accent); text-decoration: none; }
+
+    /* ========== NAV ========== */
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 12px 24px;
+      background: rgba(10, 26, 15, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transform: translateY(-100%);
+      transition: transform 0.3s;
+    }
+    .nav.visible { transform: translateY(0); }
+    .nav-brand {
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--accent);
+    }
+    .nav-links { display: flex; gap: 20px; }
+    .nav-links a {
+      font-size: 13px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--accent); }
+
+    @media (max-width: 640px) {
+      .hero-stats { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+      .day-header { padding: 16px; gap: 12px; }
+      .day-details-inner { padding: 0 16px 20px; }
+      .shortcut-compare { grid-template-columns: 1fr; }
+      .shortcut-vs { text-align: center; }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect, useRef } = React;
+
+// ============================
+// DATA
+// ============================
+const TRIP_STATS = {
+  distance: '~600',
+  elevation: '~8,400',
+  days: 5,
+  nights: 4,
+  offRoad: '~65%',
+};
+
+const DAYS = [
+  {
+    day: 1,
+    from: 'Penticton',
+    to: 'Beaverdell',
+    distance: '~130 km',
+    elevation: '~2,200 m',
+    time: '8-10 hrs',
+    difficulty: 'Hard',
+    terrain: { gravel: 55, paved: 30, singletrack: 0, fsr: 15 },
+    crux: false,
+    waypoints: [
+      { type: 'poi', name: 'KVR Trail Start', desc: 'Begin the Kettle Valley Rail Trail. 2.2% grade climb.' },
+      { type: 'resupply', name: 'Chute Lake Resort (km ~30)', desc: 'Famous pie. Food, camping, water. Top of the big climb.' },
+      { type: 'poi', name: 'Myra Canyon Trestles (km ~45)', desc: '18 trestles + 2 tunnels. Most spectacular section. Allow photo time!' },
+      { type: 'shortcut', name: 'Hwy 33 at McCulloch (km ~65)', desc: 'TAKE IT. 42 km paved vs 54 km degraded trail. Saves 12 km + 2-3 hrs.' },
+      { type: 'water', name: 'Arlington Lakes', desc: 'If taking trail route. Filter required.' },
+      { type: 'camp', name: 'Beaverdell', desc: 'Convenience store. Wild camping along KVR south of town.' },
+    ],
+    tip: { type: 'warning', text: 'Big climbing day. The Penticton-to-Chute Lake climb is ~820m over 30 km. Eat a massive breakfast and carry plenty of snacks. The Hwy 33 shortcut after McCulloch is insurance for your legs on Day 1.' },
+  },
+  {
+    day: 2,
+    from: 'Beaverdell',
+    to: 'Christina Lake',
+    distance: '~140 km',
+    elevation: '~1,400 m',
+    time: '8-9 hrs',
+    difficulty: 'Moderate',
+    terrain: { gravel: 70, paved: 15, singletrack: 0, fsr: 15 },
+    crux: false,
+    waypoints: [
+      { type: 'resupply', name: 'Rock Creek (km ~50)', desc: 'Gas station, general store. Limited services.' },
+      { type: 'poi', name: 'Midway \u2014 KVR Mile Zero (km ~80)', desc: 'End of KVR. Transition to Columbia & Western Rail Trail.' },
+      { type: 'poi', name: 'Greenwood (km ~95)', desc: "Canada's smallest city. Historic mining town." },
+      { type: 'resupply', name: 'Grand Forks (km ~110)', desc: 'MAJOR RESUPPLY. Petro Canada, A&W, grocery. Stock up!' },
+      { type: 'camp', name: 'Christina Lake (km ~140)', desc: 'Beautiful lakeside camping. Warmest lake in BC. Texas Creek Campground.' },
+    ],
+    tip: { type: 'success', text: 'Most chill day. Relatively gentle grades on the rail trail. Grand Forks is the best resupply between Penticton and Nelson \u2014 take advantage. Christina Lake swimming is earned.' },
+  },
+  {
+    day: 3,
+    from: 'Christina Lake',
+    to: 'Castlegar',
+    distance: '~110 km',
+    elevation: '~1,800 m',
+    time: '8-10 hrs',
+    difficulty: 'Hard',
+    terrain: { gravel: 80, paved: 10, singletrack: 0, fsr: 10 },
+    crux: false,
+    waypoints: [
+      { type: 'poi', name: 'Eholt Summit (km ~30)', desc: 'Long climb from Christina Lake. Loose rock and shale on descents.' },
+      { type: 'hazard', name: 'Farron Summit (km ~60)', desc: 'C&W high point ~1,200m. 35 km climb approach.' },
+      { type: 'hazard', name: 'Bulldog Tunnel (km ~65)', desc: '912m long, PITCH BLACK. Logging trucks. LIGHTS REQUIRED!' },
+      { type: 'poi', name: 'Lower Arrow Lake Views (km ~85)', desc: 'Fantastic views on descent. Great photo spot.' },
+      { type: 'water', name: 'Cascade Creek', desc: 'Creek water on descent. Filter required.' },
+      { type: 'camp', name: 'Castlegar (km ~110)', desc: 'Pharmasave, grocery, restaurants. Rest up for the singletrack tomorrow.' },
+    ],
+    tip: { type: 'warning', text: 'Bulldog Tunnel is no joke. 912m of pitch black, shared with logging trucks. Have front AND rear lights charged. Ride single file, stay right, and listen for trucks before entering. Memorable though!' },
+  },
+  {
+    day: 4,
+    from: 'Castlegar',
+    to: 'Kootenay Bay',
+    distance: '~120 km',
+    elevation: '~1,200 m',
+    time: '8-10 hrs',
+    difficulty: 'Moderate-Hard',
+    terrain: { gravel: 10, paved: 50, singletrack: 12, fsr: 28 },
+    crux: false,
+    waypoints: [
+      { type: 'shortcut', name: 'Singletrack vs Hwy 22', desc: 'Game-day decision. Singletrack = 15 km brutal. Highway = 27 km paved. Panniers? Highway.' },
+      { type: 'resupply', name: 'Trail \u2014 Husky Gas (km ~40)', desc: 'Food, drinks, ice cream. Recovery after singletrack.' },
+      { type: 'poi', name: 'Hwy 3B to Salmo (km ~80)', desc: '42 km paved through Beaver Valley. Already on the official route.' },
+      { type: 'shortcut', name: 'Salmo: Hwy 6 vs Rail Trail', desc: 'Default to Hwy 6 (41 km, smooth). Trail (48 km) only if grizzly closure lifted.' },
+      { type: 'hazard', name: 'Grizzly Closure Zone', desc: 'April 15 - June 15 (sometimes extended). 10 km closed for grizzly habitat.' },
+      { type: 'resupply', name: 'Nelson (km ~100)', desc: 'LAST MAJOR RESUPPLY. Stock up on 2 meals + snacks for the pass. Fill ALL water.' },
+      { type: 'ferry', name: 'Balfour Ferry (km ~115)', desc: 'Free. 35 min crossing. Last departure ~9:40 PM. Great nap opportunity!' },
+      { type: 'camp', name: 'Grey Creek area', desc: 'Camp near Grey Creek. Ask at the store about pass conditions. Sleep early.' },
+    ],
+    tip: { type: 'info', text: 'This is your "recovery day" \u2014 ~50% pavement. Save your legs for tomorrow. Nelson is your last chance to stock up before 80 km of nothing. The ferry is a forced rest \u2014 embrace the nap.' },
+  },
+  {
+    day: 5,
+    from: 'Grey Creek',
+    to: 'Kimberley',
+    distance: '~100 km',
+    elevation: '~1,800 m',
+    time: '8-10 hrs',
+    difficulty: 'EXTREME',
+    terrain: { gravel: 10, paved: 15, singletrack: 5, fsr: 70 },
+    crux: true,
+    waypoints: [
+      { type: 'hazard', name: 'Grey Creek Pass Road Start', desc: '17 km at 9% avg grade to 2,072m. No cell. No services for 80 km. START EARLY.' },
+      { type: 'water', name: 'Grey Creek (last before summit)', desc: 'FILL UP! Carry minimum 2L. Last reliable water.' },
+      { type: 'camp', name: 'Oliver Lake (emergency)', desc: '~800m before summit. Outhouse + tables. Bail-out camp if needed.' },
+      { type: 'hazard', name: 'SUMMIT \u2014 2,072m', desc: 'Highest point! Snow possible even late June. Check conditions beforehand.' },
+      { type: 'water', name: 'South Fork Creek', desc: 'Creek on descent. Good refill.' },
+      { type: 'poi', name: 'Kimberley Nature Park', desc: '10 km of trails to finish. Almost there!' },
+      { type: 'camp', name: 'FINISH: Kimberley Platzl', desc: 'YOU MADE IT. Families waiting. Beers. 600 km done.' },
+    ],
+    tip: { type: 'danger', text: 'THE CRUX. Grey Creek Pass is 17 km of relentless 9% grade to 2,072m. Snow is possible at the summit even in late June \u2014 the road is normally closed to vehicles until early July. Do NOT attempt sleep-deprived. Start at first light. The families are waiting in Kimberley. Dig deep.' },
+  },
+];
+
+const SHORTCUTS = [
+  {
+    name: 'Hwy 33: McCulloch \u2192 Beaverdell',
+    day: 1,
+    trail: { dist: '54 km', time: '3.5-5 hrs', surface: 'ATV-destroyed gravel, sand, mud' },
+    highway: { dist: '42 km', time: '1.5-2 hrs', surface: 'Paved highway' },
+    saves: '12 km + 2-3 hours',
+    verdict: 'RECOMMENDED. Trail is heavily degraded by ATV traffic. Take the highway and save your legs for the next 4 days.',
+  },
+  {
+    name: 'Hwy 22: Castlegar \u2192 Trail',
+    day: 4,
+    trail: { dist: '15 km', time: '2-3 hrs', surface: 'Overgrown singletrack, deep sand, flooding risk' },
+    highway: { dist: '27 km', time: '1-1.5 hrs', surface: 'Paved highway' },
+    saves: 'Potentially 1-2 hours (highway is longer but faster)',
+    verdict: 'GAME-DAY DECISION. If the river is high from snowmelt or Trevor\'s panniers are catching on everything, take the highway. If conditions are good and you\'re feeling strong, the singletrack is an experience.',
+  },
+  {
+    name: 'Hwy 6: Salmo \u2192 Nelson',
+    day: 4,
+    trail: { dist: '48 km', time: '3-4 hrs', surface: 'Degraded rail trail near Salmo, grizzly closure risk' },
+    highway: { dist: '41 km', time: '1.5-2 hrs', surface: 'Smooth pavement (best tarmac in the area)' },
+    saves: '7 km + 1-2 hours',
+    verdict: 'DEFAULT TO HIGHWAY. Mandatory if grizzly closure is active. Even if open, the trail near Salmo is degraded. Treat the trail as a bonus, not the plan.',
+  },
+];
+
+const ALERTS = [
+  {
+    type: 'red',
+    title: 'Grey Creek Pass \u2014 Snow Risk',
+    desc: 'The road to Grey Creek Pass (2,072m) is normally closed to vehicles until early-mid July. Snow depth varies hugely year to year. In cold years, expect deep snow requiring hike-a-bike. In normal years, a few manageable snow patches by mid-June.',
+    actions: [
+      'Check BC Ministry of Forests snow stations: "2D05 Gray Creek Lower" and "2D10 Gray Creek Upper"',
+      'Join the West Kootenay Hiking Access Facebook group (5,000+ local contributors)',
+      'Ask at Grey Creek Store the day before your crossing',
+      'Week 3 of June is safer than Week 2',
+    ],
+  },
+  {
+    type: 'yellow',
+    title: 'Grizzly Bear Trail Closure (Salmo-Nelson)',
+    desc: 'Annual closure of ~10 km between Cottonwood Lake and Hall Siding runs April 15 to June 15, but has been issued earlier in recent years due to increased bear activity.',
+    actions: [
+      'Check RDCK website or call ahead for current closure status',
+      'If closed: Highway 6 is the official bypass (41 km, paved)',
+      'Carry bear spray regardless \u2014 this is serious bear country throughout',
+    ],
+  },
+  {
+    type: 'blue',
+    title: 'Kootenay Lake Ferry Schedule',
+    desc: 'The free Kootenay Lake ferry (MV Osprey 2000) runs between Balfour and Kootenay Bay. Canada\'s longest free ferry ride (8 km, 35 minutes).',
+    actions: [
+      'Winter schedule (before ~3rd week June): Balfour departures 6:30 AM to 9:40 PM',
+      'Summer schedule (3rd week June+): Second vessel (MV Balfour) adds more frequent service',
+      'Plan to arrive 20+ minutes before departure \u2014 bikes load first',
+      'Pro tip: Nap on the ferry. Forced rest before the push to Grey Creek.',
+    ],
+  },
+];
+
+const RESUPPLY_POINTS = [
+  { town: 'Penticton', day: 1, km: 0, services: 'Full city. Grocery, bike shops, restaurants, Starbucks, A&W', major: true },
+  { town: 'Chute Lake Resort', day: 1, km: 30, services: 'Food, camping, water. Famous pie.', major: false },
+  { town: 'Beaverdell', day: 1, km: 130, services: 'Convenience store. Sandwiches, snacks, drinks.', major: false },
+  { town: 'Rock Creek', day: 2, km: 180, services: 'Gas station, general store.', major: false },
+  { town: 'Midway', day: 2, km: 210, services: 'Small town. Basic services.', major: false },
+  { town: 'Grand Forks', day: 2, km: 240, services: 'Petro Canada, A&W, grocery, The Station Pub.', major: true },
+  { town: 'Trail', day: 4, km: 390, services: 'Husky Gas, ice cream, restaurants.', major: false },
+  { town: 'Salmo', day: 4, km: 430, services: 'Subway, small town services.', major: false },
+  { town: 'Nelson', day: 4, km: 470, services: 'Full town. DQ, restaurants, bike shops, grocery.', major: true },
+  { town: 'Grey Creek Store', day: 4, km: 530, services: 'Info on pass conditions. Very limited supplies.', major: false },
+  { town: 'Kimberley', day: 5, km: 600, services: 'Gas station, Subway, grocery, restaurants. FINISH!', major: true },
+];
+
+const GEAR = [
+  {
+    category: 'Bike & Repair',
+    items: [
+      'Spare tube (even if tubeless)',
+      'Tubeless repair kit (plugs + bacon strips)',
+      'Multi-tool with chain breaker',
+      'Tire boot (dollar bill works)',
+      'Spare derailleur hanger',
+      'Small pump + CO2 cartridges',
+      'Zip ties + duct tape (wrapped around pump)',
+      'Spare brake pads',
+      'Chain lube',
+    ],
+  },
+  {
+    category: 'Sleep System',
+    items: [
+      'Lightweight tent or bivy',
+      'Sleeping bag rated to -5\u00b0C (summit temps!)',
+      'Sleeping pad (insulated)',
+      'Drysacks for food hanging',
+      '10m+ paracord + carabiner (bear hang)',
+    ],
+  },
+  {
+    category: 'Clothing',
+    items: [
+      'Layers! Valley = 25-35\u00b0C, summit = near 0\u00b0C',
+      'Rain jacket (packable)',
+      'Arm/leg warmers',
+      'Warm base layer for sleeping',
+      'Gloves (full finger for descents)',
+      '2x cycling shorts, 2x jerseys',
+      'Camp shoes (lightweight sandals)',
+    ],
+  },
+  {
+    category: 'Safety & Navigation',
+    items: [
+      'Bear spray (MANDATORY)',
+      'Strong front + rear lights (Bulldog Tunnel!)',
+      'GPS device with offline maps + GPX loaded',
+      'Phone with offline maps backup',
+      'Portable battery bank (2x)',
+      'First aid kit',
+      'Emergency bivy / space blanket',
+      'Whistle',
+    ],
+  },
+  {
+    category: 'Food & Water',
+    items: [
+      'Water filter (Sawyer Squeeze or similar)',
+      'Min 2L water capacity (3L for Day 5)',
+      'Electrolyte tabs',
+      'High-cal snacks: nuts, bars, dried fruit',
+      'Instant meals for dinners',
+      'Coffee/tea setup (optional but earned)',
+    ],
+  },
+  {
+    category: 'Miscellaneous',
+    items: [
+      'Sunscreen + lip balm',
+      'Bug spray (mosquitoes in valleys)',
+      'Chamois cream',
+      'Lightweight camp towel',
+      'Ziploc bags (phone, electronics)',
+    ],
+  },
+];
+
+// ============================
+// COMPONENTS
+// ============================
+
+function Nav() {
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const onScroll = () => setVisible(window.scrollY > window.innerHeight * 0.5);
+    window.addEventListener('scroll', onScroll);
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+  return (
+    <nav className={`nav ${visible ? 'visible' : ''}`}>
+      <span className="nav-brand">Penticton \u2192 Kimberley</span>
+      <div className="nav-links">
+        <a href="#itinerary">Itinerary</a>
+        <a href="#shortcuts">Shortcuts</a>
+        <a href="#alerts">Alerts</a>
+        <a href="#resupply">Resupply</a>
+        <a href="#gear">Gear</a>
+      </div>
+    </nav>
+  );
+}
+
+function Hero() {
+  return (
+    <header className="hero">
+      <div className="hero-content">
+        <div className="hero-badge">BC Epic 1000 \u2022 June 2026</div>
+        <h1>Penticton to Kimberley</h1>
+        <p className="hero-subtitle">5 days of rail trails, mountain passes, and one unforgettable ferry crossing.<br/>Stephan & Trevor's bikepacking adventure.</p>
+        <div className="hero-stats">
+          <div className="hero-stat"><div className="hero-stat-value">{TRIP_STATS.distance}</div><div className="hero-stat-label">Kilometres</div></div>
+          <div className="hero-stat"><div className="hero-stat-value">{TRIP_STATS.elevation}</div><div className="hero-stat-label">Metres Gain</div></div>
+          <div className="hero-stat"><div className="hero-stat-value">{TRIP_STATS.days}</div><div className="hero-stat-label">Days</div></div>
+          <div className="hero-stat"><div className="hero-stat-value">{TRIP_STATS.nights}</div><div className="hero-stat-label">Nights</div></div>
+          <div className="hero-stat"><div className="hero-stat-value">{TRIP_STATS.offRoad}</div><div className="hero-stat-label">Off Road</div></div>
+        </div>
+      </div>
+      <div className="scroll-indicator">\u2193 Scroll to explore</div>
+    </header>
+  );
+}
+
+function ElevationProfile() {
+  // Simplified elevation profile across 5 days
+  const points = [
+    // Day 1: Penticton (344m) -> Chute Lake (1265m) -> Myra (1240m) -> Beaverdell (780m)
+    { x: 0, y: 344, label: 'Penticton' },
+    { x: 30, y: 1265, label: 'Chute Lake' },
+    { x: 65, y: 1240, label: 'McCulloch' },
+    { x: 130, y: 780, label: 'Beaverdell' },
+    // Day 2: -> Rock Creek (600) -> Midway (580) -> Grand Forks (520) -> Christina Lake (440)
+    { x: 180, y: 600, label: '' },
+    { x: 210, y: 580, label: 'Midway' },
+    { x: 240, y: 520, label: 'Grand Forks' },
+    { x: 270, y: 440, label: 'Christina Lk' },
+    // Day 3: -> Eholt (1050) -> Farron (1200) -> Castlegar (500)
+    { x: 300, y: 1050, label: '' },
+    { x: 335, y: 1200, label: 'Farron' },
+    { x: 380, y: 500, label: 'Castlegar' },
+    // Day 4: -> Trail (440) -> Salmo (600) -> Nelson (540) -> Ferry (540)
+    { x: 420, y: 440, label: 'Trail' },
+    { x: 450, y: 600, label: 'Salmo' },
+    { x: 470, y: 540, label: 'Nelson' },
+    { x: 500, y: 540, label: 'Ferry' },
+    // Day 5: -> Grey Creek Pass (2072!) -> Kimberley (1113)
+    { x: 530, y: 550, label: 'Grey Ck' },
+    { x: 555, y: 2072, label: 'PASS 2,072m' },
+    { x: 600, y: 1113, label: 'Kimberley' },
+  ];
+
+  const svgW = 800;
+  const svgH = 220;
+  const padL = 45;
+  const padR = 15;
+  const padT = 25;
+  const padB = 25;
+  const chartW = svgW - padL - padR;
+  const chartH = svgH - padT - padB;
+  const maxKm = 600;
+  const maxElev = 2200;
+  const minElev = 300;
+
+  const toX = (km) => padL + (km / maxKm) * chartW;
+  const toY = (elev) => padT + chartH - ((elev - minElev) / (maxElev - minElev)) * chartH;
+
+  const pathD = points.map((p, i) => `${i === 0 ? 'M' : 'L'}${toX(p.x).toFixed(1)},${toY(p.y).toFixed(1)}`).join(' ');
+  const areaD = pathD + ` L${toX(points[points.length-1].x).toFixed(1)},${toY(minElev).toFixed(1)} L${toX(0).toFixed(1)},${toY(minElev).toFixed(1)} Z`;
+
+  // Day boundaries
+  const dayBounds = [0, 130, 270, 380, 500, 600];
+  const dayColors = ['rgba(52,211,153,0.08)', 'rgba(96,165,250,0.08)', 'rgba(52,211,153,0.08)', 'rgba(96,165,250,0.08)', 'rgba(245,158,11,0.1)'];
+
+  return (
+    <div className="elevation-card">
+      <h3>Elevation Profile</h3>
+      <svg className="elevation-svg" viewBox={`0 0 ${svgW} ${svgH}`}>
+        {/* Day background bands */}
+        {dayBounds.slice(0, -1).map((start, i) => (
+          <rect key={i} x={toX(start)} y={padT} width={toX(dayBounds[i+1]) - toX(start)} height={chartH} fill={dayColors[i]} />
+        ))}
+        {/* Day labels */}
+        {dayBounds.slice(0, -1).map((start, i) => (
+          <text key={`dl${i}`} x={(toX(start) + toX(dayBounds[i+1])) / 2} y={svgH - 5} textAnchor="middle" fontSize="10" fill="#6ee7b7" fontFamily="Inter">Day {i+1}</text>
+        ))}
+        {/* Grid lines */}
+        {[500, 1000, 1500, 2000].map(e => (
+          <g key={e}>
+            <line x1={padL} y1={toY(e)} x2={svgW - padR} y2={toY(e)} stroke="rgba(255,255,255,0.06)" />
+            <text x={padL - 5} y={toY(e) + 3} textAnchor="end" fontSize="9" fill="#6ee7b7" fontFamily="Inter">{e}m</text>
+          </g>
+        ))}
+        {/* Area fill */}
+        <path d={areaD} fill="url(#elevGrad)" opacity="0.3" />
+        {/* Line */}
+        <path d={pathD} fill="none" stroke="#34d399" strokeWidth="2.5" />
+        {/* Points & labels */}
+        {points.filter(p => p.label).map((p, i) => (
+          <g key={i}>
+            <circle cx={toX(p.x)} cy={toY(p.y)} r="3" fill={p.y > 1800 ? '#f59e0b' : '#34d399'} />
+            <text x={toX(p.x)} y={toY(p.y) - 8} textAnchor="middle" fontSize="8" fill={p.y > 1800 ? '#fbbf24' : '#a7f3d0'} fontWeight={p.y > 1800 ? '700' : '400'} fontFamily="Inter">{p.label}</text>
+          </g>
+        ))}
+        <defs>
+          <linearGradient id="elevGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#34d399" />
+            <stop offset="100%" stopColor="#34d399" stopOpacity="0" />
+          </linearGradient>
+        </defs>
+      </svg>
+      <div className="elevation-labels">
+        <span>0 km \u2014 Penticton</span>
+        <span>600 km \u2014 Kimberley</span>
+      </div>
+    </div>
+  );
+}
+
+const WP_ICONS = {
+  camp: { icon: '\u26fa', cls: 'wp-camp' },
+  resupply: { icon: '\ud83d\uded2', cls: 'wp-resupply' },
+  hazard: { icon: '\u26a0\ufe0f', cls: 'wp-hazard' },
+  shortcut: { icon: '\u21a9\ufe0f', cls: 'wp-shortcut' },
+  poi: { icon: '\ud83d\udccd', cls: 'wp-poi' },
+  water: { icon: '\ud83d\udca7', cls: 'wp-water' },
+  ferry: { icon: '\u26f4\ufe0f', cls: 'wp-ferry' },
+};
+
+function DayCard({ data }) {
+  const [expanded, setExpanded] = useState(false);
+  const { gravel, paved, singletrack, fsr } = data.terrain;
+  return (
+    <div className={`day-card ${expanded ? 'expanded' : ''}`} onClick={() => setExpanded(!expanded)}>
+      <div className="day-header">
+        <div className={`day-number ${data.crux ? 'crux' : ''}`}>{data.day}</div>
+        <div className="day-info">
+          <div className="day-route">{data.from} \u2192 {data.to}</div>
+          <div className="day-meta">
+            <span>{data.distance}</span>
+            <span>\u2191 {data.elevation}</span>
+            <span>\u23f1 {data.time}</span>
+            <span style={{color: data.crux ? '#f87171' : data.difficulty === 'Hard' ? '#fbbf24' : '#34d399', fontWeight: 600}}>{data.difficulty}</span>
+          </div>
+        </div>
+        <div className="day-expand-icon">\u25bc</div>
+      </div>
+      <div className="day-details">
+        <div className="day-details-inner">
+          <div className="terrain-bar">
+            <div style={{ width: `${gravel}%`, background: '#34d399' }} />
+            <div style={{ width: `${paved}%`, background: '#60a5fa' }} />
+            <div style={{ width: `${singletrack}%`, background: '#f59e0b' }} />
+            <div style={{ width: `${fsr}%`, background: '#a78bfa' }} />
+          </div>
+          <div className="terrain-legend">
+            <span className="terrain-gravel">Gravel {gravel}%</span>
+            <span className="terrain-paved">Paved {paved}%</span>
+            {singletrack > 0 && <span className="terrain-singletrack">Singletrack {singletrack}%</span>}
+            <span className="terrain-fsr">FSR {fsr}%</span>
+          </div>
+          <div className="waypoint-list">
+            {data.waypoints.map((wp, i) => {
+              const wpStyle = WP_ICONS[wp.type] || WP_ICONS.poi;
+              return (
+                <div className="waypoint" key={i}>
+                  <div className={`wp-icon ${wpStyle.cls}`}>{wpStyle.icon}</div>
+                  <div>
+                    <div className="wp-name">{wp.name}</div>
+                    <div className="wp-desc">{wp.desc}</div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          {data.tip && (
+            <div className={`day-tip tip-${data.tip.type}`}>
+              <div className="tip-label">{data.tip.type === 'danger' ? 'Critical' : data.tip.type === 'warning' ? 'Heads up' : data.tip.type === 'info' ? 'Pro tip' : 'Good news'}</div>
+              {data.tip.text}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ShortcutsSection() {
+  return (
+    <section id="shortcuts">
+      <div className="container">
+        <div className="section-label">Insurance Policies</div>
+        <div className="section-title">Pavement Shortcuts</div>
+        <p style={{ color: 'var(--text-secondary)', marginBottom: 32, fontSize: 15, maxWidth: 700 }}>
+          These aren't admissions of defeat \u2014 they're smart riding. Every hour saved on degraded trail is an hour of energy banked for Grey Creek Pass.
+        </p>
+        {SHORTCUTS.map((sc, i) => (
+          <div className="shortcut-card" key={i}>
+            <h4>Day {sc.day}: {sc.name}</h4>
+            <div className="shortcut-compare">
+              <div className="shortcut-option trail">
+                <div style={{ fontWeight: 700, marginBottom: 4 }}>Trail</div>
+                <div>{sc.trail.dist} \u2022 {sc.trail.time}</div>
+                <div style={{ fontSize: 12, marginTop: 4, opacity: 0.8 }}>{sc.trail.surface}</div>
+              </div>
+              <div className="shortcut-vs">VS</div>
+              <div className="shortcut-option highway">
+                <div style={{ fontWeight: 700, marginBottom: 4 }}>Highway</div>
+                <div>{sc.highway.dist} \u2022 {sc.highway.time}</div>
+                <div style={{ fontSize: 12, marginTop: 4, opacity: 0.8 }}>{sc.highway.surface}</div>
+              </div>
+            </div>
+            <div style={{ fontSize: 13, color: 'var(--warning)', fontWeight: 600, marginBottom: 8 }}>Saves: {sc.saves}</div>
+            <div className="shortcut-verdict"><strong>Verdict:</strong> {sc.verdict}</div>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function AlertsSection() {
+  return (
+    <section id="alerts">
+      <div className="container">
+        <div className="section-label">Before You Go</div>
+        <div className="section-title">Critical Intel</div>
+        {ALERTS.map((alert, i) => (
+          <div className={`alert-card alert-${alert.type}`} key={i}>
+            <h4>{alert.title}</h4>
+            <p>{alert.desc}</p>
+            <div className="action-items">
+              <ul>
+                {alert.actions.map((a, j) => <li key={j}>{a}</li>)}
+              </ul>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function ResupplySection() {
+  return (
+    <section id="resupply">
+      <div className="container">
+        <div className="section-label">Fuel Strategy</div>
+        <div className="section-title">Resupply Points</div>
+        <div style={{ overflowX: 'auto' }}>
+          <table className="resupply-table">
+            <thead>
+              <tr>
+                <th>Town</th>
+                <th>Day</th>
+                <th>~KM</th>
+                <th>Services</th>
+              </tr>
+            </thead>
+            <tbody>
+              {RESUPPLY_POINTS.map((r, i) => (
+                <tr key={i}>
+                  <td className={r.major ? 'resupply-major' : ''}>{r.town}</td>
+                  <td>{r.day}</td>
+                  <td>{r.km}</td>
+                  <td>{r.services}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div style={{ marginTop: 20, padding: 16, background: 'var(--bg-card)', borderRadius: 12, fontSize: 13, color: 'var(--text-secondary)', border: '1px solid var(--border)' }}>
+          <strong style={{ color: 'var(--warning)' }}>Longest gap without services:</strong> Grey Creek to Kimberley (~80 km). Stock up in Nelson with 2 full meals + snacks. Carry 2-3L of water for Grey Creek Pass.
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function GearSection() {
+  return (
+    <section id="gear">
+      <div className="container">
+        <div className="section-label">Be Prepared</div>
+        <div className="section-title">Gear Checklist</div>
+        <div className="gear-grid">
+          {GEAR.map((cat, i) => (
+            <div className="gear-category" key={i}>
+              <h4>{cat.category}</h4>
+              <ul>
+                {cat.items.map((item, j) => <li key={j} dangerouslySetInnerHTML={{ __html: item.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') }} />)}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function App() {
+  return (
+    <>
+      <Nav />
+      <Hero />
+
+      <section id="itinerary">
+        <div className="container">
+          <div className="section-label">The Route</div>
+          <div className="section-title">Day by Day</div>
+          <ElevationProfile />
+          {DAYS.map(d => <DayCard key={d.day} data={d} />)}
+        </div>
+      </section>
+
+      <ShortcutsSection />
+      <AlertsSection />
+      <ResupplySection />
+      <GearSection />
+
+      <footer className="footer">
+        <div className="container">
+          <p>Penticton \u2192 Kimberley \u2022 BC Epic 1000 \u2022 June 2026</p>
+          <p style={{ marginTop: 8 }}>
+            Route: <a href="https://www.strava.com/routes/3463368757543966168" target="_blank">Strava</a> &nbsp;\u2022&nbsp;
+            Official: <a href="https://www.bcepic1000.com/route-map" target="_blank">bcepic1000.com</a>
+          </p>
+          <p style={{ marginTop: 16, fontSize: 11, opacity: 0.5 }}>Built with vibes. Ride safe.</p>
+        </div>
+      </footer>
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
