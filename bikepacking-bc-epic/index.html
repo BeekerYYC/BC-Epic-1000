@@ -13,11 +13,21 @@
   <script>
     // All symbols and data defined in regular script to avoid Babel UTF-8 issues
     window.SYM = {
-      ARROW: '\u2192', UP: '\u2191', TIMER: '\u23f1', DOWN: '\u25bc',
-      BULL: '\u2022', DASH: '\u2014', DARR: '\u2193',
-      TENT: '\u26fa', CART: '\ud83d\uded2', WARN: '\u26a0\ufe0f',
-      BACK: '\u21a9\ufe0f', PIN: '\ud83d\udccd', DROP: '\ud83d\udca7',
-      SHIP: '\u26f4\ufe0f', DEG: '\u00b0',
+      ARROW: String.fromCodePoint(0x2192),
+      UP: String.fromCodePoint(0x2191),
+      TIMER: String.fromCodePoint(0x23F1),
+      DOWN: String.fromCodePoint(0x25BC),
+      BULL: String.fromCodePoint(0x2022),
+      DASH: String.fromCodePoint(0x2014),
+      DARR: String.fromCodePoint(0x2193),
+      TENT: String.fromCodePoint(0x26FA),
+      CART: String.fromCodePoint(0x1F6D2),
+      WARN: String.fromCodePoint(0x26A0, 0xFE0F),
+      BACK: String.fromCodePoint(0x21A9, 0xFE0F),
+      PIN: String.fromCodePoint(0x1F4CD),
+      DROP: String.fromCodePoint(0x1F4A7),
+      SHIP: String.fromCodePoint(0x26F4, 0xFE0F),
+      DEG: String.fromCodePoint(0x00B0),
     };
   </script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet" />
