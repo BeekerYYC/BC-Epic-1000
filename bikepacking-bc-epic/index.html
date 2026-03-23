@@ -547,12 +547,12 @@ const DAYS = [
     crux: false,
     waypoints: [
       { type: 'resupply', name: 'Rock Creek (km ~50)', desc: 'Gas station, general store. Limited services.' },
-      { type: 'poi', name: 'Midway \u2014 KVR Mile Zero (km ~80)', desc: 'End of KVR. Transition to Columbia & Western Rail Trail.' },
+      { type: 'poi', name: 'Midway — KVR Mile Zero (km ~80)', desc: 'End of KVR. Transition to Columbia & Western Rail Trail.' },
       { type: 'poi', name: 'Greenwood (km ~95)', desc: "Canada's smallest city. Historic mining town." },
       { type: 'resupply', name: 'Grand Forks (km ~110)', desc: 'MAJOR RESUPPLY. Petro Canada, A&W, grocery. Stock up!' },
       { type: 'camp', name: 'Christina Lake (km ~140)', desc: 'Beautiful lakeside camping. Warmest lake in BC. Texas Creek Campground.' },
     ],
-    tip: { type: 'success', text: 'Most chill day. Relatively gentle grades on the rail trail. Grand Forks is the best resupply between Penticton and Nelson \u2014 take advantage. Christina Lake swimming is earned.' },
+    tip: { type: 'success', text: 'Most chill day. Relatively gentle grades on the rail trail. Grand Forks is the best resupply between Penticton and Nelson — take advantage. Christina Lake swimming is earned.' },
   },
   {
     day: 3,
@@ -586,7 +586,7 @@ const DAYS = [
     crux: false,
     waypoints: [
       { type: 'shortcut', name: 'Singletrack vs Hwy 22', desc: 'Game-day decision. Singletrack = 15 km brutal. Highway = 27 km paved. Panniers? Highway.' },
-      { type: 'resupply', name: 'Trail \u2014 Husky Gas (km ~40)', desc: 'Food, drinks, ice cream. Recovery after singletrack.' },
+      { type: 'resupply', name: 'Trail — Husky Gas (km ~40)', desc: 'Food, drinks, ice cream. Recovery after singletrack.' },
       { type: 'poi', name: 'Hwy 3B to Salmo (km ~80)', desc: '42 km paved through Beaver Valley. Already on the official route.' },
       { type: 'shortcut', name: 'Salmo: Hwy 6 vs Rail Trail', desc: 'Default to Hwy 6 (41 km, smooth). Trail (48 km) only if grizzly closure lifted.' },
       { type: 'hazard', name: 'Grizzly Closure Zone', desc: 'April 15 - June 15 (sometimes extended). 10 km closed for grizzly habitat.' },
@@ -594,7 +594,7 @@ const DAYS = [
       { type: 'ferry', name: 'Balfour Ferry (km ~115)', desc: 'Free. 35 min crossing. Last departure ~9:40 PM. Great nap opportunity!' },
       { type: 'camp', name: 'Grey Creek area', desc: 'Camp near Grey Creek. Ask at the store about pass conditions. Sleep early.' },
     ],
-    tip: { type: 'info', text: 'This is your "recovery day" \u2014 ~50% pavement. Save your legs for tomorrow. Nelson is your last chance to stock up before 80 km of nothing. The ferry is a forced rest \u2014 embrace the nap.' },
+    tip: { type: 'info', text: 'This is your "recovery day" — ~50% pavement. Save your legs for tomorrow. Nelson is your last chance to stock up before 80 km of nothing. The ferry is a forced rest — embrace the nap.' },
   },
   {
     day: 5,
@@ -610,18 +610,18 @@ const DAYS = [
       { type: 'hazard', name: 'Grey Creek Pass Road Start', desc: '17 km at 9% avg grade to 2,072m. No cell. No services for 80 km. START EARLY.' },
       { type: 'water', name: 'Grey Creek (last before summit)', desc: 'FILL UP! Carry minimum 2L. Last reliable water.' },
       { type: 'camp', name: 'Oliver Lake (emergency)', desc: '~800m before summit. Outhouse + tables. Bail-out camp if needed.' },
-      { type: 'hazard', name: 'SUMMIT \u2014 2,072m', desc: 'Highest point! Snow possible even late June. Check conditions beforehand.' },
+      { type: 'hazard', name: 'SUMMIT — 2,072m', desc: 'Highest point! Snow possible even late June. Check conditions beforehand.' },
       { type: 'water', name: 'South Fork Creek', desc: 'Creek on descent. Good refill.' },
       { type: 'poi', name: 'Kimberley Nature Park', desc: '10 km of trails to finish. Almost there!' },
       { type: 'camp', name: 'FINISH: Kimberley Platzl', desc: 'YOU MADE IT. Families waiting. Beers. 600 km done.' },
     ],
-    tip: { type: 'danger', text: 'THE CRUX. Grey Creek Pass is 17 km of relentless 9% grade to 2,072m. Snow is possible at the summit even in late June \u2014 the road is normally closed to vehicles until early July. Do NOT attempt sleep-deprived. Start at first light. The families are waiting in Kimberley. Dig deep.' },
+    tip: { type: 'danger', text: 'THE CRUX. Grey Creek Pass is 17 km of relentless 9% grade to 2,072m. Snow is possible at the summit even in late June — the road is normally closed to vehicles until early July. Do NOT attempt sleep-deprived. Start at first light. The families are waiting in Kimberley. Dig deep.' },
   },
 ];
 
 const SHORTCUTS = [
   {
-    name: 'Hwy 33: McCulloch \u2192 Beaverdell',
+    name: 'Hwy 33: McCulloch → Beaverdell',
     day: 1,
     trail: { dist: '54 km', time: '3.5-5 hrs', surface: 'ATV-destroyed gravel, sand, mud' },
     highway: { dist: '42 km', time: '1.5-2 hrs', surface: 'Paved highway' },
@@ -629,7 +629,7 @@ const SHORTCUTS = [
     verdict: 'RECOMMENDED. Trail is heavily degraded by ATV traffic. Take the highway and save your legs for the next 4 days.',
   },
   {
-    name: 'Hwy 22: Castlegar \u2192 Trail',
+    name: 'Hwy 22: Castlegar → Trail',
     day: 4,
     trail: { dist: '15 km', time: '2-3 hrs', surface: 'Overgrown singletrack, deep sand, flooding risk' },
     highway: { dist: '27 km', time: '1-1.5 hrs', surface: 'Paved highway' },
@@ -637,7 +637,7 @@ const SHORTCUTS = [
     verdict: 'GAME-DAY DECISION. If the river is high from snowmelt or Trevor\'s panniers are catching on everything, take the highway. If conditions are good and you\'re feeling strong, the singletrack is an experience.',
   },
   {
-    name: 'Hwy 6: Salmo \u2192 Nelson',
+    name: 'Hwy 6: Salmo → Nelson',
     day: 4,
     trail: { dist: '48 km', time: '3-4 hrs', surface: 'Degraded rail trail near Salmo, grizzly closure risk' },
     highway: { dist: '41 km', time: '1.5-2 hrs', surface: 'Smooth pavement (best tarmac in the area)' },
@@ -649,7 +649,7 @@ const SHORTCUTS = [
 const ALERTS = [
   {
     type: 'red',
-    title: 'Grey Creek Pass \u2014 Snow Risk',
+    title: 'Grey Creek Pass — Snow Risk',
     desc: 'The road to Grey Creek Pass (2,072m) is normally closed to vehicles until early-mid July. Snow depth varies hugely year to year. In cold years, expect deep snow requiring hike-a-bike. In normal years, a few manageable snow patches by mid-June.',
     actions: [
       'Check BC Ministry of Forests snow stations: "2D05 Gray Creek Lower" and "2D10 Gray Creek Upper"',
@@ -665,7 +665,7 @@ const ALERTS = [
     actions: [
       'Check RDCK website or call ahead for current closure status',
       'If closed: Highway 6 is the official bypass (41 km, paved)',
-      'Carry bear spray regardless \u2014 this is serious bear country throughout',
+      'Carry bear spray regardless — this is serious bear country throughout',
     ],
   },
   {
@@ -675,7 +675,7 @@ const ALERTS = [
     actions: [
       'Winter schedule (before ~3rd week June): Balfour departures 6:30 AM to 9:40 PM',
       'Summer schedule (3rd week June+): Second vessel (MV Balfour) adds more frequent service',
-      'Plan to arrive 20+ minutes before departure \u2014 bikes load first',
+      'Plan to arrive 20+ minutes before departure — bikes load first',
       'Pro tip: Nap on the ferry. Forced rest before the push to Grey Creek.',
     ],
   },
@@ -714,7 +714,7 @@ const GEAR = [
     category: 'Sleep System',
     items: [
       'Lightweight tent or bivy',
-      'Sleeping bag rated to -5\u00b0C (summit temps!)',
+      'Sleeping bag rated to -5°C (summit temps!)',
       'Sleeping pad (insulated)',
       'Drysacks for food hanging',
       '10m+ paracord + carabiner (bear hang)',
@@ -723,7 +723,7 @@ const GEAR = [
   {
     category: 'Clothing',
     items: [
-      'Layers! Valley = 25-35\u00b0C, summit = near 0\u00b0C',
+      'Layers! Valley = 25-35°C, summit = near 0°C',
       'Rain jacket (packable)',
       'Arm/leg warmers',
       'Warm base layer for sleeping',
@@ -781,7 +781,7 @@ function Nav() {
   }, []);
   return (
     <nav className={`nav ${visible ? 'visible' : ''}`}>
-      <span className="nav-brand">Penticton \u2192 Kimberley</span>
+      <span className="nav-brand">Penticton → Kimberley</span>
       <div className="nav-links">
         <a href="#itinerary">Itinerary</a>
         <a href="#shortcuts">Shortcuts</a>
@@ -797,7 +797,7 @@ function Hero() {
   return (
     <header className="hero">
       <div className="hero-content">
-        <div className="hero-badge">BC Epic 1000 \u2022 June 2026</div>
+        <div className="hero-badge">BC Epic 1000 • June 2026</div>
         <h1>Penticton to Kimberley</h1>
         <p className="hero-subtitle">5 days of rail trails, mountain passes, and one unforgettable ferry crossing.<br/>Stephan & Trevor's bikepacking adventure.</p>
         <div className="hero-stats">
@@ -808,7 +808,7 @@ function Hero() {
           <div className="hero-stat"><div className="hero-stat-value">{TRIP_STATS.offRoad}</div><div className="hero-stat-label">Off Road</div></div>
         </div>
       </div>
-      <div className="scroll-indicator">\u2193 Scroll to explore</div>
+      <div className="scroll-indicator">↓ Scroll to explore</div>
     </header>
   );
 }
@@ -901,21 +901,21 @@ function ElevationProfile() {
         </defs>
       </svg>
       <div className="elevation-labels">
-        <span>0 km \u2014 Penticton</span>
-        <span>600 km \u2014 Kimberley</span>
+        <span>0 km — Penticton</span>
+        <span>600 km — Kimberley</span>
       </div>
     </div>
   );
 }
 
 const WP_ICONS = {
-  camp: { icon: '\u26fa', cls: 'wp-camp' },
-  resupply: { icon: '\ud83d\uded2', cls: 'wp-resupply' },
-  hazard: { icon: '\u26a0\ufe0f', cls: 'wp-hazard' },
-  shortcut: { icon: '\u21a9\ufe0f', cls: 'wp-shortcut' },
-  poi: { icon: '\ud83d\udccd', cls: 'wp-poi' },
-  water: { icon: '\ud83d\udca7', cls: 'wp-water' },
-  ferry: { icon: '\u26f4\ufe0f', cls: 'wp-ferry' },
+  camp: { icon: '⛺', cls: 'wp-camp' },
+  resupply: { icon: '🛒', cls: 'wp-resupply' },
+  hazard: { icon: '⚠️', cls: 'wp-hazard' },
+  shortcut: { icon: '↩️', cls: 'wp-shortcut' },
+  poi: { icon: '📍', cls: 'wp-poi' },
+  water: { icon: '💧', cls: 'wp-water' },
+  ferry: { icon: '⛴️', cls: 'wp-ferry' },
 };
 
 function DayCard({ data }) {
@@ -926,15 +926,15 @@ function DayCard({ data }) {
       <div className="day-header">
         <div className={`day-number ${data.crux ? 'crux' : ''}`}>{data.day}</div>
         <div className="day-info">
-          <div className="day-route">{data.from} \u2192 {data.to}</div>
+          <div className="day-route">{data.from} → {data.to}</div>
           <div className="day-meta">
             <span>{data.distance}</span>
-            <span>\u2191 {data.elevation}</span>
-            <span>\u23f1 {data.time}</span>
+            <span>↑ {data.elevation}</span>
+            <span>⏱ {data.time}</span>
             <span style={{color: data.crux ? '#f87171' : data.difficulty === 'Hard' ? '#fbbf24' : '#34d399', fontWeight: 600}}>{data.difficulty}</span>
           </div>
         </div>
-        <div className="day-expand-icon">\u25bc</div>
+        <div className="day-expand-icon">▼</div>
       </div>
       <div className="day-details">
         <div className="day-details-inner">
@@ -983,7 +983,7 @@ function ShortcutsSection() {
         <div className="section-label">Insurance Policies</div>
         <div className="section-title">Pavement Shortcuts</div>
         <p style={{ color: 'var(--text-secondary)', marginBottom: 32, fontSize: 15, maxWidth: 700 }}>
-          These aren't admissions of defeat \u2014 they're smart riding. Every hour saved on degraded trail is an hour of energy banked for Grey Creek Pass.
+          These aren't admissions of defeat — they're smart riding. Every hour saved on degraded trail is an hour of energy banked for Grey Creek Pass.
         </p>
         {SHORTCUTS.map((sc, i) => (
           <div className="shortcut-card" key={i}>
@@ -991,13 +991,13 @@ function ShortcutsSection() {
             <div className="shortcut-compare">
               <div className="shortcut-option trail">
                 <div style={{ fontWeight: 700, marginBottom: 4 }}>Trail</div>
-                <div>{sc.trail.dist} \u2022 {sc.trail.time}</div>
+                <div>{sc.trail.dist} • {sc.trail.time}</div>
                 <div style={{ fontSize: 12, marginTop: 4, opacity: 0.8 }}>{sc.trail.surface}</div>
               </div>
               <div className="shortcut-vs">VS</div>
               <div className="shortcut-option highway">
                 <div style={{ fontWeight: 700, marginBottom: 4 }}>Highway</div>
-                <div>{sc.highway.dist} \u2022 {sc.highway.time}</div>
+                <div>{sc.highway.dist} • {sc.highway.time}</div>
                 <div style={{ fontSize: 12, marginTop: 4, opacity: 0.8 }}>{sc.highway.surface}</div>
               </div>
             </div>
@@ -1111,9 +1111,9 @@ function App() {
 
       <footer className="footer">
         <div className="container">
-          <p>Penticton \u2192 Kimberley \u2022 BC Epic 1000 \u2022 June 2026</p>
+          <p>Penticton → Kimberley • BC Epic 1000 • June 2026</p>
           <p style={{ marginTop: 8 }}>
-            Route: <a href="https://www.strava.com/routes/3463368757543966168" target="_blank">Strava</a> &nbsp;\u2022&nbsp;
+            Route: <a href="https://www.strava.com/routes/3463368757543966168" target="_blank">Strava</a> &nbsp;•&nbsp;
             Official: <a href="https://www.bcepic1000.com/route-map" target="_blank">bcepic1000.com</a>
           </p>
           <p style={{ marginTop: 16, fontSize: 11, opacity: 0.5 }}>Built with vibes. Ride safe.</p>
