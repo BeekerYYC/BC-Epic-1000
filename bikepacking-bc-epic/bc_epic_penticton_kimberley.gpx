@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="BC Epic Trip Planner"
+     xmlns="http://www.topografix.com/GPX/1/1"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
+
+  <metadata>
+    <name>BC Epic 1000: Penticton to Kimberley — Waypoints</name>
+    <desc>5-day / 4-night bikepacking waypoints. Camps, resupply, hazards, shortcuts, POIs. Use alongside the official BC Epic 1000 GPX track and Strava route https://www.strava.com/routes/3463368757543966168</desc>
+  </metadata>
+
+  <!-- ========== DAY 1: Penticton → Beaverdell ========== -->
+
+  <wpt lat="49.4991" lon="-119.5937">
+    <ele>344</ele>
+    <name>START: Penticton</name>
+    <desc>Trip start. Last major city. Stock up on everything.</desc>
+    <sym>Flag, Green</sym>
+    <type>Start</type>
+  </wpt>
+
+  <wpt lat="49.5100" lon="-119.5850">
+    <ele>370</ele>
+    <name>D1: KVR Trail Start</name>
+    <desc>Begin KVR. 2.2% grade climb to Chute Lake (~820m gain, 30km). Eat well before.</desc>
+    <sym>Trail Head</sym>
+    <type>POI</type>
+  </wpt>
+
+  <wpt lat="49.6575" lon="-119.5367">
+    <ele>1265</ele>
+    <name>D1: Chute Lake Resort</name>
+    <desc>RESUPPLY. Famous pie. Food + camping. Fill water. Top of big climb.</desc>
+    <sym>Restaurant</sym>
+    <type>Resupply</type>
+  </wpt>
+
+  <wpt lat="49.8133" lon="-119.3933">
+    <ele>1240</ele>
+    <name>D1: Myra Canyon Trestles</name>
+    <desc>HIGHLIGHT! 18 trestles, 2 tunnels. Allow time for photos.</desc>
+    <sym>Scenic Area</sym>
+    <type>POI</type>
+  </wpt>
+
+  <wpt lat="49.7875" lon="-119.1842">
+    <ele>1250</ele>
+    <name>D1: McCulloch — Hwy 33 Shortcut</name>
+    <desc>SHORTCUT: Take Hwy 33 (42km paved) vs KVR trail (54km degraded). Saves 12km + 2-3hrs.</desc>
+    <sym>Crossing</sym>
+    <type>Shortcut</type>
+  </wpt>
+
+  <wpt lat="49.6500" lon="-119.1400">
+    <ele>1100</ele>
+    <name>D1: Water — Arlington Lakes</name>
+    <desc>Lake water. Filter required. Fill-up if taking trail route.</desc>
+    <sym>Water Source</sym>
+    <type>Water</type>
+  </wpt>
+
+  <wpt lat="49.4328" lon="-119.0595">
+    <ele>780</ele>
+    <name>CAMP 1: Beaverdell</name>
+    <desc>Night 1 camp. Convenience store for snacks. Wild camping along KVR south of town.</desc>
+    <sym>Campground</sym>
+    <type>Camp</type>
+  </wpt>
+
+  <!-- ========== DAY 2: Beaverdell → Christina Lake ========== -->
+
+  <wpt lat="49.0667" lon="-119.0000">
+    <ele>600</ele>
+    <name>D2: Rock Creek</name>
+    <desc>Small community. Gas station, general store. Limited services.</desc>
+    <sym>Gas Station</sym>
+    <type>Resupply</type>
+  </wpt>
+
+  <wpt lat="49.0003" lon="-118.7697">
+    <ele>580</ele>
+    <name>D2: Midway — KVR Mile Zero</name>
+    <desc>End of KVR, start of C&amp;W Rail Trail. Small town services.</desc>
+    <sym>City (Small)</sym>
+    <type>POI</type>
+  </wpt>
+
+  <wpt lat="49.0897" lon="-118.6778">
+    <ele>720</ele>
+    <name>D2: Greenwood</name>
+    <desc>Canada's smallest city. Historic mining town. Basic services.</desc>
+    <sym>City (Small)</sym>
+    <type>POI</type>
+  </wpt>
+
+  <wpt lat="49.0333" lon="-118.4394">
+    <ele>520</ele>
+    <name>D2: Grand Forks — MAJOR RESUPPLY</name>
+    <desc>MAJOR RESUPPLY. Petro Canada, A&amp;W, grocery. Stock up — next major resupply is Castlegar (~150km).</desc>
+    <sym>Shopping Center</sym>
+    <type>Resupply</type>
+  </wpt>
+
+  <wpt lat="49.0456" lon="-118.2064">
+    <ele>440</ele>
+    <name>CAMP 2: Christina Lake</name>
+    <desc>Night 2 camp. Beautiful lakeside. Warmest lake in BC. Texas Creek Campground or wild camping.</desc>
+    <sym>Campground</sym>
+    <type>Camp</type>
+  </wpt>
+
+  <!-- ========== DAY 3: Christina Lake → Castlegar ========== -->
+
+  <wpt lat="49.1000" lon="-118.2833">
+    <ele>1050</ele>
+    <name>D3: Eholt Summit Area</name>
+    <desc>Long climb from Grand Forks area. Watch for loose rock on descents.</desc>
+    <sym>Summit</sym>
+    <type>POI</type>
+  </wpt>
+
+  <wpt lat="49.1500" lon="-117.8500">
+    <ele>1200</ele>
+    <name>D3: Farron Summit</name>
+    <desc>HAZARD: C&amp;W high point ~1,200m. 35km climb approach. Check for lingering snow early June.</desc>
+    <sym>Summit</sym>
+    <type>Hazard</type>
+  </wpt>
+
+  <wpt lat="49.1533" lon="-117.8133">
+    <ele>1150</ele>
+    <name>D3: HAZARD — Bulldog Tunnel</name>
+    <desc>912m long, PITCH BLACK. Shared with logging trucks. LIGHTS REQUIRED. Ride single file, stay right.</desc>
+    <sym>Tunnel</sym>
+    <type>Hazard</type>
+  </wpt>
+
+  <wpt lat="49.2000" lon="-117.7700">
+    <ele>900</ele>
+    <name>D3: Water — Cascade Creek</name>
+    <desc>Creek water on descent from Farron. Filter required.</desc>
+    <sym>Water Source</sym>
+    <type>Water</type>
+  </wpt>
+
+  <wpt lat="49.3258" lon="-117.6593">
+    <ele>500</ele>
+    <name>CAMP 3: Castlegar</name>
+    <desc>Night 3 camp. Pharmasave, grocery, restaurants. Rest up for tomorrow's singletrack. Confusing navigation near bridges.</desc>
+    <sym>Campground</sym>
+    <type>Camp</type>
+  </wpt>
+
+  <!-- ========== DAY 4: Castlegar → Kootenay Bay ========== -->
+
+  <wpt lat="49.3200" lon="-117.6550">
+    <ele>495</ele>
+    <name>D4: DECISION — Singletrack vs Hwy 22</name>
+    <desc>SHORTCUT OPTION. Singletrack is 15km but brutal (sand, flooding, overgrown). Hwy 22 is 27km but paved. Panniers = take the highway.</desc>
+    <sym>Crossing</sym>
+    <type>Shortcut</type>
+  </wpt>
+
+  <wpt lat="49.0967" lon="-117.7111">
+    <ele>440</ele>
+    <name>D4: Trail — Husky Gas Station</name>
+    <desc>RESUPPLY. Gas station, food, ice cream. Recovery point after singletrack.</desc>
+    <sym>Gas Station</sym>
+    <type>Resupply</type>
+  </wpt>
+
+  <wpt lat="49.1917" lon="-117.2750">
+    <ele>600</ele>
+    <name>D4: Salmo — Hwy 6 Shortcut</name>
+    <desc>SHORTCUT: Hwy 6 (41km paved) vs trail (48km degraded). Saves 7km + 1-2hrs. MANDATORY if grizzly closure active.</desc>
+    <sym>Crossing</sym>
+    <type>Shortcut</type>
+  </wpt>
+
+  <wpt lat="49.3500" lon="-117.2800">
+    <ele>700</ele>
+    <name>D4: HAZARD — Grizzly Closure Zone</name>
+    <desc>Annual closure April 15 - June 15 (sometimes extended). Use Hwy 6 if closed. Serious bear habitat.</desc>
+    <sym>Danger Area</sym>
+    <type>Hazard</type>
+  </wpt>
+
+  <wpt lat="49.4928" lon="-117.2948">
+    <ele>540</ele>
+    <name>D4: Nelson — MAJOR RESUPPLY</name>
+    <desc>LAST MAJOR RESUPPLY before Grey Creek Pass. Stock up on 2 meals + snacks. Fill ALL water. DQ, restaurants, bike shops, grocery.</desc>
+    <sym>Shopping Center</sym>
+    <type>Resupply</type>
+  </wpt>
+
+  <wpt lat="49.6233" lon="-116.9500">
+    <ele>540</ele>
+    <name>D4: Balfour Ferry Terminal</name>
+    <desc>FREE ferry to Kootenay Bay. 35 min crossing. Winter schedule: 6:30 AM - 9:40 PM departures.</desc>
+    <sym>Boat Ramp</sym>
+    <type>Ferry</type>
+  </wpt>
+
+  <wpt lat="49.6350" lon="-116.8650">
+    <ele>540</ele>
+    <name>D4: Kootenay Bay Landing</name>
+    <desc>East shore arrival. Ride south along highway toward Crawford Bay / Grey Creek.</desc>
+    <sym>Boat Ramp</sym>
+    <type>Ferry</type>
+  </wpt>
+
+  <wpt lat="49.6361" lon="-116.8175">
+    <ele>540</ele>
+    <name>D4: Crawford Bay (alt camp)</name>
+    <desc>Boccalino Motel — food and rooms. Camp option if arriving late. Don't push to Grey Creek in the dark.</desc>
+    <sym>Lodging</sym>
+    <type>Camp</type>
+  </wpt>
+
+  <wpt lat="49.5833" lon="-116.7667">
+    <ele>540</ele>
+    <name>CAMP 4: Grey Creek</name>
+    <desc>Night 4 camp. Ask at Grey Creek Store about pass conditions + snow. Sleep early — tomorrow is the big one.</desc>
+    <sym>Campground</sym>
+    <type>Camp</type>
+  </wpt>
+
+  <!-- ========== DAY 5: Grey Creek → Kimberley (THE CRUX) ========== -->
+
+  <wpt lat="49.5700" lon="-116.7500">
+    <ele>550</ele>
+    <name>D5: Grey Creek Pass Road Start</name>
+    <desc>THE CRUX. 17km at 9% avg grade to 2,072m. No cell service. No supplies for 80km. Logging trucks. START EARLY.</desc>
+    <sym>Trail Head</sym>
+    <type>Hazard</type>
+  </wpt>
+
+  <wpt lat="49.5650" lon="-116.7450">
+    <ele>600</ele>
+    <name>D5: Water — Grey Creek (last before summit)</name>
+    <desc>FILL UP! Last reliable water before summit. Carry minimum 2L.</desc>
+    <sym>Water Source</sym>
+    <type>Water</type>
+  </wpt>
+
+  <wpt lat="49.5000" lon="-116.5700">
+    <ele>1950</ele>
+    <name>D5: Oliver Lake (emergency camp)</name>
+    <desc>~800m before summit. Outhouse + picnic tables. Emergency camp if needed.</desc>
+    <sym>Campground</sym>
+    <type>Camp</type>
+  </wpt>
+
+  <wpt lat="49.4900" lon="-116.5200">
+    <ele>2072</ele>
+    <name>D5: SUMMIT — Grey Creek Pass 2,072m</name>
+    <desc>HIGHEST POINT! Snow possible even late June. Road closed to vehicles until early July most years. Check conditions.</desc>
+    <sym>Summit</sym>
+    <type>Hazard</type>
+  </wpt>
+
+  <wpt lat="49.5200" lon="-116.3500">
+    <ele>1200</ele>
+    <name>D5: Water — South Fork Creek</name>
+    <desc>Creek crossing on descent. Good refill. Filter required.</desc>
+    <sym>Water Source</sym>
+    <type>Water</type>
+  </wpt>
+
+  <wpt lat="49.6600" lon="-115.9900">
+    <ele>1150</ele>
+    <name>D5: Kimberley Nature Park</name>
+    <desc>10km of trails to finish. Jimmy Russell Rd + Army Rd. Well-marked. Almost there!</desc>
+    <sym>Park</sym>
+    <type>POI</type>
+  </wpt>
+
+  <wpt lat="49.6697" lon="-115.9775">
+    <ele>1113</ele>
+    <name>FINISH: Kimberley Platzl</name>
+    <desc>YOU MADE IT! Bavarian pedestrian mall. Beers, food, families waiting. 600km done.</desc>
+    <sym>Flag, Red</sym>
+    <type>Finish</type>
+  </wpt>
+
+</gpx>

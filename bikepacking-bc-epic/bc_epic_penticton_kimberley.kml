@@ -1,0 +1,418 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name>BC Epic 1000: Penticton to Kimberley</name>
+    <description>5-day / 4-night bikepacking itinerary (~600 km). Waypoints for camps, resupply, hazards, pavement shortcuts, and points of interest. Use alongside the official BC Epic 1000 GPX track from bcepic1000.com and Strava route https://www.strava.com/routes/3463368757543966168</description>
+
+    <!-- ============ STYLES ============ -->
+    <Style id="style-start">
+      <IconStyle><Icon><href>http://maps.google.com/mapfiles/kml/paddle/go.png</href></Icon><scale>1.4</scale></IconStyle>
+    </Style>
+    <Style id="style-finish">
+      <IconStyle><Icon><href>http://maps.google.com/mapfiles/kml/paddle/red-stars.png</href></Icon><scale>1.4</scale></IconStyle>
+    </Style>
+    <Style id="style-camp">
+      <IconStyle><Icon><href>http://maps.google.com/mapfiles/kml/paddle/grn-circle.png</href></Icon><scale>1.2</scale></IconStyle>
+    </Style>
+    <Style id="style-resupply">
+      <IconStyle><Icon><href>http://maps.google.com/mapfiles/kml/paddle/blu-circle.png</href></Icon><scale>1.1</scale></IconStyle>
+    </Style>
+    <Style id="style-resupply-major">
+      <IconStyle><Icon><href>http://maps.google.com/mapfiles/kml/paddle/blu-stars.png</href></Icon><scale>1.2</scale></IconStyle>
+    </Style>
+    <Style id="style-hazard">
+      <IconStyle><Icon><href>http://maps.google.com/mapfiles/kml/paddle/red-circle.png</href></Icon><scale>1.1</scale></IconStyle>
+    </Style>
+    <Style id="style-shortcut">
+      <IconStyle><Icon><href>http://maps.google.com/mapfiles/kml/paddle/ylw-circle.png</href></Icon><scale>1.1</scale></IconStyle>
+    </Style>
+    <Style id="style-water">
+      <IconStyle><Icon><href>http://maps.google.com/mapfiles/kml/paddle/ltblu-circle.png</href></Icon><scale>1.0</scale></IconStyle>
+    </Style>
+    <Style id="style-poi">
+      <IconStyle><Icon><href>http://maps.google.com/mapfiles/kml/paddle/wht-circle.png</href></Icon><scale>1.0</scale></IconStyle>
+    </Style>
+    <Style id="style-ferry">
+      <IconStyle><Icon><href>http://maps.google.com/mapfiles/kml/paddle/purple-circle.png</href></Icon><scale>1.2</scale></IconStyle>
+    </Style>
+
+    <!-- ============================================================ -->
+    <!-- DAY 1: Penticton → Beaverdell (~130 km, ~2,200 m gain)       -->
+    <!-- ============================================================ -->
+    <Folder>
+      <name>Day 1: Penticton → Beaverdell</name>
+      <description>~130 km | ~2,200 m elevation | Chute Lake climb, Myra Canyon trestles, Hwy 33 shortcut option</description>
+
+      <Placemark>
+        <name>START: Penticton</name>
+        <description>Trip start. Last major city — stock up on everything. Bike shops, grocery, restaurants. Starbucks &amp; A&amp;W near trailhead.</description>
+        <styleUrl>#style-start</styleUrl>
+        <Point><coordinates>-119.5937,49.4991,344</coordinates></Point>
+      </Placemark>
+
+      <Placemark>
+        <name>KVR Trail Start — Penticton</name>
+        <description>Begin the Kettle Valley Rail Trail. Sustained 2.2% grade climb to Chute Lake (~820m gain over 30km). Steepest rail grade on the entire KVR. Eat well before starting.</description>
+        <styleUrl>#style-poi</styleUrl>
+        <Point><coordinates>-119.5850,49.5100,370</coordinates></Point>
+      </Placemark>
+
+      <Placemark>
+        <name>Chute Lake Resort</name>
+        <description>RESUPPLY + REST. Famous strawberry rhubarb pie a la mode. Food, camping available. Fill water here. ~30 km from Penticton, top of the big climb.</description>
+        <styleUrl>#style-resupply</styleUrl>
+        <Point><coordinates>-119.5367,49.6575,1265</coordinates></Point>
+      </Placemark>
+
+      <Placemark>
+        <name>Myra Canyon Trestles</name>
+        <description>HIGHLIGHT! 18 historic trestles and 2 tunnels. One of the most spectacular rail trail sections in North America. Rebuilt after the 2003 Okanagan Mountain fire. Allow time for photos!</description>
+        <styleUrl>#style-poi</styleUrl>
+        <Point><coordinates>-119.3933,49.8133,1240</coordinates></Point>
+      </Placemark>
+
+      <Placemark>
+        <name>McCulloch Station</name>
+        <description>Junction point. Hydraulic Lake nearby. From here the KVR trail south to Beaverdell is ATV-damaged, sandy, and rough. Consider Hwy 33 shortcut.</description>
+        <styleUrl>#style-poi</styleUrl>
+        <Point><coordinates>-119.1842,49.7875,1250</coordinates></Point>
+      </Placemark>
+
+      <Placemark>
+        <name>SHORTCUT: Hwy 33 Option (McCulloch → Beaverdell)</name>
+        <description>RECOMMENDED SHORTCUT. Hwy 33 is ~42 km (paved) vs ~54 km on degraded KVR trail. Saves ~12 km and 2-3 hours. Trail has heavy ATV damage, sand, mud. Highway has traffic but good surface. Bail-out points exist at Wilkinson Creek if you want to try the trail first.</description>
+        <styleUrl>#style-shortcut</styleUrl>
+        <Point><coordinates>-119.1842,49.7875,1250</coordinates></Point>
+      </Placemark>
+
+      <Placemark>
+        <name>Water: Arlington Lakes</name>
+        <description>Lake water — filter required. Good fill-up point on the KVR between McCulloch and Beaverdell (if taking trail).</description>
+        <styleUrl>#style-water</styleUrl>
+        <Point><coordinates>-119.1400,49.6500,1100</coordinates></Point>
+      </Placemark>
+
+      <Placemark>
+        <name>CAMP Night 1: Beaverdell</name>
+        <description>End of Day 1. Small convenience store for resupply (sandwiches, snacks, drinks). Wild camping options along the KVR south of town. Beaverdell Hotel may have rooms.</description>
+        <styleUrl>#style-camp</styleUrl>
+        <Point><coordinates>-119.0595,49.4328,780</coordinates></Point>
+      </Placemark>
+    </Folder>
+
+    <!-- ============================================================ -->
+    <!-- DAY 2: Beaverdell → Christina Lake (~140 km, ~1,400 m gain)  -->
+    <!-- ============================================================ -->
+    <Folder>
+      <name>Day 2: Beaverdell → Christina Lake</name>
+      <description>~140 km | ~1,400 m elevation | KVR to C&amp;W rail trail, Grand Forks resupply</description>
+
+      <Placemark>
+        <name>Rock Creek</name>
+        <description>Small community. Limited services. Gas station and general store.</description>
+        <styleUrl>#style-resupply</styleUrl>
+        <Point><coordinates>-119.0000,49.0667,600</coordinates></Point>
+      </Placemark>
+
+      <Placemark>
+        <name>Midway — KVR Mile Zero</name>
+        <description>Historic end of the Kettle Valley Railway. Small town with basic services. Transition from KVR to Columbia &amp; Western Rail Trail.</description>
+        <styleUrl>#style-poi</styleUrl>
+        <Point><coordinates>-118.7697,49.0003,580</coordinates></Point>
+      </Placemark>
+
+      <Placemark>
+        <name>Greenwood</name>
+        <description>Canada's smallest city. Historic mining town. Basic services available.</description>
+        <styleUrl>#style-poi</styleUrl>
+        <Point><coordinates>-118.6778,49.0897,720</coordinates></Point>
+      </Placemark>
+
+      <Placemark>
+        <name>Grand Forks — MAJOR RESUPPLY</name>
+        <description>MAJOR RESUPPLY POINT. Petro Canada, A&amp;W, grocery stores, restaurants. The Station Pub is in an old railroad station. Stock up — next major resupply is Castlegar/Trail (~150 km). Fill all water bottles.</description>
+        <styleUrl>#style-resupply-major</styleUrl>
+        <Point><coordinates>-118.4394,49.0333,520</coordinates></Point>
+      </Placemark>
+
+      <Placemark>
+        <name>CAMP Night 2: Christina Lake</name>
+        <description>End of Day 2. Beautiful lakeside camping. Texas Creek Campground or wild camping options. Warm swimming in the lake (warmest lake in BC). Some services in the village.</description>
+        <styleUrl>#style-camp</styleUrl>
+        <Point><coordinates>-118.2064,49.0456,440</coordinates></Point>
+      </Placemark>
+    </Folder>
+
+    <!-- ============================================================ -->
+    <!-- DAY 3: Christina Lake → Castlegar (~110 km, ~1,800 m gain)   -->
+    <!-- ============================================================ -->
+    <Folder>
+      <name>Day 3: Christina Lake → Castlegar</name>
+      <description>~110 km | ~1,800 m elevation | Farron Summit, Bulldog Tunnel, big descent to Castlegar</description>
+
+      <Placemark>
+        <name>Eholt Summit Area</name>
+        <description>Long climb from the Grand Forks area up to the Eholt/Farron corridor. Trail surface transitions to rougher C&amp;W grade. Watch for loose rock and shale on descents.</description>
+        <styleUrl>#style-poi</styleUrl>
+        <Point><coordinates>-118.2833,49.1000,1050</coordinates></Point>
+      </Placemark>
+
+      <Placemark>
+        <name>Farron Summit</name>
+        <description>HAZARD: High point of the C&amp;W trail at ~1,200m. Snow can linger on north-facing slopes into early June — should be clear by mid-June but check conditions. The approach is a 35 km climb.</description>
+        <styleUrl>#style-hazard</styleUrl>
+        <Point><coordinates>-117.8500,49.1500,1200</coordinates></Point>
+      </Placemark>
+
+      <Placemark>
+        <name>Bulldog Tunnel</name>
+        <description>HAZARD: 912m long, PITCH BLACK. Shared with logging trucks! BRING GOOD FRONT AND REAR LIGHTS. Ride single file, stay right. Listen for trucks before entering. One of the most memorable features on the route.</description>
+        <styleUrl>#style-hazard</styleUrl>
+        <Point><coordinates>-117.8133,49.1533,1150</coordinates></Point>
+      </Placemark>
+
+      <Placemark>
+        <name>Water: Cascade Creek</name>
+        <description>Creek water — filter required. Good fill-up on the descent from Farron toward Castlegar.</description>
+        <styleUrl>#style-water</styleUrl>
+        <Point><coordinates>-117.7700,49.2000,900</coordinates></Point>
+      </Placemark>
+
+      <Placemark>
+        <name>Lower Arrow Lake Viewpoint</name>
+        <description>Fantastic views of Lower Arrow Lake on the descent into Castlegar. Great photo spot.</description>
+        <styleUrl>#style-poi</styleUrl>
+        <Point><coordinates>-117.7200,49.2700,650</coordinates></Point>
+      </Placemark>
+
+      <Placemark>
+        <name>CAMP Night 3: Castlegar</name>
+        <description>End of Day 3. Resupply at Pharmasave, grocery stores, restaurants. Rest up — tomorrow starts with the notorious Castlegar-Trail singletrack. Navigation through town can be confusing near the bridges.</description>
+        <styleUrl>#style-camp</styleUrl>
+        <Point><coordinates>-117.6593,49.3258,500</coordinates></Point>
+      </Placemark>
+    </Folder>
+
+    <!-- ============================================================ -->
+    <!-- DAY 4: Castlegar → Kootenay Bay (~120 km, ~1,200 m gain)     -->
+    <!-- ============================================================ -->
+    <Folder>
+      <name>Day 4: Castlegar → Kootenay Bay</name>
+      <description>~120 km | ~1,200 m elevation | Singletrack or Hwy 22, Trail, Salmo, Nelson, Kootenay Lake Ferry</description>
+
+      <Placemark>
+        <name>DECISION: Singletrack vs Hwy 22</name>
+        <description>GAME-DAY DECISION. The Columbia River singletrack (BC Epic route) is ~15 km but overgrown, technical, deep sand, potential flooding. NOT friendly for panniers. Highway 22 is ~27 km but paved and predictable. If river is running high from snowmelt, take the highway. Trevor's panniers will thank him.</description>
+        <styleUrl>#style-shortcut</styleUrl>
+        <Point><coordinates>-117.6550,49.3200,495</coordinates></Point>
+      </Placemark>
+
+      <Placemark>
+        <name>Castlegar-Trail Singletrack</name>
+        <description>HAZARD: "Racers love to hate" this section. Overgrown, technical, deep sand causing crashes, steep hills, potential thigh-deep water crossings during high snowmelt. Allow 2-3 hours for 15 km. NOT doable with a bike trailer.</description>
+        <styleUrl>#style-hazard</styleUrl>
+        <Point><coordinates>-117.6700,49.2800,480</coordinates></Point>
+      </Placemark>
+
+      <Placemark>
+        <name>Trail — Husky Gas Station</name>
+        <description>RESUPPLY. Gas station with food, drinks, ice cream. Good recovery point after the singletrack. Restaurants in town.</description>
+        <styleUrl>#style-resupply</styleUrl>
+        <Point><coordinates>-117.7111,49.0967,440</coordinates></Point>
+      </Placemark>
+
+      <Placemark>
+        <name>Highway 3B (Trail → Salmo)</name>
+        <description>~42 km of PAVED road through the Beaver Valley (Montrose, Fruitvale). This is the official BC Epic route — already on pavement. One climb from Trail to Montrose.</description>
+        <styleUrl>#style-poi</styleUrl>
+        <Point><coordinates>-117.6083,49.0917,500</coordinates></Point>
+      </Placemark>
+
+      <Placemark>
+        <name>Salmo</name>
+        <description>Small town resupply. Subway. Decision point for Great Northern Rail Trail vs Highway 6.</description>
+        <styleUrl>#style-resupply</styleUrl>
+        <Point><coordinates>-117.2750,49.1917,600</coordinates></Point>
+      </Placemark>
+
+      <Placemark>
+        <name>SHORTCUT: Hwy 6 vs Great Northern Rail Trail</name>
+        <description>RECOMMENDED: Take Hwy 6 (41 km, smooth pavement) unless grizzly closure is confirmed LIFTED. Trail is 48 km with degraded surface near Salmo. Hwy 6 saves 7 km and 1-2 hours. Check closure status before deciding — the annual grizzly closure (Cottonwood Lake to Hall Siding) runs April 15 - June 15 but has been extended in recent years.</description>
+        <styleUrl>#style-shortcut</styleUrl>
+        <Point><coordinates>-117.2750,49.1917,600</coordinates></Point>
+      </Placemark>
+
+      <Placemark>
+        <name>Grizzly Bear Closure Zone</name>
+        <description>HAZARD: Annual grizzly closure ~10 km between Cottonwood Lake and Hall Siding. Active mid-April to mid-June (sometimes extended). If closed, MUST use Highway 6. Do not enter — this is serious bear habitat with collared grizzlies.</description>
+        <styleUrl>#style-hazard</styleUrl>
+        <Point><coordinates>-117.2800,49.3500,700</coordinates></Point>
+      </Placemark>
+
+      <Placemark>
+        <name>Nelson — MAJOR RESUPPLY</name>
+        <description>MAJOR RESUPPLY. Full-service city. DQ, restaurants, bike shops, grocery. Last major town before the remote Grey Creek Pass section. Stock up on 2 meals + snacks for the pass. Fill ALL water.</description>
+        <styleUrl>#style-resupply-major</styleUrl>
+        <Point><coordinates>-117.2948,49.4928,540</coordinates></Point>
+      </Placemark>
+
+      <Placemark>
+        <name>Balfour Ferry Terminal</name>
+        <description>FERRY: Free Kootenay Lake ferry to Kootenay Bay. Canada's longest free ferry (8 km, 35 min). Winter schedule (before ~3rd week June): departures 6:30 AM - 9:40 PM. Summer schedule adds second vessel. Plan arrival to minimize wait. Great nap opportunity on the crossing!</description>
+        <styleUrl>#style-ferry</styleUrl>
+        <Point><coordinates>-116.9500,49.6233,540</coordinates></Point>
+      </Placemark>
+
+      <Placemark>
+        <name>Kootenay Bay Ferry Landing</name>
+        <description>Arrival on the east shore of Kootenay Lake. From here, ride south along the highway.</description>
+        <styleUrl>#style-ferry</styleUrl>
+        <Point><coordinates>-116.8650,49.6350,540</coordinates></Point>
+      </Placemark>
+
+      <Placemark>
+        <name>Crawford Bay — Boccalino Motel</name>
+        <description>Optional camp/motel stop. Boccalino Motel has food and rooms. Small artisan village. If arriving late, this is a good stop rather than pushing to Grey Creek in the dark.</description>
+        <styleUrl>#style-camp</styleUrl>
+        <Point><coordinates>-116.8175,49.6361,540</coordinates></Point>
+      </Placemark>
+
+      <Placemark>
+        <name>CAMP Night 4: Grey Creek Area</name>
+        <description>End of Day 4. Camp near Grey Creek to get a head start on the pass tomorrow. Grey Creek Store has info on pass conditions — ASK about snow. Locals say Grey Creek water is safe but filter anyway. Get to sleep early — tomorrow is the big one.</description>
+        <styleUrl>#style-camp</styleUrl>
+        <Point><coordinates>-116.7667,49.5833,540</coordinates></Point>
+      </Placemark>
+    </Folder>
+
+    <!-- ============================================================ -->
+    <!-- DAY 5: Kootenay Bay → Kimberley (~100 km, ~1,800 m gain)     -->
+    <!-- ============================================================ -->
+    <Folder>
+      <name>Day 5: Grey Creek → Kimberley (THE CRUX)</name>
+      <description>~100 km | ~1,800 m elevation | Grey Creek Pass (2,072m summit), FSR descent, Kimberley finish. START EARLY!</description>
+
+      <Placemark>
+        <name>Grey Creek Pass Road Start</name>
+        <description>THE CRUX BEGINS. 17 km at 9% average grade to 2,072m summit. Active forestry road — watch for logging trucks. No cell service from here until approaching Kimberley. Carry minimum 2L water. Start as early as possible.</description>
+        <styleUrl>#style-hazard</styleUrl>
+        <Point><coordinates>-116.7500,49.5700,550</coordinates></Point>
+      </Placemark>
+
+      <Placemark>
+        <name>Water: Grey Creek (last reliable before summit)</name>
+        <description>Fill up here! Last reliable water before the summit push. Filter recommended despite locals saying it's safe.</description>
+        <styleUrl>#style-water</styleUrl>
+        <Point><coordinates>-116.7450,49.5650,600</coordinates></Point>
+      </Placemark>
+
+      <Placemark>
+        <name>Oliver Lake Recreation Site</name>
+        <description>~800m before summit. Outhouse and picnic tables. Emergency campsite if needed. Last flat spot before the summit.</description>
+        <styleUrl>#style-camp</styleUrl>
+        <Point><coordinates>-116.5700,49.5000,1950</coordinates></Point>
+      </Placemark>
+
+      <Placemark>
+        <name>Grey Creek Pass Summit — 2,072m</name>
+        <description>SUMMIT! Highest point of the entire trip at 2,072m (6,800 ft). SNOW WARNING: Deep snow possible even in late June — road normally closed to vehicles until early July. Check conditions at Grey Creek Store and West Kootenay Hiking Access Facebook group before attempting. If impassable, there is a lower-elevation 50km reroute but it adds significant distance.</description>
+        <styleUrl>#style-hazard</styleUrl>
+        <Point><coordinates>-116.5200,49.4900,2072</coordinates></Point>
+      </Placemark>
+
+      <Placemark>
+        <name>Summit Descent Start</name>
+        <description>12 km descent at ~6% average grade. Rough forestry road surface — control your speed! Terrain flattens significantly after the initial descent. Watch for washouts.</description>
+        <styleUrl>#style-poi</styleUrl>
+        <Point><coordinates>-116.4800,49.4800,1900</coordinates></Point>
+      </Placemark>
+
+      <Placemark>
+        <name>Water: South Fork Creek</name>
+        <description>Creek crossing on the descent. Good water fill-up point. Filter required.</description>
+        <styleUrl>#style-water</styleUrl>
+        <Point><coordinates>-116.3500,49.5200,1200</coordinates></Point>
+      </Placemark>
+
+      <Placemark>
+        <name>Kimberley Nature Park</name>
+        <description>10 km of trails through the nature park via Jimmy Russell Road and Army Road. Almost there! The trails are well-marked and enjoyable after the FSR grind.</description>
+        <styleUrl>#style-poi</styleUrl>
+        <Point><coordinates>-115.9900,49.6600,1150</coordinates></Point>
+      </Placemark>
+
+      <Placemark>
+        <name>FINISH: Kimberley Platzl</name>
+        <description>YOU MADE IT! Bavarian-themed pedestrian mall downtown. BC's highest city at 1,113m. Gas station, Subway, restaurants, grocery. FAMILIES ARE WAITING! Time for beers and hugs.</description>
+        <styleUrl>#style-finish</styleUrl>
+        <Point><coordinates>-115.9775,49.6697,1113</coordinates></Point>
+      </Placemark>
+    </Folder>
+
+    <!-- ============================================================ -->
+    <!-- OVERLAY: All Pavement Shortcuts                               -->
+    <!-- ============================================================ -->
+    <Folder>
+      <name>Pavement Shortcuts (Quick Reference)</name>
+      <description>All highway alternatives in one view. Yellow pins = shortcut decision points.</description>
+
+      <Placemark>
+        <name>SC1: Hwy 33 (McCulloch→Beaverdell)</name>
+        <description>Day 1. Paved 42 km vs degraded trail 54 km. Saves 12 km + 2-3 hours. RECOMMENDED — trail is ATV-destroyed.</description>
+        <styleUrl>#style-shortcut</styleUrl>
+        <Point><coordinates>-119.1842,49.7875,1250</coordinates></Point>
+      </Placemark>
+
+      <Placemark>
+        <name>SC2: Hwy 22 (Castlegar→Trail)</name>
+        <description>Day 4. Paved 27 km vs technical singletrack 15 km. Highway is longer but possibly faster and MUCH easier on loaded bikes. Game-day decision based on conditions.</description>
+        <styleUrl>#style-shortcut</styleUrl>
+        <Point><coordinates>-117.6550,49.3200,495</coordinates></Point>
+      </Placemark>
+
+      <Placemark>
+        <name>SC3: Hwy 6 (Salmo→Nelson)</name>
+        <description>Day 4. Paved 41 km vs degraded trail 48 km. Saves 7 km + 1-2 hours. MANDATORY if grizzly closure is active. Smooth tarmac. RECOMMENDED as default — treat trail as bonus.</description>
+        <styleUrl>#style-shortcut</styleUrl>
+        <Point><coordinates>-117.2750,49.1917,600</coordinates></Point>
+      </Placemark>
+    </Folder>
+
+    <!-- ============================================================ -->
+    <!-- OVERLAY: All Hazards                                          -->
+    <!-- ============================================================ -->
+    <Folder>
+      <name>Hazards &amp; Warnings (Quick Reference)</name>
+      <description>All hazard waypoints in one view. Red pins = proceed with caution.</description>
+
+      <Placemark>
+        <name>HZ1: Bulldog Tunnel (912m, pitch black)</name>
+        <description>Day 3. Nearly 1 km long, no lighting. Shared with logging trucks. LIGHTS REQUIRED — front and rear. Ride single file, stay right.</description>
+        <styleUrl>#style-hazard</styleUrl>
+        <Point><coordinates>-117.8133,49.1533,1150</coordinates></Point>
+      </Placemark>
+
+      <Placemark>
+        <name>HZ2: Castlegar-Trail Singletrack</name>
+        <description>Day 4. Overgrown, technical, deep sand, potential flooding. Panniers will struggle. Allow 2-3 hours for 15 km. Consider Hwy 22 alternative.</description>
+        <styleUrl>#style-hazard</styleUrl>
+        <Point><coordinates>-117.6700,49.2800,480</coordinates></Point>
+      </Placemark>
+
+      <Placemark>
+        <name>HZ3: Grizzly Bear Closure (Salmo-Nelson)</name>
+        <description>Day 4. Annual closure April 15 - June 15 (sometimes extended). ~10 km section. Use Hwy 6 if closed. Check status before riding.</description>
+        <styleUrl>#style-hazard</styleUrl>
+        <Point><coordinates>-117.2800,49.3500,700</coordinates></Point>
+      </Placemark>
+
+      <Placemark>
+        <name>HZ4: Grey Creek Pass (snow, no cell, no services)</name>
+        <description>Day 5. 17 km at 9% grade to 2,072m. Snow possible at summit even late June. No cell service. No supplies for 80 km. Logging truck traffic. THE most challenging section of the trip. Do NOT attempt sleep-deprived.</description>
+        <styleUrl>#style-hazard</styleUrl>
+        <Point><coordinates>-116.5200,49.4900,2072</coordinates></Point>
+      </Placemark>
+    </Folder>
+
+  </Document>
+</kml>
