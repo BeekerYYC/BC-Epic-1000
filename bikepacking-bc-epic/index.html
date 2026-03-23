@@ -7,6 +7,16 @@
   <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script>
+    // All symbols and data defined in regular script to avoid Babel UTF-8 issues
+    window.SYM = {
+      ARROW: '\u2192', UP: '\u2191', TIMER: '\u23f1', DOWN: '\u25bc',
+      BULL: '\u2022', DASH: '\u2014', DARR: '\u2193',
+      TENT: '\u26fa', CART: '\ud83d\uded2', WARN: '\u26a0\ufe0f',
+      BACK: '\u21a9\ufe0f', PIN: '\ud83d\udccd', DROP: '\ud83d\udca7',
+      SHIP: '\u26f4\ufe0f', DEG: '\u00b0',
+    };
+  </script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet" />
   <style>
     :root {
@@ -457,8 +467,23 @@
     .footer a { color: var(--accent); text-decoration: none; }
 
     /* ========== EASTER EGG ========== */
-    .easter-egg-trigger { cursor: pointer; transition: opacity 0.2s; }
-    .easter-egg-trigger:hover { opacity: 0.8; }
+    .easter-egg-btn {
+      display: inline-block;
+      margin-top: 12px;
+      margin-bottom: 20px;
+      padding: 6px 14px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      font-size: 14px;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.3s;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    .easter-egg-btn:hover { background: rgba(255,255,255,0.1); border-color: var(--accent); }
+    .easter-egg-btn:active { transform: scale(0.95); }
     .easter-egg-overlay {
       position: fixed;
       inset: 0;
@@ -558,13 +583,11 @@
 </head>
 <body>
 <div id="root"></div>
-<script type="text/babel">
-const { useState, useEffect, useRef } = React;
-
+<script>
 // ============================
-// DATA
+// DATA (in regular script block to preserve UTF-8)
 // ============================
-const TRIP_STATS = {
+window.TRIP_STATS = {
   distance: '~600',
   elevation: '~8,400',
   days: 5,
@@ -572,7 +595,7 @@ const TRIP_STATS = {
   offRoad: '~65%',
 };
 
-const DAYS = [
+window.DAYS = [
   {
     day: 1,
     from: 'Penticton',
@@ -677,7 +700,7 @@ const DAYS = [
   },
 ];
 
-const SHORTCUTS = [
+window.SHORTCUTS = [
   {
     name: 'Hwy 33: McCulloch → Beaverdell',
     day: 1,
@@ -704,7 +727,7 @@ const SHORTCUTS = [
   },
 ];
 
-const ALERTS = [
+window.ALERTS = [
   {
     type: 'red',
     title: 'Grey Creek Pass — Snow Risk',
@@ -739,7 +762,7 @@ const ALERTS = [
   },
 ];
 
-const RESUPPLY_POINTS = [
+window.RESUPPLY_POINTS = [
   { town: 'Penticton', day: 1, km: 0, services: 'Full city. Grocery, bike shops, restaurants, Starbucks, A&W', major: true },
   { town: 'Chute Lake Resort', day: 1, km: 30, services: 'Food, camping, water. Famous pie.', major: false },
   { town: 'Beaverdell', day: 1, km: 130, services: 'Convenience store. Sandwiches, snacks, drinks.', major: false },
@@ -753,7 +776,7 @@ const RESUPPLY_POINTS = [
   { town: 'Kimberley', day: 5, km: 600, services: 'Gas station, Subway, grocery, restaurants. FINISH!', major: true },
 ];
 
-const GEAR = [
+window.GEAR = [
   {
     category: 'Bike & Repair',
     items: [
@@ -826,6 +849,8 @@ const GEAR = [
   },
 ];
 
+</script>
+<script type="text/babel">
 // ============================
 // COMPONENTS
 // ============================
@@ -839,7 +864,7 @@ function Nav() {
   }, []);
   return (
     <nav className={`nav ${visible ? 'visible' : ''}`}>
-      <span className="nav-brand">Penticton → Kimberley</span>
+      <span className="nav-brand">Penticton {SYM.ARROW} Kimberley</span>
       <div className="nav-links">
         <a href="#itinerary">Itinerary</a>
         <a href="#shortcuts">Shortcuts</a>
@@ -853,13 +878,20 @@ function Nav() {
 
 function EasterEgg() {
   const [show, setShow] = useState(false);
+  const [taps, setTaps] = useState(0);
+  // Triple-tap the hero title OR click the hidden mountain icon
+  const handleTrigger = (e) => { e.stopPropagation(); setShow(true); };
   return (
     <>
-      <span className="easter-egg-trigger" onClick={(e) => { e.stopPropagation(); setShow(true); }}>Stephan & Trevor's bikepacking adventure.</span>
-      <div className={`easter-egg-overlay ${show ? 'visible' : ''}`} onClick={() => setShow(false)}>
+      <span className="easter-egg-btn" onClick={handleTrigger} onTouchEnd={(e) => { e.preventDefault(); handleTrigger(e); }} title="Who are these guys?">
+        {"( \u0361\u00b0 \u035c\u0296 \u0361\u00b0)"}
+      </span>
+      <div className={`easter-egg-overlay ${show ? 'visible' : ''}`}
+        onClick={() => setShow(false)}
+        onTouchEnd={(e) => { e.preventDefault(); setShow(false); }}>
         <img src="heroes.jpg" alt="The heroes" />
         <div className="easter-egg-caption">"Seasoned bikepackers preparing for the BC Epic"</div>
-        <div className="easter-egg-dismiss">click anywhere to close</div>
+        <div className="easter-egg-dismiss">tap anywhere to close</div>
       </div>
     </>
   );
@@ -869,9 +901,10 @@ function Hero() {
   return (
     <header className="hero">
       <div className="hero-content">
-        <div className="hero-badge">BC Epic 1000 • June 2026</div>
+        <div className="hero-badge">BC Epic 1000 {SYM.BULL} June 2026</div>
         <h1>Penticton to Kimberley</h1>
-        <p className="hero-subtitle">5 days of rail trails, mountain passes, and one unforgettable ferry crossing.<br/><EasterEgg /></p>
+        <p className="hero-subtitle">5 days of rail trails, mountain passes, and one unforgettable ferry crossing.<br/>Stephan & Trevor's bikepacking adventure.</p>
+        <EasterEgg />
         <div className="hero-stats">
           <div className="hero-stat"><div className="hero-stat-value">{TRIP_STATS.distance}</div><div className="hero-stat-label">Kilometres</div></div>
           <div className="hero-stat"><div className="hero-stat-value">{TRIP_STATS.elevation}</div><div className="hero-stat-label">Metres Gain</div></div>
@@ -880,7 +913,7 @@ function Hero() {
           <div className="hero-stat"><div className="hero-stat-value">{TRIP_STATS.offRoad}</div><div className="hero-stat-label">Off Road</div></div>
         </div>
       </div>
-      <div className="scroll-indicator">↓ Scroll to explore</div>
+      <div className="scroll-indicator">{SYM.DARR} Scroll to explore</div>
     </header>
   );
 }
@@ -973,21 +1006,21 @@ function ElevationProfile() {
         </defs>
       </svg>
       <div className="elevation-labels">
-        <span>0 km — Penticton</span>
-        <span>600 km — Kimberley</span>
+        <span>0 km {SYM.DASH} Penticton</span>
+        <span>600 km {SYM.DASH} Kimberley</span>
       </div>
     </div>
   );
 }
 
 const WP_ICONS = {
-  camp: { icon: '⛺', cls: 'wp-camp' },
-  resupply: { icon: '🛒', cls: 'wp-resupply' },
-  hazard: { icon: '⚠️', cls: 'wp-hazard' },
-  shortcut: { icon: '↩️', cls: 'wp-shortcut' },
-  poi: { icon: '📍', cls: 'wp-poi' },
-  water: { icon: '💧', cls: 'wp-water' },
-  ferry: { icon: '⛴️', cls: 'wp-ferry' },
+  camp: { icon: SYM.TENT, cls: 'wp-camp' },
+  resupply: { icon: SYM.CART, cls: 'wp-resupply' },
+  hazard: { icon: SYM.WARN, cls: 'wp-hazard' },
+  shortcut: { icon: SYM.BACK, cls: 'wp-shortcut' },
+  poi: { icon: SYM.PIN, cls: 'wp-poi' },
+  water: { icon: SYM.DROP, cls: 'wp-water' },
+  ferry: { icon: SYM.SHIP, cls: 'wp-ferry' },
 };
 
 function DayCard({ data }) {
@@ -998,15 +1031,15 @@ function DayCard({ data }) {
       <div className="day-header">
         <div className={`day-number ${data.crux ? 'crux' : ''}`}>{data.day}</div>
         <div className="day-info">
-          <div className="day-route">{data.from} → {data.to}</div>
+          <div className="day-route">{data.from} {SYM.ARROW} {data.to}</div>
           <div className="day-meta">
             <span>{data.distance}</span>
-            <span>↑ {data.elevation}</span>
-            <span>⏱ {data.time}</span>
+            <span>{SYM.UP} {data.elevation}</span>
+            <span>{SYM.TIMER} {data.time}</span>
             <span style={{color: data.crux ? '#f87171' : data.difficulty === 'Hard' ? '#fbbf24' : '#34d399', fontWeight: 600}}>{data.difficulty}</span>
           </div>
         </div>
-        <div className="day-expand-icon">▼</div>
+        <div className="day-expand-icon">{SYM.DOWN}</div>
       </div>
       <div className="day-details">
         <div className="day-details-inner">
@@ -1055,7 +1088,7 @@ function ShortcutsSection() {
         <div className="section-label">Insurance Policies</div>
         <div className="section-title">Pavement Shortcuts</div>
         <p style={{ color: 'var(--text-secondary)', marginBottom: 32, fontSize: 15, maxWidth: 700 }}>
-          These aren't admissions of defeat — they're smart riding. Every hour saved on degraded trail is an hour of energy banked for Grey Creek Pass.
+          These aren't admissions of defeat {SYM.DASH} they're smart riding. Every hour saved on degraded trail is an hour of energy banked for Grey Creek Pass.
         </p>
         {SHORTCUTS.map((sc, i) => (
           <div className="shortcut-card" key={i}>
@@ -1063,13 +1096,13 @@ function ShortcutsSection() {
             <div className="shortcut-compare">
               <div className="shortcut-option trail">
                 <div style={{ fontWeight: 700, marginBottom: 4 }}>Trail</div>
-                <div>{sc.trail.dist} • {sc.trail.time}</div>
+                <div>{sc.trail.dist} {SYM.BULL} {sc.trail.time}</div>
                 <div style={{ fontSize: 12, marginTop: 4, opacity: 0.8 }}>{sc.trail.surface}</div>
               </div>
               <div className="shortcut-vs">VS</div>
               <div className="shortcut-option highway">
                 <div style={{ fontWeight: 700, marginBottom: 4 }}>Highway</div>
-                <div>{sc.highway.dist} • {sc.highway.time}</div>
+                <div>{sc.highway.dist} {SYM.BULL} {sc.highway.time}</div>
                 <div style={{ fontSize: 12, marginTop: 4, opacity: 0.8 }}>{sc.highway.surface}</div>
               </div>
             </div>
@@ -1183,9 +1216,9 @@ function App() {
 
       <footer className="footer">
         <div className="container">
-          <p>Penticton → Kimberley • BC Epic 1000 • June 2026</p>
+          <p>Penticton {SYM.ARROW} Kimberley {SYM.BULL} BC Epic 1000 {SYM.BULL} June 2026</p>
           <p style={{ marginTop: 8 }}>
-            Route: <a href="https://www.strava.com/routes/3463368757543966168" target="_blank">Strava</a> &nbsp;•&nbsp;
+            Route: <a href="https://www.strava.com/routes/3463368757543966168" target="_blank">Strava</a> {SYM.BULL}
             Official: <a href="https://www.bcepic1000.com/route-map" target="_blank">bcepic1000.com</a>
           </p>
           <p style={{ marginTop: 16, fontSize: 11, opacity: 0.5 }}>Built with vibes. Ride safe.</p>
