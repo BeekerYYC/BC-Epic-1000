@@ -467,23 +467,25 @@
     .footer a { color: var(--accent); text-decoration: none; }
 
     /* ========== EASTER EGG ========== */
-    .easter-egg-btn {
+    .easy-mode-btn {
       display: inline-block;
-      margin-top: 12px;
-      margin-bottom: 20px;
-      padding: 6px 14px;
-      border-radius: 20px;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid var(--border);
+      margin-top: 16px;
+      padding: 10px 24px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, rgba(251,191,36,0.15), rgba(239,68,68,0.15));
+      border: 1px solid rgba(251,191,36,0.3);
+      font-family: 'Inter', sans-serif;
       font-size: 14px;
-      color: var(--text-muted);
+      font-weight: 700;
+      color: #fbbf24;
       cursor: pointer;
       transition: all 0.3s;
       -webkit-tap-highlight-color: transparent;
       user-select: none;
+      letter-spacing: 0.5px;
     }
-    .easter-egg-btn:hover { background: rgba(255,255,255,0.1); border-color: var(--accent); }
-    .easter-egg-btn:active { transform: scale(0.95); }
+    .easy-mode-btn:hover { background: linear-gradient(135deg, rgba(251,191,36,0.25), rgba(239,68,68,0.25)); border-color: #fbbf24; transform: scale(1.03); }
+    .easy-mode-btn:active { transform: scale(0.97); }
     .easter-egg-overlay {
       position: fixed;
       inset: 0;
@@ -851,6 +853,8 @@ window.GEAR = [
 
 </script>
 <script type="text/babel">
+const { useState, useEffect } = React;
+
 // ============================
 // COMPONENTS
 // ============================
@@ -876,23 +880,20 @@ function Nav() {
   );
 }
 
-function EasterEgg() {
+function EasyMode() {
   const [show, setShow] = useState(false);
-  const [taps, setTaps] = useState(0);
-  // Triple-tap the hero title OR click the hidden mountain icon
-  const handleTrigger = (e) => { e.stopPropagation(); setShow(true); };
+  const open = (e) => { e.stopPropagation(); setShow(true); };
+  const close = (e) => { if (e) e.stopPropagation(); setShow(false); };
   return (
     <>
-      <span className="easter-egg-btn" onClick={handleTrigger} onTouchEnd={(e) => { e.preventDefault(); handleTrigger(e); }} title="Who are these guys?">
-        {"( \u0361\u00b0 \u035c\u0296 \u0361\u00b0)"}
-      </span>
-      <div className={`easter-egg-overlay ${show ? 'visible' : ''}`}
-        onClick={() => setShow(false)}
-        onTouchEnd={(e) => { e.preventDefault(); setShow(false); }}>
-        <img src="heroes.jpg" alt="The heroes" />
-        <div className="easter-egg-caption">"Seasoned bikepackers preparing for the BC Epic"</div>
+      <button className="easy-mode-btn" onClick={open} onTouchEnd={(e) => { e.preventDefault(); open(e); }}>
+        Easy Mode
+      </button>
+      {show && <div className="easter-egg-overlay visible" onClick={close} onTouchEnd={(e) => { e.preventDefault(); close(e); }}>
+        <img src="heroes.jpg" alt="Easy mode activated" />
+        <div className="easter-egg-caption">"Alternative transport for Grey Creek Pass"</div>
         <div className="easter-egg-dismiss">tap anywhere to close</div>
-      </div>
+      </div>}
     </>
   );
 }
@@ -904,7 +905,6 @@ function Hero() {
         <div className="hero-badge">BC Epic 1000 {SYM.BULL} June 2026</div>
         <h1>Penticton to Kimberley</h1>
         <p className="hero-subtitle">5 days of rail trails, mountain passes, and one unforgettable ferry crossing.<br/>Stephan & Trevor's bikepacking adventure.</p>
-        <EasterEgg />
         <div className="hero-stats">
           <div className="hero-stat"><div className="hero-stat-value">{TRIP_STATS.distance}</div><div className="hero-stat-label">Kilometres</div></div>
           <div className="hero-stat"><div className="hero-stat-value">{TRIP_STATS.elevation}</div><div className="hero-stat-label">Metres Gain</div></div>
@@ -1075,6 +1075,7 @@ function DayCard({ data }) {
               {data.tip.text}
             </div>
           )}
+          {data.crux && <EasyMode />}
         </div>
       </div>
     </div>
