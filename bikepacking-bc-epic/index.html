@@ -603,115 +603,122 @@
 // DATA (in regular script block to preserve UTF-8)
 // ============================
 window.TRIP_STATS = {
-  distance: '~600',
-  elevation: '~8,400',
+  distance: '574',
+  elevation: '5,960',
   days: 5,
   nights: 4,
   offRoad: '~65%',
+};
+window.TRIP_DATES = {
+  depart: 'Fri Jun 12, 2026',
+  finish: 'Tue Jun 16, 2026',
 };
 
 window.DAYS = [
   {
     day: 1,
+    date: 'Fri Jun 12',
     from: 'Penticton',
     to: 'Beaverdell',
-    distance: '~130 km',
-    elevation: '~2,200 m',
-    time: '8-10 hrs',
+    distance: '148 km',
+    elevation: '+1,060 m / -640 m',
+    time: '9-11 hrs',
     difficulty: 'Hard',
     terrain: { gravel: 55, paved: 30, singletrack: 0, fsr: 15 },
     crux: false,
     waypoints: [
-      { type: 'poi', name: 'KVR Trail Start', desc: 'Begin the Kettle Valley Rail Trail. 2.2% grade climb.' },
-      { type: 'resupply', name: 'Chute Lake Resort (km ~30)', desc: 'Famous pie. Food, camping, water. Top of the big climb.' },
-      { type: 'poi', name: 'Myra Canyon Trestles (km ~45)', desc: '18 trestles + 2 tunnels. Most spectacular section. Allow photo time!' },
-      { type: 'shortcut', name: 'Hwy 33 at McCulloch (km ~65)', desc: 'TAKE IT. 42 km paved vs 54 km degraded trail. Saves 12 km + 2-3 hrs.' },
+      { type: 'poi', name: 'KVR Trail Start (km 0)', desc: 'Begin the Kettle Valley Rail Trail. 2.2% grade climb out of Penticton.' },
+      { type: 'resupply', name: 'Chute Lake Resort (km 46)', desc: 'Famous pie. Food, camping, water. Top of the big climb at 1,194m.' },
+      { type: 'poi', name: 'Myra Canyon Trestles', desc: '18 trestles + 2 tunnels. Most spectacular section. Allow photo time!' },
+      { type: 'shortcut', name: 'Hwy 33 at McCulloch (km 75)', desc: 'TAKE IT. 42 km paved vs 54 km degraded trail. Saves 12 km + 2-3 hrs.' },
       { type: 'water', name: 'Arlington Lakes', desc: 'If taking trail route. Filter required.' },
-      { type: 'camp', name: 'Beaverdell', desc: 'Convenience store. Wild camping along KVR south of town.' },
+      { type: 'camp', name: 'Beaverdell (km 148)', desc: 'Convenience store. Wild camping along KVR south of town.' },
     ],
-    tip: { type: 'warning', text: 'Big climbing day. The Penticton-to-Chute Lake climb is ~820m over 30 km. Eat a massive breakfast and carry plenty of snacks. The Hwy 33 shortcut after McCulloch is insurance for your legs on Day 1.' },
+    tip: { type: 'warning', text: 'Big climbing day. The Penticton-to-Chute Lake climb is ~820m over 46 km. Eat a massive breakfast and carry plenty of snacks. The Hwy 33 shortcut after McCulloch is insurance for your legs on Day 1.' },
   },
   {
     day: 2,
+    date: 'Sat Jun 13',
     from: 'Beaverdell',
-    to: 'Christina Lake',
-    distance: '~140 km',
-    elevation: '~1,400 m',
-    time: '8-9 hrs',
+    to: 'Grand Forks',
+    distance: '122 km',
+    elevation: '+470 m / -750 m',
+    time: '7-8 hrs',
     difficulty: 'Moderate',
-    terrain: { gravel: 70, paved: 15, singletrack: 0, fsr: 15 },
+    terrain: { gravel: 75, paved: 15, singletrack: 0, fsr: 10 },
     crux: false,
     waypoints: [
-      { type: 'resupply', name: 'Rock Creek (km ~50)', desc: 'Gas station, general store. Limited services.' },
-      { type: 'poi', name: 'Midway — KVR Mile Zero (km ~80)', desc: 'End of KVR. Transition to Columbia & Western Rail Trail.' },
-      { type: 'poi', name: 'Greenwood (km ~95)', desc: "Canada's smallest city. Historic mining town." },
-      { type: 'resupply', name: 'Grand Forks (km ~110)', desc: 'MAJOR RESUPPLY. Petro Canada, A&W, grocery. Stock up!' },
-      { type: 'camp', name: 'Christina Lake (km ~140)', desc: 'Beautiful lakeside camping. Warmest lake in BC. Texas Creek Campground.' },
+      { type: 'resupply', name: 'Rock Creek (km 50)', desc: 'Gas station, general store. Limited services.' },
+      { type: 'poi', name: 'Midway — KVR Mile Zero (km 69)', desc: 'End of KVR. Transition to Columbia & Western Rail Trail.' },
+      { type: 'poi', name: 'Greenwood', desc: "Canada's smallest city. Historic mining town." },
+      { type: 'resupply', name: 'Grand Forks (km 122)', desc: 'MAJOR RESUPPLY. Petro Canada, A&W, grocery, The Station Pub. Best food + bed between Penticton and Nelson.' },
+      { type: 'camp', name: 'Grand Forks', desc: 'Camp options at Grand Forks City RV / Boundary Country Regional Park. Earned a real meal.' },
     ],
-    tip: { type: 'success', text: 'Most chill day. Relatively gentle grades on the rail trail. Grand Forks is the best resupply between Penticton and Nelson — take advantage. Christina Lake swimming is earned.' },
+    tip: { type: 'success', text: 'Most chill day. Mostly downhill rail trail with gentle grades. Grand Forks is the best resupply between Penticton and Nelson — take advantage. Stock up here for tomorrow.' },
   },
   {
     day: 3,
-    from: 'Christina Lake',
+    date: 'Sun Jun 14',
+    from: 'Grand Forks',
     to: 'Castlegar',
-    distance: '~110 km',
-    elevation: '~1,800 m',
+    distance: '117 km',
+    elevation: '+990 m / -1,060 m',
     time: '8-10 hrs',
     difficulty: 'Hard',
     terrain: { gravel: 80, paved: 10, singletrack: 0, fsr: 10 },
     crux: false,
     waypoints: [
-      { type: 'poi', name: 'Eholt Summit (km ~30)', desc: 'Long climb from Christina Lake. Loose rock and shale on descents.' },
-      { type: 'hazard', name: 'Farron Summit (km ~60)', desc: 'C&W high point ~1,200m. 35 km climb approach.' },
-      { type: 'hazard', name: 'Bulldog Tunnel (km ~65)', desc: '912m long, PITCH BLACK. Logging trucks. LIGHTS REQUIRED!' },
-      { type: 'poi', name: 'Lower Arrow Lake Views (km ~85)', desc: 'Fantastic views on descent. Great photo spot.' },
+      { type: 'water', name: 'Christina Lake (km 30)', desc: 'Warmest lake in BC. Quick swim stop — you\'ve earned it before the climb.' },
+      { type: 'poi', name: 'Eholt Summit', desc: 'Long climb from Christina Lake. Loose rock and shale on descents.' },
+      { type: 'hazard', name: 'Farron Summit (km ~80)', desc: 'C&W high point ~1,200m. Long climb approach.' },
+      { type: 'hazard', name: 'Bulldog Tunnel', desc: '912m long, PITCH BLACK. Logging trucks possible. LIGHTS REQUIRED!' },
+      { type: 'poi', name: 'Lower Arrow Lake Views', desc: 'Fantastic views on descent. Great photo spot.' },
       { type: 'water', name: 'Cascade Creek', desc: 'Creek water on descent. Filter required.' },
-      { type: 'camp', name: 'Castlegar (km ~110)', desc: 'Pharmasave, grocery, restaurants. Rest up for the singletrack tomorrow.' },
+      { type: 'camp', name: 'Castlegar (km 117)', desc: 'Pharmasave, grocery, restaurants, motels. Real bed option before the pass approach.' },
     ],
     tip: { type: 'warning', text: 'Bulldog Tunnel is no joke. 912m of pitch black, shared with logging trucks. Have front AND rear lights charged. Ride single file, stay right, and listen for trucks before entering. Memorable though!' },
   },
   {
     day: 4,
+    date: 'Mon Jun 15',
     from: 'Castlegar',
-    to: 'Kootenay Bay',
-    distance: '~120 km',
-    elevation: '~1,200 m',
-    time: '8-10 hrs',
-    difficulty: 'Moderate-Hard',
-    terrain: { gravel: 10, paved: 50, singletrack: 12, fsr: 28 },
+    to: 'Grey Creek',
+    distance: '107 km',
+    elevation: '+1,820 m / -1,130 m',
+    time: '9-11 hrs',
+    difficulty: 'Hard',
+    terrain: { gravel: 30, paved: 55, singletrack: 0, fsr: 15 },
     crux: false,
     waypoints: [
-      { type: 'shortcut', name: 'Singletrack vs Hwy 22', desc: 'Game-day decision. Singletrack = 15 km brutal. Highway = 27 km paved. Panniers? Highway.' },
-      { type: 'resupply', name: 'Trail — Husky Gas (km ~40)', desc: 'Food, drinks, ice cream. Recovery after singletrack.' },
-      { type: 'poi', name: 'Hwy 3B to Salmo (km ~80)', desc: '42 km paved through Beaver Valley. Already on the official route.' },
-      { type: 'shortcut', name: 'Salmo: Hwy 6 vs Rail Trail', desc: 'Default to Hwy 6 (41 km, smooth). Trail (48 km) only if grizzly closure lifted.' },
-      { type: 'hazard', name: 'Grizzly Closure Zone', desc: 'April 15 - June 15 (sometimes extended). 10 km closed for grizzly habitat.' },
-      { type: 'resupply', name: 'Nelson (km ~100)', desc: 'LAST MAJOR RESUPPLY. Stock up on 2 meals + snacks for the pass. Fill ALL water.' },
-      { type: 'ferry', name: 'Balfour Ferry (km ~115)', desc: 'Free. 35 min crossing. Last departure ~9:40 PM. Great nap opportunity!' },
-      { type: 'camp', name: 'Grey Creek area', desc: 'Camp near Grey Creek. Ask at the store about pass conditions. Sleep early.' },
+      { type: 'poi', name: 'Kootenay River corridor', desc: 'Castlegar → Nelson direct along the river. Mostly paved Hwy 3A. Rolling.' },
+      { type: 'resupply', name: 'Nelson (km 45)', desc: 'LAST MAJOR RESUPPLY. Lunch stop. DQ, restaurants, bike shops, grocery. Stock up on 2 meals + snacks for the pass. Fill ALL water.' },
+      { type: 'ferry', name: 'Balfour Ferry (km 83)', desc: "Free. 8 km / 35 min crossing of Kootenay Lake. Canada's longest free ferry. Bikes load first — arrive 20+ min early." },
+      { type: 'poi', name: 'Kootenay Bay landing (km 91)', desc: 'East side of the lake. Light rolling road south to Grey Creek.' },
+      { type: 'camp', name: 'Grey Creek (km 107)', desc: 'Grey Creek Store closes early — get pass conditions before. Camp at Grey Creek Park / wild camp near pass road. Sleep EARLY.' },
     ],
-    tip: { type: 'info', text: 'This is your "recovery day" — ~50% pavement. Save your legs for tomorrow. Nelson is your last chance to stock up before 80 km of nothing. The ferry is a forced rest — embrace the nap.' },
+    tip: { type: 'info', text: "Heaviest climbing day — most of it after Nelson. Mostly paved, but the run-up to Grey Creek climbs ~500m in the last 15km. The ferry is a forced rest — embrace the nap. Get pass intel from Grey Creek Store before they close." },
   },
   {
     day: 5,
+    date: 'Tue Jun 16',
     from: 'Grey Creek',
     to: 'Kimberley',
-    distance: '~100 km',
-    elevation: '~1,800 m',
+    distance: '80 km',
+    elevation: '+1,620 m / -1,720 m',
     time: '8-10 hrs',
     difficulty: 'EXTREME',
     terrain: { gravel: 10, paved: 15, singletrack: 5, fsr: 70 },
     crux: true,
     waypoints: [
-      { type: 'hazard', name: 'Grey Creek Pass Road Start', desc: '17 km at 9% avg grade to 2,072m. No cell. No services for 80 km. START EARLY.' },
-      { type: 'water', name: 'Grey Creek (last before summit)', desc: 'FILL UP! Carry minimum 2L. Last reliable water.' },
+      { type: 'hazard', name: 'Grey Creek Pass Road (km 0)', desc: '17 km at ~9% avg grade to 2,089m. No cell. No services for 80 km. START AT FIRST LIGHT.' },
+      { type: 'water', name: 'Grey Creek (last before summit)', desc: 'FILL UP! Carry minimum 2L. Last reliable water before pass.' },
       { type: 'camp', name: 'Oliver Lake (emergency)', desc: '~800m before summit. Outhouse + tables. Bail-out camp if needed.' },
-      { type: 'hazard', name: 'SUMMIT — 2,072m', desc: 'Highest point! Snow possible even late June. Check conditions beforehand.' },
+      { type: 'hazard', name: 'SUMMIT — 2,089m (km ~17)', desc: 'Highest point of the trip! Snow possible even mid-June. Check conditions at Grey Creek Store the day before.' },
       { type: 'water', name: 'South Fork Creek', desc: 'Creek on descent. Good refill.' },
-      { type: 'poi', name: 'Kimberley Nature Park', desc: '10 km of trails to finish. Almost there!' },
-      { type: 'camp', name: 'FINISH: Kimberley Platzl', desc: 'YOU MADE IT. Families waiting. Beers. 600 km done.' },
+      { type: 'poi', name: 'Kimberley Nature Park', desc: 'Final trails into town. Almost there!' },
+      { type: 'camp', name: 'FINISH: Kimberley Platzl (km 80)', desc: 'YOU MADE IT. Families waiting. Beers. 574 km done.' },
     ],
-    tip: { type: 'danger', text: 'THE CRUX. Grey Creek Pass is 17 km of relentless 9% grade to 2,072m. Snow is possible at the summit even in late June — the road is normally closed to vehicles until early July. Do NOT attempt sleep-deprived. Start at first light. The families are waiting in Kimberley. Dig deep.' },
+    tip: { type: 'danger', text: 'THE CRUX. Grey Creek Pass is 17 km of relentless 9% grade to 2,089m. Snow is possible at the summit even in mid-June — the road is normally closed to vehicles until early July. Do NOT attempt sleep-deprived. Start at first light. The families are waiting in Kimberley. Dig deep.' },
   },
 ];
 
@@ -724,44 +731,29 @@ window.SHORTCUTS = [
     saves: '12 km + 2-3 hours',
     verdict: 'RECOMMENDED. Trail is heavily degraded by ATV traffic. Take the highway and save your legs for the next 4 days.',
   },
-  {
-    name: 'Hwy 22: Castlegar → Trail',
-    day: 4,
-    trail: { dist: '15 km', time: '2-3 hrs', surface: 'Overgrown singletrack, deep sand, flooding risk' },
-    highway: { dist: '27 km', time: '1-1.5 hrs', surface: 'Paved highway' },
-    saves: 'Potentially 1-2 hours (highway is longer but faster)',
-    verdict: 'GAME-DAY DECISION. If the river is high from snowmelt or Trevor\'s panniers are catching on everything, take the highway. If conditions are good and you\'re feeling strong, the singletrack is an experience.',
-  },
-  {
-    name: 'Hwy 6: Salmo → Nelson',
-    day: 4,
-    trail: { dist: '48 km', time: '3-4 hrs', surface: 'Degraded rail trail near Salmo, grizzly closure risk' },
-    highway: { dist: '41 km', time: '1.5-2 hrs', surface: 'Smooth pavement (best tarmac in the area)' },
-    saves: '7 km + 1-2 hours',
-    verdict: 'DEFAULT TO HIGHWAY. Mandatory if grizzly closure is active. Even if open, the trail near Salmo is degraded. Treat the trail as a bonus, not the plan.',
-  },
 ];
 
 window.ALERTS = [
   {
     type: 'red',
-    title: 'Grey Creek Pass — Snow Risk',
-    desc: 'The road to Grey Creek Pass (2,072m) is normally closed to vehicles until early-mid July. Snow depth varies hugely year to year. In cold years, expect deep snow requiring hike-a-bike. In normal years, a few manageable snow patches by mid-June.',
+    title: 'Grey Creek Pass — Snow Risk (Tue Jun 16)',
+    desc: 'The road to Grey Creek Pass (2,089m) is normally closed to vehicles until early-mid July. Snow depth varies hugely year to year. In cold years, expect deep snow requiring hike-a-bike. In normal years, a few manageable snow patches by mid-June. Departing Penticton Jun 12 puts the pass attempt on Jun 16 — early-window timing.',
     actions: [
-      'Check BC Ministry of Forests snow stations: "2D05 Gray Creek Lower" and "2D10 Gray Creek Upper"',
+      'Check BC Ministry of Forests snow stations: "2D05 Gray Creek Lower" and "2D10 Gray Creek Upper" the week before departure',
       'Join the West Kootenay Hiking Access Facebook group (5,000+ local contributors)',
-      'Ask at Grey Creek Store the day before your crossing',
-      'Week 3 of June is safer than Week 2',
+      'Ask at Grey Creek Store on Jun 15 (Day 4) — they have the freshest intel',
+      'If snow looks bad: bail-out is to detour via Cranbrook on paved Hwy 3A from Creston (longer but safe)',
     ],
   },
   {
     type: 'yellow',
-    title: 'Grizzly Bear Trail Closure (Salmo-Nelson)',
-    desc: 'Annual closure of ~10 km between Cottonwood Lake and Hall Siding runs April 15 to June 15, but has been issued earlier in recent years due to increased bear activity.',
+    title: 'Bear Country — Whole Route',
+    desc: 'V2 route skips the Salmo-Nelson rail trail (and its annual grizzly closure), but you\'re still riding through serious bear habitat for 5 days. The Castlegar→Nelson corridor and the Grey Creek Pass approach are both active.',
     actions: [
-      'Check RDCK website or call ahead for current closure status',
-      'If closed: Highway 6 is the official bypass (41 km, paved)',
-      'Carry bear spray regardless — this is serious bear country throughout',
+      'Bear spray on hip, not in the pannier',
+      'Hang food well away from camp every night (10m+ paracord)',
+      'Make noise on blind corners, especially on FSRs',
+      'No food/scented items in tent. Cook 50m+ from sleeping area',
     ],
   },
   {
@@ -779,16 +771,17 @@ window.ALERTS = [
 
 window.RESUPPLY_POINTS = [
   { town: 'Penticton', day: 1, km: 0, services: 'Full city. Grocery, bike shops, restaurants, Starbucks, A&W', major: true },
-  { town: 'Chute Lake Resort', day: 1, km: 30, services: 'Food, camping, water. Famous pie.', major: false },
-  { town: 'Beaverdell', day: 1, km: 130, services: 'Convenience store. Sandwiches, snacks, drinks.', major: false },
-  { town: 'Rock Creek', day: 2, km: 180, services: 'Gas station, general store.', major: false },
-  { town: 'Midway', day: 2, km: 210, services: 'Small town. Basic services.', major: false },
-  { town: 'Grand Forks', day: 2, km: 240, services: 'Petro Canada, A&W, grocery, The Station Pub.', major: true },
-  { town: 'Trail', day: 4, km: 390, services: 'Husky Gas, ice cream, restaurants.', major: false },
-  { town: 'Salmo', day: 4, km: 430, services: 'Subway, small town services.', major: false },
-  { town: 'Nelson', day: 4, km: 470, services: 'Full town. DQ, restaurants, bike shops, grocery.', major: true },
-  { town: 'Grey Creek Store', day: 4, km: 530, services: 'Info on pass conditions. Very limited supplies.', major: false },
-  { town: 'Kimberley', day: 5, km: 600, services: 'Gas station, Subway, grocery, restaurants. FINISH!', major: true },
+  { town: 'Chute Lake Resort', day: 1, km: 46, services: 'Food, camping, water. Famous pie.', major: false },
+  { town: 'Beaverdell', day: 1, km: 148, services: 'Convenience store. Sandwiches, snacks, drinks.', major: false },
+  { town: 'Rock Creek', day: 2, km: 198, services: 'Gas station, general store.', major: false },
+  { town: 'Midway', day: 2, km: 217, services: 'Small town. Basic services.', major: false },
+  { town: 'Grand Forks', day: 2, km: 270, services: 'Petro Canada, A&W, grocery, The Station Pub. End of Day 2.', major: true },
+  { town: 'Christina Lake', day: 3, km: 300, services: 'Swim stop. Convenience store, lakeside cafes in season.', major: false },
+  { town: 'Castlegar', day: 3, km: 387, services: 'Pharmasave, grocery, restaurants, motels. End of Day 3.', major: true },
+  { town: 'Nelson', day: 4, km: 432, services: 'Full town. DQ, restaurants, bike shops, grocery. LAST major resupply before pass.', major: true },
+  { town: 'Balfour Ferry', day: 4, km: 470, services: 'Free ferry across Kootenay Lake. Snacks at terminal.', major: false },
+  { town: 'Grey Creek Store', day: 4, km: 494, services: 'Info on pass conditions. Very limited supplies. End of Day 4.', major: false },
+  { town: 'Kimberley', day: 5, km: 574, services: 'Gas station, Subway, grocery, restaurants. FINISH!', major: true },
 ];
 
 window.GEAR = [
@@ -915,7 +908,7 @@ function Hero() {
   return (
     <header className="hero">
       <div className="hero-content">
-        <div className="hero-badge">BC Epic 1000 {SYM.BULL} June 2026</div>
+        <div className="hero-badge">BC Epic 1000 {SYM.BULL} Jun 12-16, 2026</div>
         <h1>Penticton to Kimberley</h1>
         <p className="hero-subtitle">5 days of rail trails, mountain passes, and one unforgettable ferry crossing.<br/>Stephan & Trevor's bikepacking adventure.</p>
         <div className="hero-stats">
@@ -932,31 +925,28 @@ function Hero() {
 }
 
 function ElevationProfile() {
-  // Simplified elevation profile across 5 days
+  // Elevation profile sampled from V2 GPX (574 km, 5,960m gain)
   const points = [
-    // Day 1: Penticton (344m) -> Chute Lake (1265m) -> Myra (1240m) -> Beaverdell (780m)
-    { x: 0, y: 344, label: 'Penticton' },
-    { x: 30, y: 1265, label: 'Chute Lake' },
-    { x: 65, y: 1240, label: 'McCulloch' },
-    { x: 130, y: 780, label: 'Beaverdell' },
-    // Day 2: -> Rock Creek (600) -> Midway (580) -> Grand Forks (520) -> Christina Lake (440)
-    { x: 180, y: 600, label: '' },
-    { x: 210, y: 580, label: 'Midway' },
-    { x: 240, y: 520, label: 'Grand Forks' },
-    { x: 270, y: 440, label: 'Christina Lk' },
-    // Day 3: -> Eholt (1050) -> Farron (1200) -> Castlegar (500)
-    { x: 300, y: 1050, label: '' },
-    { x: 335, y: 1200, label: 'Farron' },
-    { x: 380, y: 500, label: 'Castlegar' },
-    // Day 4: -> Trail (440) -> Salmo (600) -> Nelson (540) -> Ferry (540)
-    { x: 420, y: 440, label: 'Trail' },
-    { x: 450, y: 600, label: 'Salmo' },
-    { x: 470, y: 540, label: 'Nelson' },
-    { x: 500, y: 540, label: 'Ferry' },
-    // Day 5: -> Grey Creek Pass (2072!) -> Kimberley (1113)
-    { x: 530, y: 550, label: 'Grey Ck' },
-    { x: 555, y: 2072, label: 'PASS 2,072m' },
-    { x: 600, y: 1113, label: 'Kimberley' },
+    // Day 1: Penticton (370) -> Chute Lake (1194) -> McCulloch (1266) -> Beaverdell (786)
+    { x: 0, y: 370, label: 'Penticton' },
+    { x: 46, y: 1194, label: 'Chute Lk' },
+    { x: 75, y: 1266, label: 'McCulloch' },
+    { x: 148, y: 786, label: 'Beaverdell' },
+    // Day 2: -> Rock Creek (607) -> Midway (584) -> Grand Forks (517)
+    { x: 198, y: 607, label: 'Rock Ck' },
+    { x: 217, y: 584, label: '' },
+    { x: 270, y: 517, label: 'Grand Forks' },
+    // Day 3: -> Christina Lk (616) -> Farron climb (~1,200) -> Castlegar (446)
+    { x: 300, y: 616, label: 'Christina' },
+    { x: 350, y: 1133, label: '' },
+    { x: 387, y: 446, label: 'Castlegar' },
+    // Day 4: -> Nelson (562) -> Balfour ferry (533) -> Grey Creek (1100)
+    { x: 432, y: 562, label: 'Nelson' },
+    { x: 470, y: 533, label: 'Ferry' },
+    { x: 494, y: 1100, label: 'Grey Ck' },
+    // Day 5: -> Pass summit (2089) -> Kimberley (1040)
+    { x: 511, y: 2089, label: 'PASS 2,089m' },
+    { x: 574, y: 1040, label: 'Kimberley' },
   ];
 
   const svgW = 800;
@@ -967,7 +957,7 @@ function ElevationProfile() {
   const padB = 25;
   const chartW = svgW - padL - padR;
   const chartH = svgH - padT - padB;
-  const maxKm = 600;
+  const maxKm = 580;
   const maxElev = 2200;
   const minElev = 300;
 
@@ -977,8 +967,8 @@ function ElevationProfile() {
   const pathD = points.map((p, i) => `${i === 0 ? 'M' : 'L'}${toX(p.x).toFixed(1)},${toY(p.y).toFixed(1)}`).join(' ');
   const areaD = pathD + ` L${toX(points[points.length-1].x).toFixed(1)},${toY(minElev).toFixed(1)} L${toX(0).toFixed(1)},${toY(minElev).toFixed(1)} Z`;
 
-  // Day boundaries
-  const dayBounds = [0, 130, 270, 380, 500, 600];
+  // Day boundaries: Penticton -> Beaverdell -> Grand Forks -> Castlegar -> Grey Creek -> Kimberley
+  const dayBounds = [0, 148, 270, 387, 494, 574];
   const dayColors = ['rgba(52,211,153,0.08)', 'rgba(96,165,250,0.08)', 'rgba(52,211,153,0.08)', 'rgba(96,165,250,0.08)', 'rgba(245,158,11,0.1)'];
 
   return (
@@ -1019,8 +1009,8 @@ function ElevationProfile() {
         </defs>
       </svg>
       <div className="elevation-labels">
-        <span>0 km {SYM.DASH} Penticton</span>
-        <span>600 km {SYM.DASH} Kimberley</span>
+        <span>0 km {SYM.DASH} Penticton (Jun 12)</span>
+        <span>574 km {SYM.DASH} Kimberley (Jun 16)</span>
       </div>
     </div>
   );
@@ -1046,6 +1036,7 @@ function DayCard({ data }) {
         <div className="day-info">
           <div className="day-route">{data.from} {SYM.ARROW} {data.to}</div>
           <div className="day-meta">
+            {data.date && <span style={{color: '#fbbf24', fontWeight: 600}}>{data.date}</span>}
             <span>{data.distance}</span>
             <span>{SYM.UP} {data.elevation}</span>
             <span>{SYM.TIMER} {data.time}</span>
@@ -1180,7 +1171,7 @@ function ResupplySection() {
           </table>
         </div>
         <div style={{ marginTop: 20, padding: 16, background: 'var(--bg-card)', borderRadius: 12, fontSize: 13, color: 'var(--text-secondary)', border: '1px solid var(--border)' }}>
-          <strong style={{ color: 'var(--warning)' }}>Longest gap without services:</strong> Grey Creek to Kimberley (~80 km). Stock up in Nelson with 2 full meals + snacks. Carry 2-3L of water for Grey Creek Pass.
+          <strong style={{ color: 'var(--warning)' }}>Longest gap without services:</strong> Grey Creek to Kimberley (80 km, Day 5 over the pass). Stock up in Nelson on Day 4 with 2 full meals + snacks. Carry 2-3L of water for Grey Creek Pass — first reliable refill is South Fork Creek on the descent.
         </div>
       </div>
     </section>
@@ -1232,7 +1223,8 @@ function App() {
         <div className="container">
           <p>Penticton {SYM.ARROW} Kimberley {SYM.BULL} BC Epic 1000 {SYM.BULL} June 2026</p>
           <p style={{ marginTop: 8 }}>
-            Route: <a href="https://www.strava.com/routes/3463368757543966168" target="_blank">Strava</a> {SYM.BULL}
+            Route: <a href="https://www.strava.com/routes/3463368757543966168" target="_blank">Strava (V2)</a> {SYM.BULL}
+            <a href="bc_epic_penticton_kimberley_v2.gpx" download>Download GPX</a> {SYM.BULL}
             Official: <a href="https://www.bcepic1000.com/route-map" target="_blank">bcepic1000.com</a>
           </p>
           <p style={{ marginTop: 16, fontSize: 11, opacity: 0.5 }}>Built with vibes. Ride safe.</p>
