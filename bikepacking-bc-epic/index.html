@@ -623,47 +623,48 @@ window.DAYS = [
     day: 1,
     date: 'Fri Jun 12',
     from: 'Penticton (drive day)',
-    to: 'Adra Tunnel area (wild)',
-    distance: '30 km',
-    elevation: '+570 m / -40 m',
-    time: '3-4 hrs (5pm start)',
-    difficulty: 'Easy-Moderate',
-    terrain: { gravel: 90, paved: 10, singletrack: 0, fsr: 0 },
+    to: 'Chute Lake',
+    distance: '46 km',
+    elevation: '+870 m / -40 m',
+    time: '4-5 hrs (5pm start)',
+    difficulty: 'Moderate',
+    terrain: { gravel: 95, paved: 5, singletrack: 0, fsr: 0 },
     crux: false,
     waypoints: [
       { type: 'poi', name: 'Arrive Penticton via U-Haul', desc: 'Drive day. Unload, assemble bikes. Wheels down target: 4 pm.' },
-      { type: 'cafe', name: 'Quick takeout dinner — Penticton (4-5pm)', desc: 'The Bench Market (closes 7pm) for sandwiches, Wouda\'s Bakery for cinnamon-bun fuel, or A&W if speed wins. Fill bottles (carry 4+L each — limited water until Chute Lake).' },
-      { type: 'poi', name: 'Roll out by 5 pm — Naramata Bench KVR', desc: 'First 10 km is Naramata Bench through vineyards + lake views as you climb. All private land here — no camping.' },
-      { type: 'poi', name: 'Adra Tunnel (km ~17.6 from Naramata trailhead)', desc: 'Reopened 2023. Crown forest land starts in this zone. From here on up, wild-camping is legal.' },
-      { type: 'wild', name: 'Adra Station / Adra Tunnel wild-camp (km ~28-32)', desc: 'TARGET. Crown land, pull 50-100m off-trail uphill into trees. Historic Adra Station ruins nearby. In camp by 8:30-9pm; sunset ~9:15pm.' },
-      { type: 'resupply', name: 'Backup: Chute Lake Lodge — (250) 486-5526', desc: 'Call from Penticton before rolling. Reservable cabins/yurts/tents at the lodge. NOT pure FCFS. Phone Plan B if wild-camp vibes off.' },
-      { type: 'water', name: 'Naramata Creek (only reliable on-route)', desc: 'Crosses the FSR access. Filter. Otherwise carry all water up from Penticton.' },
+      { type: 'cafe', name: 'Quick takeout dinner — Penticton (4-4:30pm)', desc: 'The Bench Market (closes 7pm) for sandwiches, Wouda\'s Bakery for cinnamon-bun fuel, or A&W if speed wins. KEEP IT SHORT — long climb ahead. Fill bottles.' },
+      { type: 'poi', name: 'Roll out 4:30 pm — Naramata Bench KVR', desc: 'First 10 km is Naramata Bench through vineyards + lake views as you climb. All private land — no camping.' },
+      { type: 'poi', name: 'Glenfir → Adra Tunnel zone (km 13-30)', desc: 'Crown forest land starts here. Adra Tunnel reopened 2023, Adra Station ruins en route. Mid-climb.' },
+      { type: 'water', name: 'Naramata Creek crossing (en route)', desc: 'Crosses the FSR access. Top up if running low. Otherwise push to Chute Lake.' },
+      { type: 'camp', name: 'Chute Lake Lodge — RESERVE AHEAD (250) 486-5526', desc: 'Reservable tent sites + cabins + yurts at the lake. Plan A — call from Penticton before rolling, even at 4pm. Late arrival (9pm) OK if booked.' },
+      { type: 'wild', name: 'Wild-camp at Chute Lake (km 46)', desc: 'Backup: Crown land around the lake. Pull-offs on forest perimeter. Water from the lake (filter). Free, quiet.' },
+      { type: 'cafe', name: 'PIE BREAKFAST Saturday AM', desc: 'Chute Lake Resort\'s strawberry-rhubarb pie is the legendary cyclist breakfast. Wake up, eat, roll onto Myra Canyon trestles.' },
     ],
-    tip: { type: 'info', text: '4pm wheels down. ~5 hours of light from Penticton departure. Realistic pace on the 2.2% climb with gear: 10-13 km/h after a takeout dinner stop. Target is the Adra Tunnel / Adra Station Crown-land zone (~28-32 km). NOT pushing to Chute Lake on D1 — that\'s the Sat morning pie ride.' },
+    tip: { type: 'info', text: '4pm wheels down → quick takeout → roll 4:30pm. 46 km / +870 m climb at 10-13 km/h = arrival Chute Lake 8-9 pm (sunset 9:15). Camp AT the lake = water solved + pie for breakfast Saturday. Reserve Chute Lake Lodge as Plan A.' },
   },
   {
     day: 2,
     date: 'Sat Jun 13',
-    from: 'Adra (wild)',
+    from: 'Chute Lake',
     to: 'Rock Creek',
-    distance: '168 km',
-    elevation: '+540 m / -830 m',
-    time: '10-12 hrs',
+    distance: '152 km',
+    elevation: '+240 m / -830 m',
+    time: '9-11 hrs',
     difficulty: 'Hard',
-    terrain: { gravel: 70, paved: 25, singletrack: 0, fsr: 5 },
+    terrain: { gravel: 65, paved: 30, singletrack: 0, fsr: 5 },
     crux: false,
     waypoints: [
-      { type: 'poi', name: 'Oats at camp + early roll', desc: 'Up at first light. Climb 16 km up to Chute Lake (the part you saved from D1). Net gain ~300m, mostly easy rail grade.' },
-      { type: 'cafe', name: 'Chute Lake Resort (km 16) — THE PIE', desc: 'Universal cyclist ritual. Strawberry-rhubarb pie à la mode. Retro decor, food, water refills. Mid-morning second-breakfast stop.' },
-      { type: 'poi', name: 'Myra Canyon Trestles (km 30-34)', desc: '18 trestles + 2 tunnels. The most spectacular section of the entire trip. Take photos. Mid-morning light is good; weekday so no day-tripper crowds.' },
-      { type: 'shortcut', name: 'Hwy 33 at McCulloch (km 45)', desc: 'TAKE IT. 42 km paved vs 54 km degraded trail. Saves 12 km + 2-3 hrs. Insurance for the rest of the day.' },
+      { type: 'cafe', name: 'PIE BREAKFAST at Chute Lake Resort', desc: 'Wake at camp, walk over to the resort, eat the legendary strawberry-rhubarb pie. Retro decor, food, water refills. Roll out fed and watered.' },
+      { type: 'poi', name: 'Myra Canyon Trestles (km 14-18)', desc: '18 trestles + 2 tunnels — the most spectacular section of the trip. Weekday morning = empty trestles. Take photos.' },
+      { type: 'poi', name: 'McCulloch (km 29)', desc: 'Top of the rail-trail at 1,266m. Hwy 33 split is here.' },
+      { type: 'shortcut', name: 'Hwy 33 at McCulloch — TAKE IT', desc: '42 km paved vs 54 km degraded trail. Saves 12 km + 2-3 hrs. Insurance for the rest of the day.' },
       { type: 'water', name: 'Arlington Lakes (alt route only)', desc: 'If taking the trail instead of Hwy 33. Filter required.' },
-      { type: 'resupply', name: 'Beaverdell (km 118) — lunch', desc: 'Beaverdell Hotel Pub for a real lunch. Convenience store for snacks. Half the day done.' },
-      { type: 'poi', name: 'KVR descent toward Rock Creek', desc: 'Mostly downhill rail trail through the West Kettle River valley. The reward for the morning climb.' },
-      { type: 'resupply', name: 'Rock Creek (km 168) — dinner', desc: 'Gas station, general store. Limited but enough for dinner. Eat in town, ride 5 km out to wild-camp.' },
-      { type: 'wild', name: 'Kettle River wild-camp east of Rock Creek (km ~168-175)', desc: 'Crown land along the river east of town. Quiet, riverside. Mosquitoes — DEET.' },
+      { type: 'resupply', name: 'Beaverdell (km 102) — lunch', desc: 'Beaverdell Hotel Pub for a real lunch. Convenience store for snacks.' },
+      { type: 'poi', name: 'KVR descent toward Rock Creek', desc: 'Mostly downhill rail trail through the West Kettle River valley. The reward for the morning.' },
+      { type: 'resupply', name: 'Rock Creek (km 152) — dinner', desc: 'Gas station, general store. Limited but enough. Eat in town, ride 5 km out to wild-camp.' },
+      { type: 'wild', name: 'Kettle River wild-camp east of Rock Creek', desc: 'Crown land along the river east of town. Riverside (water!), quiet. Mosquitoes — DEET.' },
     ],
-    tip: { type: 'warning', text: 'Long day — but the structure works: 16km climb to Chute Lake pie, then trestles, then Hwy 33 paved shortcut, then ~70km of mostly-downhill rail trail to Beaverdell lunch, then another 50km easy descent to Rock Creek. Pace yourself in the morning. Reward in the afternoon.' },
+    tip: { type: 'warning', text: 'Long day but easier than expected because D1 already absorbed the Chute Lake climb. Pie breakfast → trestles → Hwy 33 paved descent → KVR descent through Beaverdell → Rock Creek. Mostly downhill from km 30.' },
   },
   {
     day: 3,
@@ -830,9 +831,8 @@ window.ALERTS = [
 ];
 
 window.RESUPPLY_POINTS = [
-  { town: 'Penticton', day: 1, km: 0, services: 'Drive arrival + 4pm bike start. Bench Market takeout, Wouda\'s cinnamon buns. Fill 4+L water each.', major: true },
-  { town: 'Adra wild-camp', day: 1, km: 30, services: 'Crown land. End of Day 1 (5pm-9pm ride).', major: false },
-  { town: 'Chute Lake Resort', day: 2, km: 46, services: 'THE PIE. Strawberry-rhubarb à la mode. Water refills. Backup: (250) 486-5526.', major: false },
+  { town: 'Penticton', day: 1, km: 0, services: 'Drive arrival + 4pm bike start. Bench Market quick takeout, Wouda\'s cinnamon buns. Fill bottles.', major: true },
+  { town: 'Chute Lake', day: 1, km: 46, services: 'D1 CAMP — Chute Lake Lodge tent sites (reservable, 250-486-5526) or wild-camp Crown land around lake. Pie breakfast Sat AM. End of Day 1.', major: true },
   { town: 'Beaverdell', day: 2, km: 148, services: 'Beaverdell Hotel Pub for lunch. Convenience store.', major: false },
   { town: 'Rock Creek wild-camp', day: 2, km: 198, services: 'Dinner at gas/store, ride 5 km out to Crown land along Kettle River. End of Day 2.', major: false },
   { town: 'Greenwood', day: 3, km: 235, services: 'FOODIE STOP: Copper Eagle Bakery + Deadwood Junction. Mandatory.', major: false },
@@ -993,11 +993,10 @@ function Hero() {
 function ElevationProfile() {
   // Elevation profile sampled from V2 GPX + Cranbrook extension (602 km)
   const points = [
-    // Day 1: Penticton -> Adra (Fri 5pm half-day)
+    // Day 1: Penticton -> Chute Lake (Fri 5pm climb to camp at lake)
     { x: 0, y: 370, label: 'Penticton' },
-    { x: 30, y: 898, label: 'Adra (wild)' },
-    // Day 2: -> Chute Lk -> Myra -> McCulloch -> Beaverdell -> Rock Ck
     { x: 46, y: 1194, label: 'Chute Lk' },
+    // Day 2: -> Myra -> McCulloch -> Beaverdell -> Rock Ck (mostly descent)
     { x: 75, y: 1266, label: 'McCulloch' },
     { x: 148, y: 786, label: 'Beaverdell' },
     { x: 198, y: 607, label: 'Rock Ck' },
@@ -1036,8 +1035,8 @@ function ElevationProfile() {
   const pathD = points.map((p, i) => `${i === 0 ? 'M' : 'L'}${toX(p.x).toFixed(1)},${toY(p.y).toFixed(1)}`).join(' ');
   const areaD = pathD + ` L${toX(points[points.length-1].x).toFixed(1)},${toY(minElev).toFixed(1)} L${toX(0).toFixed(1)},${toY(minElev).toFixed(1)} Z`;
 
-  // Day boundaries: Penticton -> Adra -> Rock Creek -> Castlegar wild -> Grey Creek -> Kimberley -> Cranbrook
-  const dayBounds = [0, 30, 198, 387, 494, 574, 602];
+  // Day boundaries: Penticton -> Chute Lk -> Rock Creek -> Castlegar wild -> Grey Creek -> Kimberley -> Cranbrook
+  const dayBounds = [0, 46, 198, 387, 494, 574, 602];
   const dayColors = ['rgba(52,211,153,0.08)', 'rgba(96,165,250,0.08)', 'rgba(52,211,153,0.08)', 'rgba(96,165,250,0.08)', 'rgba(245,158,11,0.1)', 'rgba(52,211,153,0.08)'];
 
   return (
