@@ -742,7 +742,7 @@ window.DAYS = [
     day: 6,
     date: 'Wed Jun 17',
     from: 'Kimberley',
-    to: 'Cranbrook (car rental)',
+    to: 'Cranbrook (car rental → Calgary)',
     distance: '28 km',
     elevation: '+50 m / -210 m',
     time: '2-3 hrs (morning)',
@@ -753,10 +753,10 @@ window.DAYS = [
       { type: 'cafe', name: 'Kimberley breakfast (pre-roll)', desc: 'Bread & Butter family bakery, The Drift Cafe, Kickturn Coffee, or Bean Tree Cafe on the Platzl. Earned victory breakfast.' },
       { type: 'poi', name: 'North Star Rails to Trails (Chief Isadore)', desc: '26 km paved rail trail, mostly downhill (~170 m net descent). Trail markers every 1 km. St. Mary\'s River bridge mid-route. Fully signed.' },
       { type: 'poi', name: 'Cranbrook trail terminus', desc: 'Trail ends near Jim Smith Lake Rd / Hwy 95A south side of Cranbrook. ~3 km easy spin into downtown.' },
-      { type: 'resupply', name: 'Enterprise Cranbrook Downtown — car rental', desc: 'FINISH: 1716 Cranbrook St N, Unit B. Phone 250-420-6862. Mon-Fri 8am-5pm (Wed Jun 17 = open). Reserve ahead. Load bikes, drive home to Calgary.' },
-      { type: 'poi', name: 'Optional: Jimsmith Lake PP swim before drive', desc: '5 km SW of Cranbrook. Sandy beach, swim cool-off before the 4-hr drive. EK Parks 250-422-3003.' },
+      { type: 'resupply', name: 'Enterprise Cranbrook Downtown — car rental', desc: 'FINISH: 1716 Cranbrook St N, Unit B. Phone 250-420-6862. Mon-Fri 8am-5pm (Wed Jun 17 = open). Reserve ahead. Load bikes.' },
+      { type: 'poi', name: 'Drive home to Calgary', desc: '~4 hrs via Hwy 93/95 + Hwy 22. Scenic through the Rockies. 602 km done.' },
     ],
-    tip: { type: 'success', text: 'Victory morning. 26 km mostly-downhill paved rail trail from Kimberley to Cranbrook on the North Star Trail. Quick spin, big breakfast, pickup rental car at Enterprise downtown, optional Jimsmith Lake swim, drive home to Calgary. 602 km done.' },
+    tip: { type: 'success', text: 'Victory morning. 28 km mostly-downhill paved rail trail Kimberley → Cranbrook. Quick spin, big breakfast on the Platzl pre-roll, pickup rental car at Enterprise downtown, 4 hr drive home. The mileage on the bike clock = 602 km.' },
   },
 ];
 
@@ -845,9 +845,9 @@ window.RESUPPLY_POINTS = [
   { town: 'Crawford Bay', day: 4, km: 484, services: 'Black Salt Cafe dinner with garden patio.', major: false },
   { town: 'Gray Creek Store', day: 4, km: 491, services: 'Pass conditions: 250-227-9315. Very limited supplies.', major: false },
   { town: 'Grey Creek wild-camp', day: 4, km: 494, services: 'Crown land at pass road approach. End of Day 4.', major: false },
-  { town: 'Kimberley', day: 5, km: 574, services: 'PASS DONE! Pedal & Tap celebration on the Platzl. Bread & Butter bakery.', major: true },
-  { town: 'Kimberley Riverside Campground', day: 5, km: 579, services: 'Last camp. 500 St. Mary\'s Rd. Reservable: 1-877-999-2929. Free heated pool, showers, laundry. End of Day 5.', major: false },
-  { town: 'Cranbrook — Enterprise Downtown', day: 6, km: 602, services: 'FINISH + car rental pickup. 1716 Cranbrook St N. 250-420-6862. Mon-Fri 8am-5pm. Drive home to Calgary.', major: true },
+  { town: 'Kimberley', day: 5, km: 574, services: 'PASS DONE! Pedal & Tap celebration DINNER on the Platzl. Bread & Butter bakery.', major: true },
+  { town: 'Kimberley Riverside Campground', day: 5, km: 579, services: 'LAST CAMP. 500 St. Mary\'s Rd. Reservable: 1-877-999-2929. Free heated pool, showers, laundry. ~5 km from Platzl. End of Day 5.', major: false },
+  { town: 'Enterprise Cranbrook Downtown', day: 6, km: 602, services: 'FINISH + car rental pickup. 1716 Cranbrook St N. 250-420-6862. Mon-Fri 8am-5pm. Drive home to Calgary (~4 hrs).', major: true },
 ];
 
 window.GEAR = [
