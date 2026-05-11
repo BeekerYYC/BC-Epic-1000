@@ -607,8 +607,8 @@
 // DATA (in regular script block to preserve UTF-8)
 // ============================
 window.TRIP_STATS = {
-  distance: '602',
-  elevation: '6,010',
+  distance: '591',
+  elevation: '6,210',
   days: 6,
   nights: 5,
   offRoad: '~60%',
@@ -624,9 +624,9 @@ window.DAYS = [
     date: 'Fri Jun 12',
     from: 'Penticton (drive day)',
     to: 'Chute Lake',
-    distance: '30 km',
-    elevation: '+850 m / -20 m',
-    time: '3-4 hrs (5pm start)',
+    distance: '35 km',
+    elevation: '+935 m / -100 m',
+    time: '4-5 hrs (5pm start)',
     difficulty: 'Moderate',
     terrain: { gravel: 90, paved: 10, singletrack: 0, fsr: 0 },
     crux: false,
@@ -640,24 +640,24 @@ window.DAYS = [
       { type: 'wild', name: 'Wild-camp at Chute Lake (km 46)', desc: 'Backup: Crown land around the lake. Pull-offs on forest perimeter. Water from the lake (filter). Free, quiet.' },
       { type: 'cafe', name: 'PIE BREAKFAST Saturday AM', desc: 'Chute Lake Resort\'s strawberry-rhubarb pie is the legendary cyclist breakfast. Wake up, eat, roll onto Myra Canyon trestles.' },
     ],
-    tip: { type: 'info', text: '4pm wheels down → quick takeout → roll 4:30-5pm. 30 km / +850 m climb at 8-10 km/h (steeper than rail-grade) = arrival Chute Lake 8-9 pm (sunset 9:15). Camp AT the lake = water solved + pie for breakfast Saturday. Reserve Chute Lake Lodge as Plan A.' },
+    tip: { type: 'info', text: '4pm wheels down → quick takeout → roll 4:30-5pm. 35 km / +935 m climb at 8-10 km/h = arrival Chute Lake 8-9 pm (sunset 9:15). Camp AT the lake = water solved + pie for breakfast Saturday. Reserve Chute Lake Lodge as Plan A.' },
   },
   {
     day: 2,
     date: 'Sat Jun 13',
     from: 'Chute Lake',
-    to: 'Rock Creek',
-    distance: '152 km',
-    elevation: '+240 m / -830 m',
+    to: 'Rock Creek (wild)',
+    distance: '157 km',
+    elevation: '+260 m / -850 m',
     time: '9-11 hrs',
     difficulty: 'Hard',
     terrain: { gravel: 65, paved: 30, singletrack: 0, fsr: 5 },
     crux: false,
     waypoints: [
       { type: 'cafe', name: 'PIE BREAKFAST at Chute Lake Resort', desc: 'Wake at camp, walk over to the resort, eat the legendary strawberry-rhubarb pie. Retro decor, food, water refills. Roll out fed and watered.' },
-      { type: 'poi', name: 'Myra Canyon Trestles (km 14-18)', desc: '18 trestles + 2 tunnels — the most spectacular section of the trip. Weekday morning = empty trestles. Take photos.' },
+      { type: 'poi', name: 'Myra Canyon Trestles (km 5-15)', desc: '18 trestles + 2 tunnels — the most spectacular section of the trip. Weekday morning = empty trestles. Take photos.' },
       { type: 'poi', name: 'McCulloch (km 29)', desc: 'Top of the rail-trail at 1,266m. Hwy 33 split is here.' },
-      { type: 'shortcut', name: 'Hwy 33 at McCulloch — TAKE IT', desc: '42 km paved vs 54 km degraded trail. Saves 12 km + 2-3 hrs. Insurance for the rest of the day.' },
+      { type: 'shortcut', name: 'Hwy 33 at McCulloch — TAKE IT (not in V3 GPX yet)', desc: '42 km paved vs 54 km degraded trail. Saves 12 km + 2-3 hrs. Will be in V4 GPX. For now route shows the degraded trail.' },
       { type: 'water', name: 'Arlington Lakes (alt route only)', desc: 'If taking the trail instead of Hwy 33. Filter required.' },
       { type: 'resupply', name: 'Beaverdell (km 102) — lunch', desc: 'Beaverdell Hotel Pub for a real lunch. Convenience store for snacks.' },
       { type: 'poi', name: 'KVR descent toward Rock Creek', desc: 'Mostly downhill rail trail through the West Kettle River valley. The reward for the morning.' },
@@ -669,10 +669,10 @@ window.DAYS = [
   {
     day: 3,
     date: 'Sun Jun 14',
-    from: 'Rock Creek',
-    to: 'Castlegar (wild)',
-    distance: '189 km',
-    elevation: '+1,420 m / -1,575 m',
+    from: 'Rock Creek (wild)',
+    to: 'E of Castlegar (wild)',
+    distance: '192 km',
+    elevation: '+1,450 m / -1,575 m',
     time: '11-13 hrs',
     difficulty: 'Hard',
     terrain: { gravel: 80, paved: 10, singletrack: 0, fsr: 10 },
@@ -696,10 +696,10 @@ window.DAYS = [
   {
     day: 4,
     date: 'Mon Jun 15',
-    from: 'Castlegar (wild)',
-    to: 'Grey Creek',
-    distance: '107 km',
-    elevation: '+1,820 m / -1,130 m',
+    from: 'E of Castlegar (wild)',
+    to: 'Grey Creek (wild)',
+    distance: '100 km',
+    elevation: '+1,820 m / -1,100 m',
     time: '8-10 hrs',
     difficulty: 'Hard',
     terrain: { gravel: 15, paved: 70, singletrack: 0, fsr: 15 },
@@ -719,10 +719,10 @@ window.DAYS = [
   {
     day: 5,
     date: 'Tue Jun 16',
-    from: 'Grey Creek',
+    from: 'Grey Creek (wild)',
     to: 'Kimberley',
     distance: '80 km',
-    elevation: '+1,620 m / -1,720 m',
+    elevation: '+1,570 m / -1,720 m',
     time: '8-10 hrs',
     difficulty: 'EXTREME',
     terrain: { gravel: 10, paved: 15, singletrack: 5, fsr: 70 },
@@ -745,7 +745,7 @@ window.DAYS = [
     from: 'Kimberley',
     to: 'Cranbrook (car rental → Calgary)',
     distance: '28 km',
-    elevation: '+50 m / -210 m',
+    elevation: '+180 m / -310 m',
     time: '2-3 hrs (morning)',
     difficulty: 'Easy',
     terrain: { gravel: 0, paved: 100, singletrack: 0, fsr: 0 },
@@ -832,22 +832,27 @@ window.ALERTS = [
 
 window.RESUPPLY_POINTS = [
   { town: 'Penticton', day: 1, km: 0, services: 'Drive arrival + 4pm bike start. Bench Market quick takeout, Wouda\'s cinnamon buns. Fill bottles.', major: true },
-  { town: 'Chute Lake', day: 1, km: 30, services: 'D1 CAMP — Chute Lake Lodge tent sites (reservable, 250-486-5526) or wild-camp Crown land around lake. Pie breakfast Sat AM. End of Day 1.', major: true },
-  { town: 'Beaverdell', day: 2, km: 148, services: 'Beaverdell Hotel Pub for lunch. Convenience store.', major: false },
-  { town: 'Rock Creek wild-camp', day: 2, km: 198, services: 'Dinner at gas/store, ride 5 km out to Crown land along Kettle River. End of Day 2.', major: false },
-  { town: 'Greenwood', day: 3, km: 235, services: 'FOODIE STOP: Copper Eagle Bakery + Deadwood Junction. Mandatory.', major: false },
-  { town: 'Grand Forks', day: 3, km: 270, services: 'Wooden Spoon Bistro lunch + Borscht Bowl alt. Full grocery resupply.', major: true },
-  { town: 'Christina Lake', day: 3, km: 300, services: 'SWIM STOP (not camp). Marina for cool-off. Warmest lake in Canada.', major: false },
-  { town: 'Castlegar', day: 3, km: 387, services: 'Common Grounds coffee. Dinner in town (Pharmasave, restaurants).', major: true },
-  { town: 'Wild-camp east of Castlegar', day: 3, km: 401, services: 'Crown land along Columbia/Kootenay River corridor (Robson area). End of Day 3.', major: false },
-  { town: 'Nelson', day: 4, km: 432, services: 'COFFEE TOWN. Oso Negro, L&C French Bakery, Backroads Brewing. Kootenay Co-op for last major resupply before pass. SLOW MORNING.', major: true },
-  { town: 'Balfour Ferry', day: 4, km: 470, services: 'Free ferry across Kootenay Lake. 250-229-4215 for schedule.', major: false },
-  { town: 'Crawford Bay', day: 4, km: 484, services: 'Black Salt Cafe dinner with garden patio.', major: false },
-  { town: 'Gray Creek Store', day: 4, km: 491, services: 'Pass conditions: 250-227-9315. Very limited supplies.', major: false },
-  { town: 'Grey Creek wild-camp', day: 4, km: 494, services: 'Crown land at pass road approach. End of Day 4.', major: false },
-  { town: 'Kimberley', day: 5, km: 574, services: 'PASS DONE! Pedal & Tap celebration DINNER on the Platzl. Bread & Butter bakery.', major: true },
-  { town: 'Kimberley Riverside Campground', day: 5, km: 579, services: 'LAST CAMP. 500 St. Mary\'s Rd. Reservable: 1-877-999-2929. Free heated pool, showers, laundry. ~5 km from Platzl. End of Day 5.', major: false },
-  { town: 'Enterprise Cranbrook Downtown', day: 6, km: 602, services: 'FINISH + car rental pickup. 1716 Cranbrook St N. 250-420-6862. Mon-Fri 8am-5pm. Drive home to Calgary (~4 hrs).', major: true },
+  { town: 'Chute Lake', day: 1, km: 35, services: 'D1 CAMP — Chute Lake Lodge tent sites (reservable, 250-486-5526) or wild-camp Crown land around lake. Pie breakfast Sat AM. End of Day 1.', major: true },
+  { town: 'Myra Canyon Trestles', day: 2, km: 50, services: 'Photo stop, 18 trestles + 2 tunnels.', major: false },
+  { town: 'McCulloch', day: 2, km: 64, services: 'Hwy 33 split — TAKE PAVED. Top of rail trail at 1,266m.', major: false },
+  { town: 'Beaverdell', day: 2, km: 137, services: 'Beaverdell Hotel Pub for lunch. Convenience store.', major: false },
+  { town: 'Rock Creek wild-camp', day: 2, km: 192, services: 'Dinner at gas/store, ride 5 km east to Crown land along Kettle River. End of Day 2.', major: false },
+  { town: 'Midway', day: 3, km: 206, services: 'KVR Mile Zero. Switch to C&W Rail Trail.', major: false },
+  { town: 'Greenwood', day: 3, km: 224, services: 'FOODIE STOP: Copper Eagle Bakery + Deadwood Junction. Mandatory.', major: false },
+  { town: 'Grand Forks', day: 3, km: 260, services: 'Wooden Spoon Bistro lunch + Borscht Bowl alt. Full grocery resupply.', major: true },
+  { town: 'Christina Lake', day: 3, km: 289, services: 'SWIM STOP (not camp). Marina for cool-off. Warmest lake in Canada.', major: false },
+  { town: 'Bulldog Tunnel', day: 3, km: 358, services: '912m pitch black. Sunday = no log trucks. Lights required.', major: false },
+  { town: 'Castlegar', day: 3, km: 377, services: 'Common Grounds coffee. Dinner in town (Pharmasave, restaurants).', major: true },
+  { town: 'Wild-camp east of Castlegar', day: 3, km: 384, services: 'Crown land along Columbia/Kootenay River corridor. End of Day 3.', major: false },
+  { town: 'Nelson', day: 4, km: 421, services: 'COFFEE TOWN. Oso Negro, L&C French Bakery, Backroads Brewing. Kootenay Co-op for last major resupply before pass. SLOW MORNING.', major: true },
+  { town: 'Balfour Ferry', day: 4, km: 458, services: 'Free ferry across Kootenay Lake. 250-229-4215 for schedule.', major: false },
+  { town: 'Crawford Bay', day: 4, km: 470, services: 'Black Salt Cafe dinner with garden patio.', major: false },
+  { town: 'Gray Creek Store', day: 4, km: 483, services: 'Pass conditions: 250-227-9315. Very limited supplies.', major: false },
+  { town: 'Grey Creek wild-camp', day: 4, km: 484, services: 'Crown land at pass road approach. End of Day 4.', major: false },
+  { town: 'Pass Summit', day: 5, km: 500, services: '2,089m. Highest point of trip. Snow likely mid-June 2026.', major: false },
+  { town: 'Kimberley', day: 5, km: 564, services: 'PASS DONE! Pedal & Tap celebration DINNER on the Platzl. Bread & Butter bakery.', major: true },
+  { town: 'Kimberley Riverside Campground', day: 5, km: 569, services: 'LAST CAMP. 500 St. Mary\'s Rd. Reservable: 1-877-999-2929. Free heated pool, showers, laundry. ~5 km from Platzl. End of Day 5.', major: false },
+  { town: 'Enterprise Cranbrook Downtown', day: 6, km: 591, services: 'FINISH + car rental pickup. 1716 Cranbrook St N. 250-420-6862. Mon-Fri 8am-5pm. Drive home to Calgary (~4 hrs).', major: true },
 ];
 
 window.GEAR = [
@@ -991,30 +996,30 @@ function Hero() {
 }
 
 function ElevationProfile() {
-  // Elevation profile sampled from V2 GPX + Cranbrook extension (602 km)
+  // Elevation profile sampled from V3 GPX Penticton -> Cranbrook (591 km)
   const points = [
-    // Day 1: Penticton -> Chute Lake (Fri 5pm climb to camp at lake — 30 km direct via updated Strava)
-    { x: 0, y: 370, label: 'Penticton' },
-    { x: 30, y: 1194, label: 'Chute Lk' },
-    // Day 2: -> Myra -> McCulloch -> Beaverdell -> Rock Ck (mostly descent)
-    { x: 75, y: 1266, label: 'McCulloch' },
-    { x: 148, y: 786, label: 'Beaverdell' },
-    { x: 198, y: 607, label: 'Rock Ck' },
-    // Day 3 (big): -> Greenwood -> Grand Forks -> Christina swim -> Farron -> Bulldog -> Castlegar wild
-    { x: 235, y: 700, label: 'Greenwood' },
-    { x: 270, y: 517, label: 'Grand Forks' },
-    { x: 300, y: 616, label: 'Christina' },
-    { x: 350, y: 1133, label: 'Farron' },
-    { x: 387, y: 446, label: 'Castlegar' },
-    // Day 4: -> Nelson (slow morning) -> Ferry -> Grey Ck
-    { x: 432, y: 562, label: 'Nelson' },
-    { x: 470, y: 533, label: 'Ferry' },
-    { x: 494, y: 1100, label: 'Grey Ck' },
+    // Day 1: Penticton -> Chute Lake
+    { x: 0, y: 362, label: 'Penticton' },
+    { x: 35, y: 1194, label: 'Chute Lk' },
+    // Day 2: -> McCulloch -> Beaverdell -> Rock Creek wild
+    { x: 64, y: 1266, label: 'McCulloch' },
+    { x: 137, y: 786, label: 'Beaverdell' },
+    { x: 192, y: 600, label: 'Rock Ck' },
+    // Day 3: -> Midway -> Greenwood -> Grand Forks -> Christina -> Farron -> Bulldog -> Castlegar wild
+    { x: 224, y: 700, label: 'Greenwood' },
+    { x: 260, y: 517, label: 'Grand Forks' },
+    { x: 289, y: 616, label: 'Christina' },
+    { x: 340, y: 1133, label: 'Farron' },
+    { x: 377, y: 446, label: 'Castlegar' },
+    // Day 4: -> Nelson -> Ferry -> Grey Creek wild
+    { x: 421, y: 562, label: 'Nelson' },
+    { x: 458, y: 533, label: 'Ferry' },
+    { x: 484, y: 1100, label: 'Grey Ck' },
     // Day 5: -> Pass summit -> Kimberley
-    { x: 511, y: 2089, label: 'PASS 2,089m' },
-    { x: 574, y: 1040, label: 'Kimberley' },
-    // Day 6: -> Cranbrook (paved descent)
-    { x: 602, y: 940, label: 'Cranbrook' },
+    { x: 500, y: 2089, label: 'PASS 2,089m' },
+    { x: 564, y: 1040, label: 'Kimberley' },
+    // Day 6: -> Cranbrook
+    { x: 591, y: 907, label: 'Cranbrook' },
   ];
 
   const svgW = 800;
@@ -1025,7 +1030,7 @@ function ElevationProfile() {
   const padB = 25;
   const chartW = svgW - padL - padR;
   const chartH = svgH - padT - padB;
-  const maxKm = 605;
+  const maxKm = 595;
   const maxElev = 2200;
   const minElev = 300;
 
@@ -1035,8 +1040,8 @@ function ElevationProfile() {
   const pathD = points.map((p, i) => `${i === 0 ? 'M' : 'L'}${toX(p.x).toFixed(1)},${toY(p.y).toFixed(1)}`).join(' ');
   const areaD = pathD + ` L${toX(points[points.length-1].x).toFixed(1)},${toY(minElev).toFixed(1)} L${toX(0).toFixed(1)},${toY(minElev).toFixed(1)} Z`;
 
-  // Day boundaries: Penticton -> Chute Lk -> Rock Creek -> Castlegar wild -> Grey Creek -> Kimberley -> Cranbrook
-  const dayBounds = [0, 30, 198, 387, 494, 574, 602];
+  // V3 GPX day boundaries: Penticton -> Chute Lk -> Rock Creek -> E Castlegar -> Grey Creek -> Kimberley -> Cranbrook
+  const dayBounds = [0, 35, 192, 384, 484, 564, 591];
   const dayColors = ['rgba(52,211,153,0.08)', 'rgba(96,165,250,0.08)', 'rgba(52,211,153,0.08)', 'rgba(96,165,250,0.08)', 'rgba(245,158,11,0.1)', 'rgba(52,211,153,0.08)'];
 
   return (
@@ -1078,7 +1083,7 @@ function ElevationProfile() {
       </svg>
       <div className="elevation-labels">
         <span>0 km {SYM.DASH} Penticton (Fri Jun 12)</span>
-        <span>602 km {SYM.DASH} Cranbrook (Wed Jun 17)</span>
+        <span>591 km {SYM.DASH} Cranbrook (Wed Jun 17)</span>
       </div>
     </div>
   );
@@ -1295,8 +1300,8 @@ function App() {
         <div className="container">
           <p>Penticton {SYM.ARROW} Kimberley {SYM.ARROW} Cranbrook {SYM.BULL} BC Epic 1000 {SYM.BULL} June 2026</p>
           <p style={{ marginTop: 8 }}>
-            Route: <a href="https://www.strava.com/routes/3463368757543966168" target="_blank">Strava (V2)</a> {SYM.BULL}
-            <a href="bc_epic_penticton_kimberley_v2.gpx" download>Download GPX</a> {SYM.BULL}
+            Route: <a href="https://www.strava.com/routes/3463368757543966168" target="_blank">Strava (V3)</a> {SYM.BULL}
+            <a href="bc_epic_v3_penticton_cranbrook.gpx" download>Download GPX</a> {SYM.BULL}
             Official: <a href="https://www.bcepic1000.com/route-map" target="_blank">bcepic1000.com</a>
           </p>
           <p style={{ marginTop: 16, fontSize: 11, opacity: 0.5 }}>Built with vibes. Ride safe.</p>
