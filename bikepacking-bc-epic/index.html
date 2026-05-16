@@ -6,7 +6,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
-  <title>Penticton → Cranbrook — BC Epic 1000 Bikepacking Plan</title>
+  <title>Penticton → Kimberley — BC Epic 1000 Bikepacking Plan</title>
   <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -607,95 +607,93 @@
 // DATA (in regular script block to preserve UTF-8)
 // ============================
 window.TRIP_STATS = {
-  distance: '591',
-  elevation: '6,210',
-  days: 6,
-  nights: 5,
-  offRoad: '~60%',
+  distance: '533',
+  elevation: '5,990',
+  days: 5,
+  nights: 4,
+  offRoad: '~55%',
 };
 window.TRIP_DATES = {
-  depart: 'Fri Jun 12, 2026',
+  depart: 'Fri Jun 12, 2026 (drive)',
+  bikeStart: 'Sat Jun 13, 2026',
   finish: 'Wed Jun 17, 2026',
 };
 
 window.DAYS = [
   {
     day: 1,
-    date: 'Fri Jun 12',
-    from: 'Penticton (drive day)',
-    to: 'Chute Lake',
-    distance: '35 km',
-    elevation: '+935 m / -100 m',
-    time: '4-5 hrs (5pm start)',
-    difficulty: 'Moderate',
-    terrain: { gravel: 90, paved: 10, singletrack: 0, fsr: 0 },
+    date: 'Sat Jun 13',
+    from: 'Penticton (post-drive)',
+    to: 'Beaverdell',
+    distance: '106 km',
+    elevation: '+1,080 m / -660 m',
+    time: '8-9 hrs (1pm start)',
+    difficulty: 'Hard',
+    terrain: { gravel: 50, paved: 50, singletrack: 0, fsr: 0 },
     crux: false,
     waypoints: [
-      { type: 'poi', name: 'Arrive Penticton via U-Haul', desc: 'Drive day. Unload, assemble bikes. Wheels down target: 4 pm.' },
-      { type: 'cafe', name: 'Quick takeout dinner — Penticton (4-4:30pm)', desc: 'The Bench Market (closes 7pm) for sandwiches, Wouda\'s Bakery for cinnamon-bun fuel, or A&W if speed wins. KEEP IT SHORT — long climb ahead. Fill bottles.' },
-      { type: 'poi', name: 'Roll out 4:30 pm — Naramata Bench KVR', desc: 'First 10 km is Naramata Bench through vineyards + lake views as you climb. All private land — no camping.' },
-      { type: 'poi', name: 'Glenfir → Adra Tunnel zone (km 13-30)', desc: 'Crown forest land starts here. Adra Tunnel reopened 2023, Adra Station ruins en route. Mid-climb.' },
-      { type: 'water', name: 'Naramata Creek crossing (en route)', desc: 'Crosses the FSR access. Top up if running low. Otherwise push to Chute Lake.' },
-      { type: 'camp', name: 'Chute Lake Lodge — RESERVE AHEAD (250) 486-5526', desc: 'Reservable tent sites + cabins + yurts at the lake. Plan A — call from Penticton before rolling, even at 4pm. Late arrival (9pm) OK if booked.' },
-      { type: 'wild', name: 'Wild-camp at Chute Lake (km 46)', desc: 'Backup: Crown land around the lake. Pull-offs on forest perimeter. Water from the lake (filter). Free, quiet.' },
-      { type: 'cafe', name: 'PIE BREAKFAST Saturday AM', desc: 'Chute Lake Resort\'s strawberry-rhubarb pie is the legendary cyclist breakfast. Wake up, eat, roll onto Myra Canyon trestles.' },
+      { type: 'poi', name: 'Fri Jun 12, 3:30pm: Leave Calgary', desc: 'Day 0. Drive U-Haul Calgary → Kimberley (~4 hrs via Hwy 22/93). Bikes + gear loaded.' },
+      { type: 'poi', name: 'Fri ~8pm: Kimberley car drop', desc: 'Arrive Kimberley, drop personal car at friend\'s place. This is your ride home from Wed Jun 17 finish.' },
+      { type: 'poi', name: 'Fri 8-10pm: Continue west to Yahk', desc: 'Drive U-Haul ~2 hrs west on Hwy 3 → Yahk Provincial Park ($25, reservable discovercamping.ca, on the Moyie River). Sleep in U-Haul on pads, no tent needed.' },
+      { type: 'poi', name: 'Sat 6-7am: Leave Yahk → Penticton', desc: 'Drive Hwy 3 west ~4-5 hrs to Penticton. Coffee/gas in Creston. Arrive Penticton ~11am-12pm.' },
+      { type: 'cafe', name: 'Penticton lunch + bike prep (12-1pm)', desc: 'Drop U-Haul. The Bench Market, Wouda\'s Bakery, or sit-down lunch. Assemble bikes, fill bottles.' },
+      { type: 'poi', name: 'Roll out ~1pm — Naramata Bench KVR', desc: 'First 10 km Naramata Bench through vineyards + lake views as you climb. All private land — no camping until Glenfir.' },
+      { type: 'cafe', name: 'Chute Lake Resort (km 35) — PIE STOP', desc: 'Mid-afternoon strawberry-rhubarb pie + coffee. Top of the climb at 1,194m. Refill water bottles. ~5pm arrival.' },
+      { type: 'poi', name: 'Myra Canyon Trestles (km 50-54)', desc: '18 trestles + 2 tunnels — the most spectacular section of the trip. Afternoon light, possibly some day-trippers. Allow photo time.' },
+      { type: 'poi', name: 'McCulloch (km 64) — Hwy 33 turnoff', desc: 'Top of rail-trail at 1,266m. TAKE THE PAVED Hwy 33 here. Saves 31 km of ATV-rutted KVR + 2-3 hrs. ~7:30pm.' },
+      { type: 'shortcut', name: 'Hwy 33 paved descent (42 km)', desc: 'Light traffic, fast paved descent through Big White country. ~2 hrs at 20+ km/h. LIGHTS ON if approaching dusk.' },
+      { type: 'resupply', name: 'Beaverdell Hotel Pub (km 106)', desc: 'Arrival 9-9:30pm. CALL AHEAD to confirm late-dinner seating before leaving Penticton. Backup: takeout from Chute Lake mid-afternoon.' },
+      { type: 'wild', name: 'West Kettle River wild-camp 3-5 km south of Beaverdell', desc: 'Crown land along the river on KVR south of town. Riverside (water!), quiet. Mosquitoes — DEET.' },
     ],
-    tip: { type: 'info', text: '4pm wheels down → quick takeout → roll 4:30-5pm. 35 km / +935 m climb at 8-10 km/h = arrival Chute Lake 8-9 pm (sunset 9:15). Camp AT the lake = water solved + pie for breakfast Saturday. Reserve Chute Lake Lodge as Plan A.' },
+    tip: { type: 'warning', text: 'BIG D1. 106 km / +1,080m starting from a morning drive. Front-loads the entire climbing day. Pie stop at Chute Lake mid-afternoon (not breakfast). Hwy 33 paved descent is FAST — 2 hrs of coasting. Tight on light: aim to be off the highway by 9:30pm. Call Beaverdell Pub the day before to confirm late dinner. Lights on bikes.' },
   },
   {
     day: 2,
-    date: 'Sat Jun 13',
-    from: 'Chute Lake',
-    to: 'Rock Creek (wild)',
-    distance: '157 km',
-    elevation: '+260 m / -850 m',
-    time: '9-11 hrs',
-    difficulty: 'Hard',
-    terrain: { gravel: 65, paved: 30, singletrack: 0, fsr: 5 },
+    date: 'Sun Jun 14',
+    from: 'Beaverdell',
+    to: 'Grand Forks (wild)',
+    distance: '123 km',
+    elevation: '+490 m / -760 m',
+    time: '7-9 hrs',
+    difficulty: 'Moderate',
+    terrain: { gravel: 90, paved: 5, singletrack: 0, fsr: 5 },
     crux: false,
     waypoints: [
-      { type: 'cafe', name: 'PIE BREAKFAST at Chute Lake Resort', desc: 'Wake at camp, walk over to the resort, eat the legendary strawberry-rhubarb pie. Retro decor, food, water refills. Roll out fed and watered.' },
-      { type: 'poi', name: 'Myra Canyon Trestles (km 5-15)', desc: '18 trestles + 2 tunnels — the most spectacular section of the trip. Weekday morning = empty trestles. Take photos.' },
-      { type: 'poi', name: 'McCulloch (km 29)', desc: 'Top of the rail-trail at 1,266m. Hwy 33 split is here.' },
-      { type: 'shortcut', name: 'Hwy 33 at McCulloch — TAKE IT (not in V3 GPX yet)', desc: '42 km paved vs 54 km degraded trail. Saves 12 km + 2-3 hrs. Will be in V4 GPX. For now route shows the degraded trail.' },
-      { type: 'water', name: 'Arlington Lakes (alt route only)', desc: 'If taking the trail instead of Hwy 33. Filter required.' },
-      { type: 'resupply', name: 'Beaverdell (km 102) — lunch', desc: 'Beaverdell Hotel Pub for a real lunch. Convenience store for snacks.' },
-      { type: 'poi', name: 'KVR descent toward Rock Creek', desc: 'Mostly downhill rail trail through the West Kettle River valley. The reward for the morning.' },
-      { type: 'resupply', name: 'Rock Creek (km 152) — dinner', desc: 'Gas station, general store. Limited but enough. Eat in town, ride 5 km out to wild-camp.' },
-      { type: 'wild', name: 'Kettle River wild-camp east of Rock Creek', desc: 'Crown land along the river east of town. Riverside (water!), quiet. Mosquitoes — DEET.' },
+      { type: 'poi', name: 'Oats at camp + early-ish roll', desc: 'Recovery from yesterday\'s long D1. Easy KVR descent down West Kettle River valley to Rock Creek (50 km).' },
+      { type: 'resupply', name: 'Rock Creek (km 50)', desc: 'Gas station + general store. Coffee/snack stop. Trail follows the Kettle River from here.' },
+      { type: 'poi', name: 'Midway — KVR Mile Zero (km 69)', desc: 'End of KVR. Trail name changes to Columbia & Western Rail Trail.' },
+      { type: 'cafe', name: 'Greenwood double-tap (km ~87)', desc: 'Copper Eagle Cappuccino & Bakery (open 6-4) for sticky buns + butter tarts. Deadwood Junction for sandwiches + summer tacos. Worth a real stop.' },
+      { type: 'cafe', name: 'Grand Forks (km 123) — Wooden Spoon Bistro dinner', desc: 'Top-rated cafe + Borscht Bowl alt (Doukhobor pierogi/borscht). Full grocery resupply for tomorrow.' },
+      { type: 'wild', name: 'Kettle River wild-camp east of Grand Forks', desc: 'Crown land along the river east of town toward Christina Lake. Riverside, quiet. Filter water.' },
     ],
-    tip: { type: 'warning', text: 'Long day but easier than expected because D1 already absorbed the Chute Lake climb. Pie breakfast → trestles → Hwy 33 paved descent → KVR descent through Beaverdell → Rock Creek. Mostly downhill from km 30.' },
+    tip: { type: 'success', text: 'Recovery day after D1\'s big push. Mostly downhill rail trail, Greenwood double-tap mid-afternoon, Grand Forks dinner. Camp riverside east of town to set up tomorrow\'s Christina Lake swim and Bulldog Tunnel push.' },
   },
   {
     day: 3,
-    date: 'Sun Jun 14',
-    from: 'Rock Creek (wild)',
+    date: 'Mon Jun 15',
+    from: 'Grand Forks (wild)',
     to: 'E of Castlegar (wild)',
-    distance: '192 km',
-    elevation: '+1,450 m / -1,575 m',
-    time: '11-13 hrs',
+    distance: '124 km',
+    elevation: '+1,030 m / -1,075 m',
+    time: '9-11 hrs',
     difficulty: 'Hard',
-    terrain: { gravel: 80, paved: 10, singletrack: 0, fsr: 10 },
+    terrain: { gravel: 80, paved: 12, singletrack: 0, fsr: 8 },
     crux: false,
     waypoints: [
-      { type: 'poi', name: 'Midway — KVR Mile Zero (km ~19)', desc: 'End of KVR. Transition to Columbia & Western Rail Trail.' },
-      { type: 'cafe', name: 'Greenwood double-tap (km ~37)', desc: "Copper Eagle Cappuccino & Bakery (open 6-4) for sticky buns + butter tarts. Deadwood Junction for sandwiches + huge lemon squares; Jalapeño Junction tacos in summer." },
-      { type: 'cafe', name: 'Grand Forks (km 72) — Wooden Spoon Bistro lunch', desc: 'Top-rated cafe + bakery. Pascale\'s Baked Goods nearby. Eat heavy — long afternoon ahead.' },
-      { type: 'resupply', name: 'Grand Forks groceries (km 72)', desc: 'MAJOR RESUPPLY. Stock 2 meals + snacks for tomorrow. Fill water.' },
-      { type: 'water', name: 'Christina Lake swim stop (km 102)', desc: '"Warmest lake in Canada" — quick swim cool-off and snack at the marina, not a long lunch. You have 87 km still to ride.' },
-      { type: 'poi', name: 'Eholt Summit (km ~125)', desc: 'Long climb after Christina Lake on C&W. Loose rock and shale on descents.' },
-      { type: 'hazard', name: 'Farron Summit (km ~150)', desc: 'C&W high point ~1,200m. Long climb approach.' },
-      { type: 'hazard', name: 'Bulldog Tunnel — SUNDAY = no log trucks', desc: '912m long, PITCH BLACK, curved, sandy, wet. Sunday means no logging traffic — the safest day of the week. Strong front + rear lights required. Most riders walk it.' },
-      { type: 'water', name: 'Cascade Creek + spring pipes', desc: 'Creek water on descent (filter). C&W has natural spring pipes from rock faces — reliable.' },
-      { type: 'cafe', name: 'Castlegar (km 175) — Common Grounds', desc: 'Cherry Hill Coffee, baked goods at 692 18th St. Earned after Bulldog.' },
-      { type: 'resupply', name: 'Castlegar dinner', desc: 'Pharmasave, grocery, restaurants. Real food refuel after the climbs. Eat in town, ride out.' },
-      { type: 'wild', name: 'Wild-camp east of Castlegar (km ~189)', desc: 'Push 14 km east along Hwy 3A toward Nelson after dinner — Crown land along the Columbia/Kootenay River corridor (Robson/South Slocan area). Sets up shorter D4 morning.' },
+      { type: 'water', name: 'Christina Lake swim stop (km ~30)', desc: '"Warmest lake in Canada" — quick swim cool-off and snack at the marina. NOT a camp. You have 90+ km still.' },
+      { type: 'poi', name: 'Eholt Summit (km ~55)', desc: 'Long climb after Christina Lake on C&W. Loose rock and shale on descents.' },
+      { type: 'hazard', name: 'Farron Summit (km ~80)', desc: 'C&W high point ~1,200m. Long climb approach.' },
+      { type: 'hazard', name: 'Bulldog Tunnel — MONDAY = log trucks possible', desc: '912m long, PITCH BLACK, curved, sandy, wet. Monday is a workday — LISTEN at the west portal before entering, walk single file, stay right. Strong front + rear lights required.' },
+      { type: 'water', name: 'Cascade Creek + spring pipes (km ~100)', desc: 'Creek water on descent (filter). C&W has natural spring pipes from rock faces — reliable.' },
+      { type: 'cafe', name: 'Castlegar (km 117) — Common Grounds', desc: 'Cherry Hill Coffee, baked goods at 692 18th St. Earned after Bulldog.' },
+      { type: 'resupply', name: 'Castlegar dinner', desc: 'Pharmasave, grocery, restaurants. Real food refuel. Eat in town, ride out — industrial near pulp mill.' },
+      { type: 'wild', name: 'Wild-camp east of Castlegar (km ~124)', desc: 'Push 7 km east along Hwy 3A toward Nelson. Crown land along Columbia/Kootenay River corridor (Robson area). Sets up shorter D4.' },
     ],
-    tip: { type: 'warning', text: 'Big day — but front-loads the Bulldog Tunnel + Farron Summit so D4 stays manageable. Christina Lake at km 102 is a quick swim stop, NOT a camp (different from earlier plans). Sunday timing for Bulldog is the safest of the week. Camp east of Castlegar to bank Nelson time tomorrow.' },
+    tip: { type: 'warning', text: 'Bulldog Tunnel day. Monday means log trucks possible — pause at the west portal to listen for engines. Christina Lake at km 30 is swim STOP not camp. Big climbs to Eholt + Farron then Bulldog then Castlegar dinner. Camp east of town to bank Nelson time tomorrow.' },
   },
   {
     day: 4,
-    date: 'Mon Jun 15',
+    date: 'Tue Jun 16',
     from: 'E of Castlegar (wild)',
     to: 'Grey Creek (wild)',
     distance: '100 km',
@@ -708,7 +706,7 @@ window.DAYS = [
       { type: 'cafe', name: 'Slow Nelson morning — Oso Negro (km ~31)', desc: 'Coffee mecca. In-house roaster, garden patio, ranks #3 of 70 restaurants in Nelson. Add L&C French Bakery for pastries. Linger.' },
       { type: 'resupply', name: 'Nelson lunch + resupply (km ~31)', desc: 'LAST MAJOR RESUPPLY before the pass. Kootenay Co-op. Stock 2 meals + snacks. Fill ALL water bottles. Lakeside Park swim if hot. Backroads Brewing for a pint if vibing.' },
       { type: 'poi', name: 'Hwy 3A lakeshore (km 31-69)', desc: '38 km paved along Kootenay Lake. Rolling. Bring snacks.' },
-      { type: 'ferry', name: 'Balfour Ferry (km ~69)', desc: "Free. 8 km / 35 min crossing — Canada's longest free ferry. Forced rest, eat on board. Confirm Jun 15 schedule: 250-229-4215 (likely winter sched 6:30am-9:40pm)." },
+      { type: 'ferry', name: 'Balfour Ferry (km ~69)', desc: "Free. 8 km / 35 min crossing — Canada's longest free ferry. Forced rest, eat on board. Confirm Tue Jun 16 schedule: 250-229-4215 (likely winter sched 6:30am-9:40pm)." },
       { type: 'cafe', name: 'Crawford Bay (km ~83) — Black Salt Cafe', desc: 'Organic/local with garden patio. Dinner here before the final climb. Rockwood Cafe in Gray Creek as alt.' },
       { type: 'resupply', name: 'Gray Creek Store (km ~90)', desc: 'Last shop before the pass. Get TODAY\'s pass conditions: 250-227-9315. Closes early.' },
       { type: 'wild', name: 'Grey Creek wild-camp (km ~107)', desc: 'Crown land at Grey Creek pass road approach. Free, quiet. Final 15 km climb 567m to get here — earn the rest. Sleep EARLY.' },
@@ -718,7 +716,7 @@ window.DAYS = [
   },
   {
     day: 5,
-    date: 'Tue Jun 16',
+    date: 'Wed Jun 17',
     from: 'Grey Creek (wild)',
     to: 'Kimberley',
     distance: '80 km',
@@ -739,26 +737,6 @@ window.DAYS = [
     ],
     tip: { type: 'danger', text: 'THE CRUX. Grey Creek Pass is 17 km of relentless 9% grade to 2,089m. 2026 snowpack above normal — snow at summit is likely. Have the Hwy 3 / Kootenay Pass bailout in your pocket (Crawford Bay → Creston → Cranbrook, paved year-round). Start at first light. Celebrate at Pedal & Tap. Riverside Campground for the last night under canvas.' },
   },
-  {
-    day: 6,
-    date: 'Wed Jun 17',
-    from: 'Kimberley',
-    to: 'Cranbrook (car rental → Calgary)',
-    distance: '28 km',
-    elevation: '+180 m / -310 m',
-    time: '2-3 hrs (morning)',
-    difficulty: 'Easy',
-    terrain: { gravel: 0, paved: 100, singletrack: 0, fsr: 0 },
-    crux: false,
-    waypoints: [
-      { type: 'cafe', name: 'Kimberley breakfast (pre-roll)', desc: 'Bread & Butter family bakery, The Drift Cafe, Kickturn Coffee, or Bean Tree Cafe on the Platzl. Earned victory breakfast.' },
-      { type: 'poi', name: 'North Star Rails to Trails (Chief Isadore)', desc: '26 km paved rail trail, mostly downhill (~170 m net descent). Trail markers every 1 km. St. Mary\'s River bridge mid-route. Fully signed.' },
-      { type: 'poi', name: 'Cranbrook trail terminus', desc: 'Trail ends near Jim Smith Lake Rd / Hwy 95A south side of Cranbrook. ~3 km easy spin into downtown.' },
-      { type: 'resupply', name: 'Enterprise Cranbrook Downtown — car rental', desc: 'FINISH: 1716 Cranbrook St N, Unit B. Phone 250-420-6862. Mon-Fri 8am-5pm (Wed Jun 17 = open). Reserve ahead. Load bikes.' },
-      { type: 'poi', name: 'Drive home to Calgary', desc: '~4 hrs via Hwy 93/95 + Hwy 22. Scenic through the Rockies. 602 km done.' },
-    ],
-    tip: { type: 'success', text: 'Victory morning. 28 km mostly-downhill paved rail trail Kimberley → Cranbrook. Quick spin, big breakfast on the Platzl pre-roll, pickup rental car at Enterprise downtown, 4 hr drive home. The mileage on the bike clock = 602 km.' },
-  },
 ];
 
 window.SHORTCUTS = [
@@ -775,13 +753,13 @@ window.SHORTCUTS = [
 window.ALERTS = [
   {
     type: 'red',
-    title: 'Grey Creek Pass — Snow Risk (Tue Jun 16)',
-    desc: 'The road to Grey Creek Pass (2,089m) is normally closed to vehicles until early-mid July. Snow depth varies hugely year to year. In cold years, expect deep snow requiring hike-a-bike. In normal years, a few manageable snow patches by mid-June. Pass attempt Tue Jun 16 is early-window timing — and 2026 snowpack is above normal.',
+    title: 'Grey Creek Pass — Snow Risk (Wed Jun 17)',
+    desc: 'The road to Grey Creek Pass (2,089m) is normally closed to vehicles until early-mid July. Snow depth varies hugely year to year. In cold years, expect deep snow requiring hike-a-bike. In normal years, a few manageable snow patches by mid-June. Pass attempt Wed Jun 17 is early-window timing — and 2026 snowpack is above normal.',
     actions: [
       'Check BC Ministry of Forests snow stations: "2D05 Gray Creek Lower" and "2D10 Gray Creek Upper" the week before departure',
       'Join the West Kootenay Hiking Access Facebook group (5,000+ local contributors)',
-      'Ask at Grey Creek Store on Mon Jun 15 (Day 4) — they have the freshest intel: 250-227-9315',
-      'If snow looks bad: bail-out via paved Hwy 3 over Kootenay Pass (Crawford Bay → Creston → Cranbrook). Longer but year-round paved.',
+      'Ask at Grey Creek Store on Tue Jun 16 (Day 4) — they have the freshest intel: 250-227-9315',
+      'If snow looks bad: bail-out via paved Hwy 3 over Kootenay Pass (Crawford Bay → Creston → Cranbrook → Kimberley). Longer but year-round paved.',
     ],
   },
   {
@@ -831,28 +809,27 @@ window.ALERTS = [
 ];
 
 window.RESUPPLY_POINTS = [
-  { town: 'Penticton', day: 1, km: 0, services: 'Drive arrival + 4pm bike start. Bench Market quick takeout, Wouda\'s cinnamon buns. Fill bottles.', major: true },
-  { town: 'Chute Lake', day: 1, km: 35, services: 'D1 CAMP — Chute Lake Lodge tent sites (reservable, 250-486-5526) or wild-camp Crown land around lake. Pie breakfast Sat AM. End of Day 1.', major: true },
-  { town: 'Myra Canyon Trestles', day: 2, km: 50, services: 'Photo stop, 18 trestles + 2 tunnels.', major: false },
-  { town: 'McCulloch', day: 2, km: 64, services: 'Hwy 33 split — TAKE PAVED. Top of rail trail at 1,266m.', major: false },
-  { town: 'Beaverdell', day: 2, km: 137, services: 'Beaverdell Hotel Pub for lunch. Convenience store.', major: false },
-  { town: 'Rock Creek wild-camp', day: 2, km: 192, services: 'Dinner at gas/store, ride 5 km east to Crown land along Kettle River. End of Day 2.', major: false },
-  { town: 'Midway', day: 3, km: 206, services: 'KVR Mile Zero. Switch to C&W Rail Trail.', major: false },
-  { town: 'Greenwood', day: 3, km: 224, services: 'FOODIE STOP: Copper Eagle Bakery + Deadwood Junction. Mandatory.', major: false },
-  { town: 'Grand Forks', day: 3, km: 260, services: 'Wooden Spoon Bistro lunch + Borscht Bowl alt. Full grocery resupply.', major: true },
-  { town: 'Christina Lake', day: 3, km: 289, services: 'SWIM STOP (not camp). Marina for cool-off. Warmest lake in Canada.', major: false },
-  { town: 'Bulldog Tunnel', day: 3, km: 358, services: '912m pitch black. Sunday = no log trucks. Lights required.', major: false },
-  { town: 'Castlegar', day: 3, km: 377, services: 'Common Grounds coffee. Dinner in town (Pharmasave, restaurants).', major: true },
-  { town: 'Wild-camp east of Castlegar', day: 3, km: 384, services: 'Crown land along Columbia/Kootenay River corridor. End of Day 3.', major: false },
-  { town: 'Nelson', day: 4, km: 421, services: 'COFFEE TOWN. Oso Negro, L&C French Bakery, Backroads Brewing. Kootenay Co-op for last major resupply before pass. SLOW MORNING.', major: true },
-  { town: 'Balfour Ferry', day: 4, km: 458, services: 'Free ferry across Kootenay Lake. 250-229-4215 for schedule.', major: false },
-  { town: 'Crawford Bay', day: 4, km: 470, services: 'Black Salt Cafe dinner with garden patio.', major: false },
-  { town: 'Gray Creek Store', day: 4, km: 483, services: 'Pass conditions: 250-227-9315. Very limited supplies.', major: false },
-  { town: 'Grey Creek wild-camp', day: 4, km: 484, services: 'Crown land at pass road approach. End of Day 4.', major: false },
-  { town: 'Pass Summit', day: 5, km: 500, services: '2,089m. Highest point of trip. Snow likely mid-June 2026.', major: false },
-  { town: 'Kimberley', day: 5, km: 564, services: 'PASS DONE! Pedal & Tap celebration DINNER on the Platzl. Bread & Butter bakery.', major: true },
-  { town: 'Kimberley Riverside Campground', day: 5, km: 569, services: 'LAST CAMP. 500 St. Mary\'s Rd. Reservable: 1-877-999-2929. Free heated pool, showers, laundry. ~5 km from Platzl. End of Day 5.', major: false },
-  { town: 'Enterprise Cranbrook Downtown', day: 6, km: 591, services: 'FINISH + car rental pickup. 1716 Cranbrook St N. 250-420-6862. Mon-Fri 8am-5pm. Drive home to Calgary (~4 hrs).', major: true },
+  { town: 'Penticton', day: 1, km: 0, services: 'Sat AM drive arrival from Yahk + 1pm bike start. Bench Market lunch, Wouda\'s bakery. Fill bottles.', major: true },
+  { town: 'Chute Lake Resort', day: 1, km: 35, services: 'PIE STOP mid-afternoon. Strawberry-rhubarb pie + coffee. Top of climb, refill water.', major: false },
+  { town: 'Myra Canyon Trestles', day: 1, km: 50, services: '18 trestles + 2 tunnels — photo stop, allow time.', major: false },
+  { town: 'McCulloch', day: 1, km: 64, services: 'Hwy 33 turnoff — TAKE PAVED descent. Top of rail trail at 1,266m.', major: false },
+  { town: 'Beaverdell', day: 1, km: 106, services: 'D1 FINISH — Beaverdell Hotel Pub late dinner (CALL AHEAD). Wild-camp 3-5 km south on KVR along West Kettle River. End of Day 1.', major: true },
+  { town: 'Rock Creek', day: 2, km: 156, services: 'Gas station + general store. Coffee/snack stop.', major: false },
+  { town: 'Midway', day: 2, km: 175, services: 'KVR Mile Zero. Switch to C&W Rail Trail.', major: false },
+  { town: 'Greenwood', day: 2, km: 193, services: 'FOODIE STOP: Copper Eagle Bakery + Deadwood Junction. Mandatory.', major: false },
+  { town: 'Grand Forks', day: 2, km: 229, services: 'D2 FINISH — Wooden Spoon Bistro / Borscht Bowl dinner. Full grocery resupply. Wild-camp on Kettle River east of town. End of Day 2.', major: true },
+  { town: 'Christina Lake', day: 3, km: 258, services: 'SWIM STOP (not camp). Marina for cool-off. Warmest lake in Canada.', major: false },
+  { town: 'Bulldog Tunnel', day: 3, km: 327, services: '912m pitch black. MONDAY = log trucks possible. Lights + listen at portal.', major: false },
+  { town: 'Castlegar', day: 3, km: 346, services: 'Common Grounds coffee + dinner. Pharmasave, grocery.', major: true },
+  { town: 'Wild-camp east of Castlegar', day: 3, km: 353, services: 'Crown land along Columbia/Kootenay River corridor (Robson area). End of Day 3.', major: false },
+  { town: 'Nelson', day: 4, km: 384, services: 'COFFEE TOWN. Oso Negro, L&C French Bakery, Backroads Brewing. Kootenay Co-op for LAST major resupply before pass. SLOW MORNING.', major: true },
+  { town: 'Balfour Ferry', day: 4, km: 422, services: 'Free ferry across Kootenay Lake. 250-229-4215 for schedule.', major: false },
+  { town: 'Crawford Bay', day: 4, km: 436, services: 'Black Salt Cafe dinner with garden patio.', major: false },
+  { town: 'Gray Creek Store', day: 4, km: 449, services: 'Pass conditions: 250-227-9315. Very limited supplies.', major: false },
+  { town: 'Grey Creek wild-camp', day: 4, km: 453, services: 'Crown land at pass road approach. End of Day 4.', major: false },
+  { town: 'Pass Summit', day: 5, km: 469, services: '2,089m. Highest point of trip. Snow likely mid-June 2026.', major: false },
+  { town: 'Kimberley', day: 5, km: 533, services: 'PASS DONE! Pedal & Tap celebration DINNER on the Platzl. Bread & Butter bakery.', major: true },
+  { town: 'Kimberley Riverside Campground', day: 5, km: 538, services: 'LAST CAMP. 500 St. Mary\'s Rd. Reservable: 1-877-999-2929. Free heated pool, showers, laundry. ~5 km from Platzl. End of Day 5. Drive home Thu Jun 18 in personal car from friend\'s place.', major: false },
 ];
 
 window.GEAR = [
@@ -979,9 +956,9 @@ function Hero() {
   return (
     <header className="hero">
       <div className="hero-content">
-        <div className="hero-badge">BC Epic 1000 {SYM.BULL} Jun 12-17, 2026</div>
-        <h1>Penticton to Cranbrook</h1>
-        <p className="hero-subtitle">5 days of rail trails, mountain passes, and one ferry crossing — finish at Pedal & Tap, then victory roll to Cranbrook for the rental car home.<br/>Stephan & Mark's bikepacking adventure.</p>
+        <div className="hero-badge">BC Epic 1000 {SYM.BULL} Jun 13-17, 2026 (bike) {SYM.BULL} Drive Jun 12</div>
+        <h1>Penticton to Kimberley</h1>
+        <p className="hero-subtitle">5 days of rail trails, mountain passes, and one ferry crossing — finish at Pedal & Tap on the Platzl. Pre-trip: Fri Jun 12 drive Calgary → Kimberley (drop car) → Yahk PP (U-Haul overnight) → Sat AM Yahk → Penticton (drop U-Haul, bike start 1pm).<br/>Stephan & Mark's bikepacking adventure.</p>
         <div className="hero-stats">
           <div className="hero-stat"><div className="hero-stat-value">{TRIP_STATS.distance}</div><div className="hero-stat-label">Kilometres</div></div>
           <div className="hero-stat"><div className="hero-stat-value">{TRIP_STATS.elevation}</div><div className="hero-stat-label">Metres Gain</div></div>
@@ -996,30 +973,28 @@ function Hero() {
 }
 
 function ElevationProfile() {
-  // Elevation profile sampled from V3 GPX Penticton -> Cranbrook (591 km)
+  // Elevation profile: V3 GPX km 0-64, then Hwy 33 shortcut McCulloch->Beaverdell (replaces km 64-137 with paved descent)
   const points = [
-    // Day 1: Penticton -> Chute Lake
+    // Day 1: Penticton -> Chute Lk -> McCulloch -> Hwy 33 -> Beaverdell
     { x: 0, y: 362, label: 'Penticton' },
     { x: 35, y: 1194, label: 'Chute Lk' },
-    // Day 2: -> McCulloch -> Beaverdell -> Rock Creek wild
     { x: 64, y: 1266, label: 'McCulloch' },
-    { x: 137, y: 786, label: 'Beaverdell' },
-    { x: 192, y: 600, label: 'Rock Ck' },
-    // Day 3: -> Midway -> Greenwood -> Grand Forks -> Christina -> Farron -> Bulldog -> Castlegar wild
-    { x: 224, y: 700, label: 'Greenwood' },
-    { x: 260, y: 517, label: 'Grand Forks' },
-    { x: 289, y: 616, label: 'Christina' },
-    { x: 340, y: 1133, label: 'Farron' },
-    { x: 377, y: 446, label: 'Castlegar' },
+    { x: 106, y: 786, label: 'Beaverdell' },
+    // Day 2: -> Rock Creek -> Midway -> Greenwood -> Grand Forks
+    { x: 156, y: 607, label: 'Rock Ck' },
+    { x: 193, y: 700, label: 'Greenwood' },
+    { x: 229, y: 517, label: 'Grand Forks' },
+    // Day 3: -> Christina swim -> Farron -> Bulldog -> Castlegar -> wild
+    { x: 258, y: 616, label: 'Christina' },
+    { x: 309, y: 1133, label: 'Farron' },
+    { x: 346, y: 446, label: 'Castlegar' },
     // Day 4: -> Nelson -> Ferry -> Grey Creek wild
-    { x: 421, y: 562, label: 'Nelson' },
-    { x: 458, y: 533, label: 'Ferry' },
-    { x: 484, y: 1100, label: 'Grey Ck' },
+    { x: 384, y: 562, label: 'Nelson' },
+    { x: 422, y: 533, label: 'Ferry' },
+    { x: 453, y: 1100, label: 'Grey Ck' },
     // Day 5: -> Pass summit -> Kimberley
-    { x: 500, y: 2089, label: 'PASS 2,089m' },
-    { x: 564, y: 1040, label: 'Kimberley' },
-    // Day 6: -> Cranbrook
-    { x: 591, y: 907, label: 'Cranbrook' },
+    { x: 469, y: 2089, label: 'PASS 2,089m' },
+    { x: 533, y: 1040, label: 'Kimberley' },
   ];
 
   const svgW = 800;
@@ -1030,7 +1005,7 @@ function ElevationProfile() {
   const padB = 25;
   const chartW = svgW - padL - padR;
   const chartH = svgH - padT - padB;
-  const maxKm = 595;
+  const maxKm = 540;
   const maxElev = 2200;
   const minElev = 300;
 
@@ -1040,9 +1015,9 @@ function ElevationProfile() {
   const pathD = points.map((p, i) => `${i === 0 ? 'M' : 'L'}${toX(p.x).toFixed(1)},${toY(p.y).toFixed(1)}`).join(' ');
   const areaD = pathD + ` L${toX(points[points.length-1].x).toFixed(1)},${toY(minElev).toFixed(1)} L${toX(0).toFixed(1)},${toY(minElev).toFixed(1)} Z`;
 
-  // V3 GPX day boundaries: Penticton -> Chute Lk -> Rock Creek -> E Castlegar -> Grey Creek -> Kimberley -> Cranbrook
-  const dayBounds = [0, 35, 192, 384, 484, 564, 591];
-  const dayColors = ['rgba(52,211,153,0.08)', 'rgba(96,165,250,0.08)', 'rgba(52,211,153,0.08)', 'rgba(96,165,250,0.08)', 'rgba(245,158,11,0.1)', 'rgba(52,211,153,0.08)'];
+  // Day boundaries: Penticton -> Beaverdell (Hwy 33) -> Grand Forks -> E Castlegar -> Grey Creek -> Kimberley
+  const dayBounds = [0, 106, 229, 353, 453, 533];
+  const dayColors = ['rgba(52,211,153,0.08)', 'rgba(96,165,250,0.08)', 'rgba(52,211,153,0.08)', 'rgba(96,165,250,0.08)', 'rgba(245,158,11,0.1)'];
 
   return (
     <div className="elevation-card">
@@ -1082,8 +1057,8 @@ function ElevationProfile() {
         </defs>
       </svg>
       <div className="elevation-labels">
-        <span>0 km {SYM.DASH} Penticton (Fri Jun 12)</span>
-        <span>591 km {SYM.DASH} Cranbrook (Wed Jun 17)</span>
+        <span>0 km {SYM.DASH} Penticton (Sat Jun 13)</span>
+        <span>533 km {SYM.DASH} Kimberley (Wed Jun 17)</span>
       </div>
     </div>
   );
@@ -1248,7 +1223,7 @@ function ResupplySection() {
         <div style={{ marginTop: 20, padding: 16, background: 'var(--bg-card)', borderRadius: 12, fontSize: 13, color: 'var(--text-secondary)', border: '1px solid var(--border)' }}>
           <strong style={{ color: 'var(--warning)' }}>Longest gap without services:</strong> Grey Creek to Kimberley (80 km, Day 5 over the pass). Stock up in Nelson on Day 4 with 2 full meals + snacks. Carry 2-3L of water for Grey Creek Pass — first reliable refill is South Fork Creek on the descent.<br/><br/>
           <strong style={{ color: 'var(--info)' }}>Camping every night:</strong> 4 wild-camps on Crown land (Adra, Rock Creek, Castlegar wild, Grey Creek) + 1 developed campground (Kimberley Riverside). No hotels.<br/><br/>
-          <strong style={{ color: 'var(--success)' }}>Pre-book ahead:</strong> Kimberley Riverside Campground 1-877-999-2929 (reserve last night). Enterprise Cranbrook 250-420-6862 (reserve car rental for Wed Jun 17 morning pickup, 8am+).
+          <strong style={{ color: 'var(--success)' }}>Pre-book ahead:</strong> Yahk Provincial Park (Fri Jun 12 U-Haul overnight, discovercamping.ca), Chute Lake Lodge 250-486-5526 (Sat Jun 13 D1 camp), Kimberley Riverside Campground 1-877-999-2929 (Wed Jun 17 last camp post-pass).
         </div>
       </div>
     </section>
