@@ -1,1053 +1,803 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BC Epic 1000 — Route Planning 2026</title>
-  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet" />
-  <style>
-    :root {
-      /* Alpine theme (default) */
-      --bg-primary: #0a0f1a;
-      --bg-secondary: #111827;
-      --bg-card: #1a2332;
-      --bg-card-hover: #1f2b3d;
-      --text-primary: #f1f5f9;
-      --text-secondary: #94a3b8;
-      --text-muted: #64748b;
-      --accent: #38bdf8;
-      --accent-glow: rgba(56, 189, 248, 0.15);
-      --accent-secondary: #22d3ee;
-      --gradient-start: #0ea5e9;
-      --gradient-end: #06b6d4;
-      --border: rgba(148, 163, 184, 0.1);
-      --danger: #f97316;
-      --success: #34d399;
-      --hero-gradient: linear-gradient(135deg, #0c1929 0%, #122036 40%, #0f2027 100%);
-      --card-shadow: 0 4px 24px rgba(0,0,0,0.3);
-      --elevation-gradient: linear-gradient(90deg, #22d3ee, #38bdf8, #818cf8, #c084fc);
-    }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>BC Epic 1000 · Follow Stephan, Mark & Michael</title>
+<meta name="description" content="Follow Stephan, Mark & Michael live as they ride the BC Epic 1000 — 595 km of gravel from Penticton to Cranbrook, June 13–17, 2026." />
+<meta property="og:title" content="BC Epic 1000 · Follow the Trio" />
+<meta property="og:description" content="595 km · 6,346 m of climbing · 5 days · 3 riders. Penticton → Cranbrook, June 13–17, 2026. Live tracker inside." />
+<meta property="og:type" content="website" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+<style>
+  :root {
+    --night: #060b16;
+    --night-2: #0b1426;
+    --ink: #0e1a30;
+    --card: rgba(17, 28, 50, 0.85);
+    --card-solid: #121e38;
+    --text: #eef4ff;
+    --text-2: #9fb3d1;
+    --text-3: #64779a;
+    --line: rgba(159, 179, 209, 0.14);
+    --d1: #38bdf8; --d2: #34d399; --d3: #fbbf24; --d4: #f472b6; --d5: #a78bfa;
+    --live: #ff4d6d;
+    --glow: 0 0 24px rgba(56, 189, 248, 0.35);
+    --radius: 18px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--night);
+    color: var(--text);
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, .display { font-family: 'Archivo Black', 'Space Grotesk', sans-serif; }
+  a { color: var(--d1); text-decoration: none; }
+  img { max-width: 100%; }
+  section { position: relative; padding: 72px 20px; max-width: 1100px; margin: 0 auto; }
+  .kicker {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 12px; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--d1); margin-bottom: 14px;
+  }
+  .kicker::before { content: ""; width: 26px; height: 2px; background: var(--d1); border-radius: 2px; }
+  h2 { font-size: clamp(28px, 6vw, 44px); line-height: 1.05; margin-bottom: 14px; letter-spacing: -0.01em; }
+  .sub { color: var(--text-2); font-size: clamp(15px, 2.5vw, 17px); line-height: 1.65; max-width: 640px; }
 
-    [data-theme="sunset"] {
-      --bg-primary: #1a0f0a;
-      --bg-secondary: #271811;
-      --bg-card: #33201a;
-      --bg-card-hover: #3d281f;
-      --text-primary: #fef3c7;
-      --text-secondary: #d6a87c;
-      --text-muted: #a67c5b;
-      --accent: #f59e0b;
-      --accent-glow: rgba(245, 158, 11, 0.15);
-      --accent-secondary: #ef4444;
-      --gradient-start: #f59e0b;
-      --gradient-end: #ef4444;
-      --border: rgba(214, 168, 124, 0.1);
-      --danger: #ef4444;
-      --success: #84cc16;
-      --hero-gradient: linear-gradient(135deg, #1a0f0a 0%, #2d1810 40%, #1a1005 100%);
-      --card-shadow: 0 4px 24px rgba(0,0,0,0.4);
-      --elevation-gradient: linear-gradient(90deg, #f59e0b, #ef4444, #ec4899, #a855f7);
-    }
+  /* ---------- top bar ---------- */
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 16px calc(10px);
+    padding-top: calc(10px + env(safe-area-inset-top));
+    background: rgba(6, 11, 22, 0.72);
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--line);
+  }
+  .brand { font-family: 'Archivo Black'; font-size: 15px; letter-spacing: 0.04em; color: var(--text); }
+  .brand em { font-style: normal; color: var(--d1); }
+  .topnav { display: flex; gap: 4px; }
+  .topnav a {
+    color: var(--text-2); font-size: 13px; font-weight: 600; padding: 7px 10px; border-radius: 10px;
+    transition: color .2s, background .2s;
+  }
+  .topnav a:hover { color: var(--text); background: rgba(56,189,248,.12); }
+  .topnav a.cta { color: #fff; background: linear-gradient(120deg, #ff4d6d, #ff7849); box-shadow: 0 4px 18px rgba(255,77,109,.35); }
+  @media (max-width: 560px) { .topnav a:not(.cta) { display: none; } }
 
-    [data-theme="forest"] {
-      --bg-primary: #0a1a0f;
-      --bg-secondary: #112718;
-      --bg-card: #1a3322;
-      --bg-card-hover: #1f3d28;
-      --text-primary: #ecfdf5;
-      --text-secondary: #86efac;
-      --text-muted: #4ade80;
-      --accent: #34d399;
-      --accent-glow: rgba(52, 211, 153, 0.15);
-      --accent-secondary: #a3e635;
-      --gradient-start: #10b981;
-      --gradient-end: #34d399;
-      --border: rgba(134, 239, 172, 0.1);
-      --danger: #fb923c;
-      --success: #a3e635;
-      --hero-gradient: linear-gradient(135deg, #0a1a0f 0%, #112718 40%, #0a1a10 100%);
-      --card-shadow: 0 4px 24px rgba(0,0,0,0.35);
-      --elevation-gradient: linear-gradient(90deg, #a3e635, #34d399, #2dd4bf, #38bdf8);
-    }
+  .livechip {
+    display: inline-flex; align-items: center; gap: 7px;
+    font-size: 11px; font-weight: 700; letter-spacing: .14em;
+    padding: 5px 11px; border-radius: 999px;
+    background: rgba(255, 77, 109, 0.14); color: #ff8aa0; border: 1px solid rgba(255,77,109,.35);
+  }
+  .livechip .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--live); animation: pulse 1.6s ease-out infinite; }
+  @keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(255,77,109,.7); }
+    70% { box-shadow: 0 0 0 9px rgba(255,77,109,0); }
+    100% { box-shadow: 0 0 0 0 rgba(255,77,109,0); }
+  }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-    body {
-      font-family: 'Inter', -apple-system, sans-serif;
-      background: var(--bg-primary);
-      color: var(--text-primary);
-      line-height: 1.6;
-      overflow-x: hidden;
-    }
+  /* ---------- hero ---------- */
+  .hero {
+    position: relative; min-height: 100svh;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 110px 20px 0; overflow: hidden;
+    background: linear-gradient(180deg, #050810 0%, #0a1430 38%, #16264d 62%, #2c3f6b 78%, #1b2c50 100%);
+  }
+  .stars { position: absolute; inset: 0; pointer-events: none; }
+  .star { position: absolute; border-radius: 50%; background: #cfe4ff; animation: twinkle var(--tw, 3s) ease-in-out infinite; }
+  @keyframes twinkle { 0%,100% { opacity: .15; } 50% { opacity: .9; } }
+  .aurora {
+    position: absolute; top: -18%; left: 50%; width: 150vw; height: 70vh;
+    transform: translateX(-50%);
+    background:
+      radial-gradient(45% 60% at 30% 50%, rgba(52, 211, 153, 0.16), transparent 70%),
+      radial-gradient(40% 55% at 65% 40%, rgba(56, 189, 248, 0.18), transparent 70%),
+      radial-gradient(35% 50% at 50% 60%, rgba(167, 139, 250, 0.13), transparent 70%);
+    filter: blur(30px);
+    animation: auroraShift 16s ease-in-out infinite alternate;
+    pointer-events: none;
+  }
+  @keyframes auroraShift {
+    0% { transform: translateX(-56%) scaleY(1) rotate(-2deg); }
+    100% { transform: translateX(-44%) scaleY(1.18) rotate(2deg); }
+  }
+  .mtns { position: absolute; left: 0; right: 0; bottom: 0; width: 100%; pointer-events: none; }
+  .mtns svg { display: block; width: 100%; height: auto; }
+  .cloud {
+    position: absolute; height: 26px; border-radius: 999px;
+    background: rgba(190, 210, 240, 0.07); filter: blur(6px);
+    animation: drift linear infinite;
+  }
+  @keyframes drift { from { transform: translateX(-30vw); } to { transform: translateX(130vw); } }
 
-    ::-webkit-scrollbar { width: 8px; }
-    ::-webkit-scrollbar-track { background: var(--bg-secondary); }
-    ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 4px; }
+  .hero-inner { position: relative; z-index: 5; max-width: 880px; }
+  .hero .eyebrow {
+    display: inline-flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: center;
+    font-size: 13px; font-weight: 700; letter-spacing: .26em; text-transform: uppercase; color: var(--text-2);
+    margin-bottom: 18px;
+  }
+  .hero h1 {
+    font-size: clamp(52px, 14vw, 132px);
+    line-height: 0.92; letter-spacing: -0.01em;
+    background: linear-gradient(180deg, #ffffff 20%, #9cc8ff 70%, #5e8fd6 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    text-shadow: 0 30px 70px rgba(56,189,248,.18);
+    animation: heroIn 1s cubic-bezier(.2,.8,.2,1) both;
+  }
+  .hero h1 .thousand { display: block; font-size: clamp(30px, 7.5vw, 70px); letter-spacing: .28em; margin-top: 6px;
+    background: linear-gradient(90deg, var(--d1), var(--d2), var(--d3), var(--d4), var(--d5));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    background-size: 300% 100%; animation: rainbow 7s linear infinite; }
+  @keyframes rainbow { to { background-position: 300% 0; } }
+  @keyframes heroIn { from { opacity: 0; transform: translateY(26px) scale(.97); } }
+  .hero .tag { margin-top: 18px; font-size: clamp(16px, 3.4vw, 21px); color: var(--text-2); animation: heroIn 1s .15s cubic-bezier(.2,.8,.2,1) both; }
+  .hero .tag strong { color: var(--text); }
+  .hero-ctas { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 28px; animation: heroIn 1s .3s cubic-bezier(.2,.8,.2,1) both; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 9px;
+    font-family: 'Space Grotesk'; font-weight: 700; font-size: 15px;
+    padding: 14px 24px; border-radius: 14px; border: none; cursor: pointer;
+    transition: transform .2s, box-shadow .2s;
+  }
+  .btn:active { transform: scale(.97); }
+  .btn-live { color: #fff; background: linear-gradient(120deg, #ff4d6d, #ff7849); box-shadow: 0 8px 30px rgba(255,77,109,.4); }
+  .btn-live:hover { transform: translateY(-2px); box-shadow: 0 12px 38px rgba(255,77,109,.55); }
+  .btn-ghost { color: var(--text); background: rgba(159,179,209,.1); border: 1px solid var(--line); }
+  .btn-ghost:hover { background: rgba(159,179,209,.18); transform: translateY(-2px); }
 
-    .fade-in {
-      opacity: 0;
-      transform: translateY(30px);
-      transition: opacity 0.7s ease, transform 0.7s ease;
-    }
-    .fade-in.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
+  /* status board */
+  .status-board {
+    margin: 34px auto 0; max-width: 620px;
+    background: rgba(10, 18, 36, 0.7); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 18px 22px; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    animation: heroIn 1s .45s cubic-bezier(.2,.8,.2,1) both;
+  }
+  .status-board .label { font-size: 11px; font-weight: 700; letter-spacing: .22em; text-transform: uppercase; color: var(--text-3); }
+  .countdown { display: flex; justify-content: center; gap: clamp(10px, 4vw, 26px); margin-top: 10px; }
+  .cd-unit .num { font-family: 'Archivo Black'; font-size: clamp(30px, 8vw, 46px); color: var(--text); font-variant-numeric: tabular-nums; }
+  .cd-unit .lbl { font-size: 10px; letter-spacing: .2em; text-transform: uppercase; color: var(--text-3); margin-top: 2px; }
+  .status-live-line { margin-top: 8px; font-size: clamp(17px, 4vw, 22px); font-weight: 700; }
+  .trip-progress { margin-top: 14px; }
+  .trip-progress .bar { height: 8px; border-radius: 99px; background: rgba(159,179,209,.12); overflow: hidden; }
+  .trip-progress .fill {
+    height: 100%; width: 0%; border-radius: 99px;
+    background: linear-gradient(90deg, var(--d1), var(--d2), var(--d3), var(--d4), var(--d5));
+    background-size: 200% 100%; animation: rainbow 5s linear infinite;
+    transition: width 1.2s cubic-bezier(.2,.8,.2,1);
+  }
+  .trip-progress .ticks { display: flex; justify-content: space-between; margin-top: 6px; font-size: 10px; letter-spacing: .08em; color: var(--text-3); text-transform: uppercase; }
 
-    @keyframes pulse-glow {
-      0%, 100% { box-shadow: 0 0 20px var(--accent-glow); }
-      50% { box-shadow: 0 0 40px var(--accent-glow), 0 0 60px var(--accent-glow); }
-    }
+  /* riders crossing the ridge */
+  .peloton { position: absolute; bottom: 0; left: 0; width: 100%; height: 0; z-index: 4; pointer-events: none; }
+  .rider-sil {
+    position: absolute; bottom: var(--ride-y, 12vw); left: 0; width: 46px; height: 30px;
+    animation: rideAcross var(--ride-t, 26s) linear infinite; animation-delay: var(--ride-d, 0s);
+    opacity: 0;
+  }
+  .rider-sil svg { width: 100%; height: 100%; animation: bob 0.7s ease-in-out infinite alternate; }
+  @keyframes rideAcross {
+    0% { transform: translateX(-60px); opacity: 0; }
+    3% { opacity: 1; }
+    97% { opacity: 1; }
+    100% { transform: translateX(105vw); opacity: 0; }
+  }
+  @keyframes bob { from { transform: translateY(0); } to { transform: translateY(-2px); } }
 
-    @keyframes float {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-10px); }
-    }
+  .scroll-hint { position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%); z-index: 6; color: var(--text-3); font-size: 22px; animation: hint 1.8s ease-in-out infinite; }
+  @keyframes hint { 0%,100% { transform: translate(-50%, 0); opacity: .5; } 50% { transform: translate(-50%, 8px); opacity: 1; } }
 
-    @keyframes shimmer {
-      0% { background-position: -200% 0; }
-      100% { background-position: 200% 0; }
-    }
+  /* ---------- stat strip ---------- */
+  .stats-strip {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
+    max-width: 980px; margin: -46px auto 0; position: relative; z-index: 10; padding: 0 20px;
+  }
+  .stat-card {
+    background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 20px 12px; text-align: center;
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 16px 44px rgba(0,0,0,.45);
+  }
+  .stat-card .num { font-family: 'Archivo Black'; font-size: clamp(24px, 5.4vw, 40px); font-variant-numeric: tabular-nums;
+    background: linear-gradient(120deg, var(--d1), var(--d2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .stat-card .lbl { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--text-3); margin-top: 6px; }
+  @media (max-width: 640px) { .stats-strip { grid-template-columns: repeat(2, 1fr); } }
 
-    @keyframes mountain-drift {
-      0%, 100% { transform: translateX(0); }
-      50% { transform: translateX(5px); }
-    }
-  </style>
+  /* ---------- reveal on scroll ---------- */
+  .reveal { opacity: 0; transform: translateY(30px); transition: opacity .8s cubic-bezier(.2,.8,.2,1), transform .8s cubic-bezier(.2,.8,.2,1); }
+  .reveal.in { opacity: 1; transform: none; }
+
+  /* ---------- live tracker ---------- */
+  .tracker-shell {
+    border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden;
+    background: var(--card-solid); box-shadow: 0 20px 60px rgba(0,0,0,.5);
+    position: relative;
+  }
+  .tracker-shell::before {
+    content: ""; position: absolute; inset: -2px; border-radius: 20px; padding: 2px; z-index: 0;
+    background: linear-gradient(120deg, var(--live), #ff7849, var(--d1), var(--live));
+    background-size: 300% 100%; animation: rainbow 6s linear infinite;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor; mask-composite: exclude;
+    pointer-events: none;
+  }
+  .tracker-shell iframe { display: block; width: 100%; height: min(72vh, 560px); border: 0; background: #0b1426; position: relative; z-index: 1; }
+  .tracker-foot {
+    position: relative; z-index: 1;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+    padding: 14px 18px; border-top: 1px solid var(--line); background: rgba(6,11,22,.6);
+  }
+  .tracker-foot .note { font-size: 13px; color: var(--text-2); line-height: 1.5; flex: 1 1 260px; }
+  .sat-tips { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-top: 18px; }
+  .tip { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; font-size: 13.5px; color: var(--text-2); line-height: 1.55; }
+  .tip b { color: var(--text); display: block; margin-bottom: 4px; font-size: 14px; }
+
+  /* ---------- map ---------- */
+  #routeMap { height: min(64vh, 540px); border-radius: var(--radius); border: 1px solid var(--line); box-shadow: 0 20px 60px rgba(0,0,0,.5); z-index: 1; }
+  .leaflet-container { background: #0b1426; font-family: 'Space Grotesk'; }
+  .day-chips { display: flex; gap: 8px; flex-wrap: wrap; margin: 16px 0; }
+  .chip {
+    font-family: 'Space Grotesk'; font-weight: 700; font-size: 13px;
+    padding: 8px 14px; border-radius: 999px; cursor: pointer;
+    background: rgba(159,179,209,.08); color: var(--text-2); border: 1px solid var(--line);
+    transition: all .2s;
+  }
+  .chip:hover { color: var(--text); transform: translateY(-1px); }
+  .chip.on { color: #06121f; background: #eef4ff; border-color: transparent; box-shadow: 0 4px 18px var(--chip-glow, rgba(56,189,248,.4)); }
+  .town-label { background: none; border: none; box-shadow: none; }
+  .town-label span {
+    font-size: 11px; font-weight: 700; letter-spacing: .04em; color: #eaf3ff; white-space: nowrap;
+    background: rgba(8,14,28,.85); padding: 3px 8px; border-radius: 8px; border: 1px solid var(--line);
+  }
+  .pin { width: 14px; height: 14px; border-radius: 50%; border: 3px solid #0b1426; box-shadow: 0 0 0 2px rgba(255,255,255,.25), 0 0 14px var(--pinc, var(--d1)); background: var(--pinc, var(--d1)); }
+
+  /* elevation profile */
+  .profile-wrap { margin-top: 22px; background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px 16px 10px; }
+  .profile-head { display: flex; justify-content: space-between; align-items: baseline; padding: 0 6px 8px; }
+  .profile-head .t { font-weight: 700; font-size: 14px; }
+  .profile-head .s { font-size: 12px; color: var(--text-3); }
+  #elevSVG { width: 100%; height: 150px; display: block; }
+
+  /* ---------- days ---------- */
+  .days-grid { display: grid; gap: 16px; }
+  .day-card {
+    position: relative; overflow: hidden;
+    background: var(--card-solid); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 22px 22px 18px;
+    transition: transform .25s, box-shadow .25s, border-color .25s;
+  }
+  .day-card:hover { transform: translateY(-4px); border-color: var(--dc); box-shadow: 0 18px 50px rgba(0,0,0,.5), 0 0 30px color-mix(in srgb, var(--dc) 18%, transparent); }
+  .day-card::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, var(--dc), transparent); }
+  .day-card.today { border-color: var(--dc); box-shadow: 0 0 0 1px var(--dc), 0 0 40px color-mix(in srgb, var(--dc) 25%, transparent); }
+  .day-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; flex-wrap: wrap; }
+  .day-num { font-family: 'Archivo Black'; font-size: 13px; letter-spacing: .2em; color: var(--dc); }
+  .day-date { font-size: 12.5px; color: var(--text-3); font-weight: 600; }
+  .day-route { font-family: 'Archivo Black'; font-size: clamp(19px, 4.4vw, 24px); margin: 6px 0 2px; line-height: 1.15; }
+  .day-stats { display: flex; gap: 16px; flex-wrap: wrap; margin: 10px 0 4px; font-size: 13.5px; color: var(--text-2); font-weight: 600; }
+  .day-stats b { color: var(--text); font-variant-numeric: tabular-nums; }
+  .day-hl { margin-top: 10px; display: flex; flex-direction: column; gap: 6px; }
+  .day-hl span { font-size: 13.5px; color: var(--text-2); line-height: 1.5; }
+  .spark { margin-top: 12px; width: 100%; height: 44px; display: block; opacity: .9; }
+  .today-flag {
+    display: none; font-size: 10px; font-weight: 800; letter-spacing: .18em; color: #06121f;
+    background: var(--dc); border-radius: 99px; padding: 4px 10px;
+  }
+  .day-card.today .today-flag { display: inline-block; animation: pulse 1.6s ease-out infinite; }
+  @media (min-width: 760px) {
+    .days-grid { grid-template-columns: repeat(2, 1fr); }
+    .days-grid .day-card:last-child { grid-column: 1 / -1; }
+  }
+
+  /* ---------- crew ---------- */
+  .crew-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  @media (max-width: 680px) { .crew-grid { grid-template-columns: 1fr; } }
+  .crew-card {
+    text-align: center; background: var(--card-solid); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 28px 18px 24px; transition: transform .25s;
+  }
+  .crew-card:hover { transform: translateY(-5px) rotate(-.5deg); }
+  .avatar {
+    width: 86px; height: 86px; margin: 0 auto 14px; border-radius: 50%;
+    display: grid; place-items: center;
+    font-family: 'Archivo Black'; font-size: 32px; color: #071120;
+    background: var(--av); box-shadow: 0 10px 30px color-mix(in srgb, var(--avg) 45%, transparent);
+    animation: float 4s ease-in-out infinite; animation-delay: var(--fd, 0s);
+  }
+  @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
+  .crew-card h3 { font-family: 'Archivo Black'; font-size: 20px; }
+  .crew-card .role { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--text-3); margin: 4px 0 10px; font-weight: 700; }
+  .crew-card p { font-size: 13.5px; color: var(--text-2); line-height: 1.55; }
+
+  /* ---------- footer ---------- */
+  footer { border-top: 1px solid var(--line); padding: 44px 20px 60px; text-align: center; background: linear-gradient(180deg, transparent, rgba(11,20,38,.8)); }
+  footer .links { display: flex; gap: 18px; justify-content: center; flex-wrap: wrap; margin-bottom: 18px; font-size: 14px; font-weight: 600; }
+  footer .fine { color: var(--text-3); font-size: 12.5px; line-height: 1.7; max-width: 560px; margin: 0 auto; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    html { scroll-behavior: auto; }
+  }
+</style>
 </head>
-<body data-theme="alpine">
-  <div id="root"></div>
-  <script type="text/babel">
-    const { useState, useEffect, useRef, useCallback } = React;
+<body>
 
-    // ─── Data ─────────────────────────────────────────────
-    const THEMES = [
-      { id: 'alpine', name: 'Alpine', icon: '🏔️' },
-      { id: 'sunset', name: 'Sunset', icon: '🌅' },
-      { id: 'forest', name: 'Forest', icon: '🌲' },
-    ];
+<!-- ============ TOP BAR ============ -->
+<div class="topbar">
+  <div class="brand">BC&nbsp;EPIC&nbsp;<em>1000</em></div>
+  <nav class="topnav">
+    <a href="#route">Route</a>
+    <a href="#days">Days</a>
+    <a href="#crew">Crew</a>
+    <a href="#live" class="cta">● Live</a>
+  </nav>
+</div>
 
-    const ROUTE_STATS = [
-      { label: 'Distance', value: '820', unit: 'km', icon: '📏' },
-      { label: 'Elevation', value: '8,443', unit: 'm', icon: '⛰️' },
-      { label: 'Days', value: '5', unit: 'days', icon: '🗓️' },
-      { label: 'Off-Road', value: '~80', unit: '%', icon: '🛤️' },
-    ];
+<!-- ============ HERO ============ -->
+<header class="hero" id="top">
+  <div class="aurora"></div>
+  <div class="stars" id="stars"></div>
+  <div class="cloud" style="top:16%; width:180px; --d:0; animation-duration:75s;"></div>
+  <div class="cloud" style="top:26%; width:260px; animation-duration:95s; animation-delay:-40s;"></div>
+  <div class="cloud" style="top:11%; width:120px; animation-duration:60s; animation-delay:-22s;"></div>
 
-    const DAYS = [
-      {
-        day: 1,
-        title: 'Penticton → Kettle River',
-        distance: '190 km',
-        elevation: '~2,000 m',
-        terrain: 'Rail grade, gravel FSR',
-        highlights: [
-          'Start in Penticton — Okanagan vibes',
-          'Kettle Valley Rail Trail trestles & tunnels',
-          'Lunch stop at Beaverdell (~150 km)',
-          'Camp at Kettle River Provincial Park',
-        ],
-        resupply: 'Beaverdell (limited)',
-        difficulty: 4,
-        emoji: '🚀',
-        tip: 'Big first day — start early, pace yourself.',
-      },
-      {
-        day: 2,
-        title: 'Kettle River → Castlegar',
-        distance: '200 km',
-        elevation: '~1,800 m + 600 m climb',
-        terrain: 'Rail grade, some paved',
-        highlights: [
-          'Food stops at Rock Creek or Midway',
-          'Lunch in Grand Forks',
-          'Columbia & Western Rail Trail',
-          'Overnight near Castlegar',
-        ],
-        resupply: 'Rock Creek, Midway, Grand Forks, Castlegar',
-        difficulty: 4,
-        emoji: '💪',
-        tip: 'Longest day — multiple resupply options is a relief.',
-      },
-      {
-        day: 3,
-        title: 'Castlegar → Nelson',
-        distance: '140 km',
-        elevation: '~1,500 m',
-        terrain: 'Mixed — rail grade, singletrack',
-        highlights: [
-          'Great Northern Rail Trail',
-          'Singletrack sections (challenging!)',
-          'Arrive in Nelson by midday',
-          'Possible rest at friend\'s place',
-        ],
-        resupply: 'Nelson (full services)',
-        difficulty: 3,
-        emoji: '🏕️',
-        tip: 'Shorter day — good recovery. Nelson has great food & beer.',
-      },
-      {
-        day: 4,
-        title: 'Nelson → Kimberley',
-        distance: '130 km',
-        elevation: '~1,800 m',
-        terrain: 'Gravel FSR, significant climbing',
-        highlights: [
-          'Ferry crossing on Kootenay Lake',
-          'White Grouse Pass — big climb',
-          'Remote & scenic Purcell Mountains',
-          'Overnight in Kimberley',
-        ],
-        resupply: 'Kimberley',
-        difficulty: 5,
-        emoji: '🔥',
-        tip: 'Hardest climbing day. The ferry is a nice break mid-ride.',
-      },
-      {
-        day: 5,
-        title: 'Kimberley → Fernie',
-        distance: '170 km',
-        elevation: '~1,300 m',
-        terrain: 'Gravel, some paved finish',
-        highlights: [
-          'Elk Valley views',
-          'Rolling terrain with less climbing',
-          'Finish in Fernie! 🎉',
-          'Celebrate with local craft beer',
-        ],
-        resupply: 'Fernie (finish!)',
-        difficulty: 3,
-        emoji: '🏁',
-        tip: 'The homestretch! Savor the final kilometers.',
-      },
-    ];
+  <div class="hero-inner">
+    <div class="eyebrow">
+      <span id="heroChip" class="livechip"><span class="dot"></span><span id="heroChipText">JUNE 13–17 · 2026</span></span>
+    </div>
+    <h1>BC&nbsp;EPIC<span class="thousand">1000</span></h1>
+    <p class="tag"><strong>Stephan, Mark &amp; Michael</strong> ride 595 km of gravel<br/>Penticton → Cranbrook · self-supported · zero hotels</p>
 
-    const GEAR_ESSENTIALS = [
-      { item: 'Bear Spray', note: 'Mandatory — grizzly & black bear territory', icon: '🐻' },
-      { item: 'Tire Setup', note: 'Tubeless, 2.0"+ tires minimum (2.25" recommended)', icon: '🔧' },
-      { item: 'Water Filtration', note: 'Creeks & rivers available — filter/purify', icon: '💧' },
-      { item: 'Navigation', note: 'GPS + offline maps — cell service is rare', icon: '🗺️' },
-      { item: 'Repair Kit', note: 'Extra tubes, plugs, chain links, multi-tool', icon: '🛠️' },
-      { item: 'Layers', note: 'Mountain weather shifts fast — rain gear essential', icon: '🧥' },
-    ];
+    <div class="hero-ctas">
+      <a class="btn btn-live" href="#live">📡 Follow them live</a>
+      <a class="btn btn-ghost" href="#route">🗺 See the route</a>
+    </div>
 
-    const DISCUSSION_TOPICS = [
-      { topic: 'Exact dates in June', detail: 'Targeting weeks 2-3 (June 8–21, 2026). Snow clears at passes by late June.', icon: '📅' },
-      { topic: 'Pace & daily targets', detail: 'Self-paced, not racing. 5-day plan is ambitious — could add a rest day.', icon: '⏱️' },
-      { topic: 'Gear & bike setup', detail: 'Gravel or hardtail MTB? Bikepacking bags vs panniers?', icon: '🚲' },
-      { topic: 'Logistics', detail: 'Getting to Penticton, shuttle from Fernie back. Accommodation vs full camping?', icon: '🚗' },
-      { topic: 'Training plan', detail: '3 months out — time to ramp up endurance rides.', icon: '🏋️' },
-      { topic: 'Food strategy', detail: 'Resupply towns vs carry everything? Meal planning.', icon: '🍕' },
-    ];
+    <div class="status-board">
+      <div class="label" id="statusLabel">WHEELS DOWN IN</div>
+      <div class="countdown" id="countdown">
+        <div class="cd-unit"><div class="num" id="cdD">–</div><div class="lbl">days</div></div>
+        <div class="cd-unit"><div class="num" id="cdH">–</div><div class="lbl">hrs</div></div>
+        <div class="cd-unit"><div class="num" id="cdM">–</div><div class="lbl">min</div></div>
+        <div class="cd-unit"><div class="num" id="cdS">–</div><div class="lbl">sec</div></div>
+      </div>
+      <div class="status-live-line" id="statusLive" style="display:none"></div>
+      <div class="trip-progress">
+        <div class="bar"><div class="fill" id="tripFill"></div></div>
+        <div class="ticks"><span>Penticton</span><span>Beaverdell</span><span>Grand Forks</span><span>Castlegar</span><span>Gray Crk</span><span>Cranbrook</span></div>
+      </div>
+    </div>
+  </div>
 
-    // ─── Hooks ────────────────────────────────────────────
-    function useIntersection(options = {}) {
-      const ref = useRef(null);
-      const [visible, setVisible] = useState(false);
-      useEffect(() => {
-        const observer = new IntersectionObserver(([entry]) => {
-          if (entry.isIntersecting) {
-            setVisible(true);
-            observer.unobserve(entry.target);
-          }
-        }, { threshold: 0.15, ...options });
-        if (ref.current) observer.observe(ref.current);
-        return () => observer.disconnect();
-      }, []);
-      return [ref, visible];
+  <!-- parallax mountain layers -->
+  <div class="mtns" data-px="0.10" style="z-index:1; opacity:.5;">
+    <svg viewBox="0 0 1440 240" preserveAspectRatio="none" style="height:240px"><path fill="#13234a" d="M0,240 L0,150 L120,90 L260,160 L420,60 L560,140 L720,40 L880,130 L1020,70 L1180,150 L1320,95 L1440,140 L1440,240 Z"/></svg>
+  </div>
+  <div class="mtns" data-px="0.22" style="z-index:2; opacity:.8;">
+    <svg viewBox="0 0 1440 200" preserveAspectRatio="none" style="height:200px"><path fill="#0d1834" d="M0,200 L0,130 L160,70 L300,140 L470,50 L640,135 L800,60 L980,140 L1140,80 L1300,135 L1440,90 L1440,200 Z"/></svg>
+  </div>
+  <div class="mtns" data-px="0.38" style="z-index:3;">
+    <svg viewBox="0 0 1440 160" preserveAspectRatio="none" style="height:160px"><path fill="#070d1d" d="M0,160 L0,110 L200,55 L360,115 L540,40 L730,115 L900,55 L1080,120 L1260,70 L1440,115 L1440,160 Z"/></svg>
+  </div>
+
+  <!-- the trio, riding across the ridge all night -->
+  <div class="peloton" aria-hidden="true">
+    <div class="rider-sil" style="--ride-t:30s; --ride-d:0s;   --ride-y:118px;"></div>
+    <div class="rider-sil" style="--ride-t:30s; --ride-d:-1.1s; --ride-y:118px;"></div>
+    <div class="rider-sil" style="--ride-t:30s; --ride-d:-2.2s; --ride-y:118px;"></div>
+  </div>
+
+  <div class="scroll-hint">▾</div>
+</header>
+
+<!-- ============ STATS ============ -->
+<div class="stats-strip">
+  <div class="stat-card"><div class="num" data-count="595" data-suffix=" km">0</div><div class="lbl">Distance</div></div>
+  <div class="stat-card"><div class="num" data-count="6346" data-suffix=" m">0</div><div class="lbl">Climbing</div></div>
+  <div class="stat-card"><div class="num" data-count="5" data-suffix=" days">0</div><div class="lbl">Riding</div></div>
+  <div class="stat-card"><div class="num" data-count="3" data-suffix=" riders">0</div><div class="lbl">The trio</div></div>
+</div>
+
+<!-- ============ LIVE TRACKER ============ -->
+<section id="live">
+  <div class="reveal">
+    <div class="kicker">Live from the trail</div>
+    <h2>Where are they <em style="font-style:normal; color:var(--live)">right now</em>?</h2>
+    <p class="sub" style="margin-bottom:22px">Stephan's Garmin beams their position from the backcountry. Watch the dot crawl across British Columbia — every refresh is a few more pedal strokes.</p>
+  </div>
+
+  <div class="tracker-shell reveal">
+    <iframe id="garminFrame" src="https://live.garmin.com/stephanbecker" title="Garmin live tracker — Stephan Becker" loading="lazy" allow="geolocation"></iframe>
+    <div class="tracker-foot">
+      <div class="note">Map not loading in the box above? Some browsers block embedded trackers — the button opens it full-screen.</div>
+      <a class="btn btn-live" href="https://live.garmin.com/stephanbecker" target="_blank" rel="noopener">📡 Open live tracker ↗</a>
+    </div>
+  </div>
+
+  <div class="sat-tips reveal">
+    <div class="tip"><b>🛰 Gaps are normal</b>The tracker updates every few minutes. Deep canyons, tunnels and tree cover can pause it — the dot catches up.</div>
+    <div class="tip"><b>😴 Quiet overnight</b>They're wild-camping. When the dot stops at 9pm, that's a tent, a river, and three very tired humans.</div>
+    <div class="tip"><b>📵 Don't panic</b>No movement ≠ trouble. They carry a satellite communicator with SOS — no news is good news.</div>
+  </div>
+</section>
+
+<!-- ============ ROUTE MAP ============ -->
+<section id="route">
+  <div class="reveal">
+    <div class="kicker">The route</div>
+    <h2>595 km across the Kootenays</h2>
+    <p class="sub" style="margin-bottom:18px">Five days on the legendary BC Epic 1000 corridor — Kettle Valley railbeds, the Columbia &amp; Western, a free ferry across Kootenay Lake, and one monster pass to finish. Tap a day to zoom in.</p>
+  </div>
+
+  <div class="day-chips reveal" id="dayChips">
+    <button class="chip on" data-day="-1">All days</button>
+    <button class="chip" data-day="0">Day 1</button>
+    <button class="chip" data-day="1">Day 2</button>
+    <button class="chip" data-day="2">Day 3</button>
+    <button class="chip" data-day="3">Day 4</button>
+    <button class="chip" data-day="4">Day 5</button>
+  </div>
+
+  <div id="routeMap" class="reveal"></div>
+
+  <div class="profile-wrap reveal">
+    <div class="profile-head">
+      <span class="t">⛰ Elevation profile — sea of trestles to Gray Creek Pass (2,068 m)</span>
+      <span class="s" id="profileSub">595 km · +6,346 m</span>
+    </div>
+    <svg id="elevSVG" preserveAspectRatio="none"></svg>
+  </div>
+</section>
+
+<!-- ============ DAY BY DAY ============ -->
+<section id="days">
+  <div class="reveal">
+    <div class="kicker">Day by day</div>
+    <h2>The plan of attack</h2>
+    <p class="sub" style="margin-bottom:22px">Self-supported and camping every night. Powered by bakery stops, lake swims, and an unreasonable amount of gravel.</p>
+  </div>
+  <div class="days-grid" id="daysGrid"><!-- built by JS --></div>
+</section>
+
+<!-- ============ CREW ============ -->
+<section id="crew">
+  <div class="reveal">
+    <div class="kicker">The crew</div>
+    <h2>Three riders, 47&nbsp;mm tires, no backup</h2>
+    <p class="sub" style="margin-bottom:22px">Gravel bikes, bikepacking bags, a water purifier and a propane stove. Everything they need is strapped to the bikes.</p>
+  </div>
+  <div class="crew-grid">
+    <div class="crew-card reveal" style="--av:linear-gradient(135deg,#38bdf8,#34d399); --avg:#38bdf8; --fd:0s">
+      <div class="avatar">S</div>
+      <h3>Stephan</h3>
+      <div class="role">Route architect · Tracker mule</div>
+      <p>Planned every kilometre of this thing. Carries the Garmin that powers the live map — when the dot moves, his legs are why.</p>
+    </div>
+    <div class="crew-card reveal" style="--av:linear-gradient(135deg,#fbbf24,#f472b6); --avg:#fbbf24; --fd:.5s">
+      <div class="avatar">M</div>
+      <h3>Mark</h3>
+      <div class="role">Diesel engine · Camp chef</div>
+      <p>Signed up in May and never asked how much climbing there was. Probably for the best — nobody tell him about Day 5.</p>
+    </div>
+    <div class="crew-card reveal" style="--av:linear-gradient(135deg,#a78bfa,#38bdf8); --avg:#a78bfa; --fd:1s">
+      <div class="avatar">M</div>
+      <h3>Michael</h3>
+      <div class="role">Fresh legs · Morale dept.</div>
+      <p>The newest recruit to the trio. Five days of gravel, four nights in a tent, and one 912-metre pitch-black tunnel await.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="links">
+    <a href="https://live.garmin.com/stephanbecker" target="_blank" rel="noopener">📡 Live tracker</a>
+    <a href="https://www.strava.com/routes/3463368757543966168" target="_blank" rel="noopener">Strava route</a>
+    <a href="bikepacking-bc-epic/routes/ROUTES.md">GPX files</a>
+    <a href="planning.html">Planning dashboard</a>
+  </div>
+  <p class="fine">BC Epic 1000 · Penticton → Cranbrook · June 13–17, 2026.<br/>
+  Follow along, send good weather, and have a cold one ready in Cranbrook. 🍺<br/>
+  <span style="opacity:.6">Route stats computed from the trip GPX files in this repo.</span></p>
+</footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script src="route_data.js"></script>
+<script>
+(function () {
+  "use strict";
+  var REDUCED = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var DAY_COLORS = ["#38bdf8", "#34d399", "#fbbf24", "#f472b6", "#a78bfa"];
+  var DAY_META = [
+    { n: 1, date: "Sat Jun 13", from: "Penticton", to: "Beaverdell", km: "147", gain: "1,251",
+      hl: ["🥧 Strawberry-rhubarb pie at Chute Lake Lodge", "🌉 Myra Canyon — 18 wooden trestles + 2 tunnels", "🚆 Adra Tunnel, reopened after 50 years"],
+      terrain: "KVR railbed climb out of Okanagan wine country, then a flying Hwy 33 descent." },
+    { n: 2, date: "Sun Jun 14", from: "Beaverdell", to: "Grand Forks", km: "129", gain: "559",
+      hl: ["🛤 KVR Mile Zero at Midway", "🥐 Copper Eagle Bakery butter tarts in Greenwood", "🍲 Doukhobor borscht in Grand Forks"],
+      terrain: "The recovery day — gently downhill along the Kettle River all morning." },
+    { n: 3, date: "Mon Jun 15", from: "Grand Forks", to: "Castlegar", km: "112", gain: "1,075",
+      hl: ["🏊 Swim stop at Christina Lake — warmest lake in Canada", "⛰ Farron Summit, high point of the rail trail", "🕳 Bulldog Tunnel — 912 m of pitch black"],
+      terrain: "Columbia & Western rail trail: long, remote, and one very dark tunnel." },
+    { n: 4, date: "Tue Jun 16", from: "Castlegar", to: "Gray Creek", km: "99", gain: "1,255",
+      hl: ["☕ Oso Negro coffee pilgrimage in Nelson", "⛴ Kootenay Lake ferry — longest free ferry in the world", "🛒 Last resupply before the wilderness"],
+      terrain: "Lakeshore tarmac, a 35-minute ferry cruise, then camp at the foot of the pass." },
+    { n: 5, date: "Wed Jun 17", from: "Gray Creek", to: "Cranbrook", km: "109", gain: "2,206",
+      hl: ["👑 QUEEN STAGE — Gray Creek Pass, 2,068 m summit", "❄️ Possible snow at the top (in June!)", "🍺 Finish-line beers in Cranbrook"],
+      terrain: "17 km at 9% to the highest point of the trip, then a 50 km wilderness descent to the finish." }
+  ];
+  // Trip clock (Pacific Time, hardcoded as UTC instants)
+  var WHEELS_DOWN = Date.parse("2026-06-13T13:00:00-07:00"); // Sat 1pm PT, Penticton
+  var TRIP_DAY1 = Date.parse("2026-06-13T07:00:00Z");        // Jun 13 00:00 PT
+  var TRIP_END = Date.parse("2026-06-18T05:00:00Z");         // Jun 17 ~10pm PT
+
+  /* ---------- stars ---------- */
+  var starBox = document.getElementById("stars");
+  for (var i = 0; i < 90; i++) {
+    var s = document.createElement("div");
+    s.className = "star";
+    var sz = Math.random() * 2 + 1;
+    s.style.cssText = "width:" + sz + "px;height:" + sz + "px;left:" + (Math.random() * 100) + "%;top:" + (Math.random() * 62) + "%;--tw:" + (2 + Math.random() * 4) + "s;animation-delay:" + (-Math.random() * 5) + "s";
+    starBox.appendChild(s);
+  }
+
+  /* ---------- riding trio silhouettes ---------- */
+  var riderSVG =
+    '<svg viewBox="0 0 46 30" fill="none">' +
+    '<circle cx="10" cy="23" r="6" stroke="#9cc8ff" stroke-width="1.6"/>' +
+    '<circle cx="34" cy="23" r="6" stroke="#9cc8ff" stroke-width="1.6"/>' +
+    '<path d="M10 23 L19 23 L24 14 L34 23 M19 23 L16 13 L24 14 M16 13 L14 12 M24 14 L27 8 L31 8" stroke="#cfe4ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>' +
+    '<circle cx="26.5" cy="5.5" r="2.6" fill="#cfe4ff"/>' +
+    '<path d="M24 14 L21 19 L24 22 M24 14 L26 19 L22 21" stroke="#cfe4ff" stroke-width="1.6" stroke-linecap="round"/>' +
+    "</svg>";
+  document.querySelectorAll(".rider-sil").forEach(function (el) { el.innerHTML = riderSVG; });
+
+  /* ---------- hero parallax ---------- */
+  if (!REDUCED) {
+    var layers = document.querySelectorAll(".mtns[data-px]");
+    window.addEventListener("scroll", function () {
+      var y = window.scrollY;
+      if (y > window.innerHeight) return;
+      layers.forEach(function (l) { l.style.transform = "translateY(" + y * parseFloat(l.dataset.px) + "px)"; });
+    }, { passive: true });
+  }
+
+  /* ---------- trip status / countdown ---------- */
+  var cdD = document.getElementById("cdD"), cdH = document.getElementById("cdH"),
+      cdM = document.getElementById("cdM"), cdS = document.getElementById("cdS");
+  var statusLabel = document.getElementById("statusLabel"),
+      statusLive = document.getElementById("statusLive"),
+      countdown = document.getElementById("countdown"),
+      tripFill = document.getElementById("tripFill"),
+      heroChipText = document.getElementById("heroChipText");
+
+  function tripDayIndex(now) { // 0-based riding day, or -1 before / 5 after
+    if (now < TRIP_DAY1) return -1;
+    if (now >= TRIP_END) return 5;
+    return Math.min(4, Math.floor((now - TRIP_DAY1) / 86400000));
+  }
+  function pad(n) { return n < 10 ? "0" + n : "" + n; }
+
+  function tickStatus() {
+    var now = Date.now();
+    var di = tripDayIndex(now);
+    if (now < WHEELS_DOWN) {
+      var t = Math.max(0, WHEELS_DOWN - now);
+      cdD.textContent = Math.floor(t / 86400000);
+      cdH.textContent = pad(Math.floor(t / 3600000) % 24);
+      cdM.textContent = pad(Math.floor(t / 60000) % 60);
+      cdS.textContent = pad(Math.floor(t / 1000) % 60);
+      statusLabel.textContent = "WHEELS DOWN IN";
+      heroChipText.textContent = "JUNE 13–17 · 2026";
+      tripFill.style.width = "0%";
+    } else if (di >= 0 && di <= 4) {
+      countdown.style.display = "none";
+      statusLive.style.display = "block";
+      statusLabel.textContent = "HAPPENING RIGHT NOW";
+      var m = DAY_META[di];
+      statusLive.innerHTML = "🚴 DAY " + (di + 1) + " · " + m.from + " → " + m.to;
+      heroChipText.textContent = "LIVE · DAY " + (di + 1) + " OF 5";
+      var dayFrac = Math.min(1, Math.max(0, ((now - TRIP_DAY1) % 86400000) / 86400000));
+      tripFill.style.width = (((di + dayFrac) / 5) * 100).toFixed(1) + "%";
+      document.querySelectorAll(".day-card").forEach(function (c, j) { c.classList.toggle("today", j === di); });
+    } else {
+      countdown.style.display = "none";
+      statusLive.style.display = "block";
+      statusLabel.textContent = "MISSION COMPLETE";
+      statusLive.innerHTML = "🏁 595 km. DONE. Beers earned. 🍺";
+      heroChipText.textContent = "FINISHED · JUNE 17, 2026";
+      tripFill.style.width = "100%";
     }
+  }
+  tickStatus();
+  setInterval(tickStatus, 1000);
 
-    // ─── Components ───────────────────────────────────────
+  /* ---------- animated counters ---------- */
+  var counterIO = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      counterIO.unobserve(e.target);
+      var el = e.target, target = +el.dataset.count, suffix = el.dataset.suffix || "";
+      var t0 = performance.now(), dur = REDUCED ? 1 : 1600;
+      (function step(t) {
+        var p = Math.min(1, (t - t0) / dur);
+        var eased = 1 - Math.pow(1 - p, 3);
+        el.textContent = Math.round(target * eased).toLocaleString() + suffix;
+        if (p < 1) requestAnimationFrame(step);
+      })(t0);
+    });
+  }, { threshold: 0.6 });
+  document.querySelectorAll("[data-count]").forEach(function (el) { counterIO.observe(el); });
 
-    function ThemeSwitcher({ theme, setTheme }) {
-      return (
-        <div style={{
-          position: 'fixed', top: 20, right: 20, zIndex: 1000,
-          display: 'flex', gap: 8, background: 'var(--bg-card)',
-          padding: '8px 12px', borderRadius: 50,
-          border: '1px solid var(--border)',
-          backdropFilter: 'blur(10px)',
-          boxShadow: 'var(--card-shadow)',
-        }}>
-          {THEMES.map(t => (
-            <button key={t.id} onClick={() => setTheme(t.id)}
-              title={t.name}
-              style={{
-                background: theme === t.id ? 'var(--accent-glow)' : 'transparent',
-                border: theme === t.id ? '2px solid var(--accent)' : '2px solid transparent',
-                borderRadius: '50%', width: 36, height: 36,
-                fontSize: 18, cursor: 'pointer',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                transition: 'all 0.3s ease',
-              }}>
-              {t.icon}
-            </button>
-          ))}
-        </div>
-      );
-    }
+  /* ---------- reveal on scroll ---------- */
+  var revealIO = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("in"); revealIO.unobserve(e.target); } });
+  }, { threshold: 0.12 });
+  document.querySelectorAll(".reveal").forEach(function (el) { revealIO.observe(el); });
 
-    function Nav({ activeSection }) {
-      const sections = [
-        { id: 'hero', label: 'Top' },
-        { id: 'overview', label: 'Overview' },
-        { id: 'route', label: 'Route' },
-        { id: 'terrain', label: 'Terrain' },
-        { id: 'gear', label: 'Gear' },
-        { id: 'discuss', label: 'Let\'s Talk' },
-      ];
-      return (
-        <nav style={{
-          position: 'fixed', left: 20, top: '50%', transform: 'translateY(-50%)',
-          zIndex: 999, display: 'flex', flexDirection: 'column', gap: 6,
-        }}>
-          {sections.map(s => (
-            <a key={s.id} href={`#${s.id}`} style={{
-              width: activeSection === s.id ? 40 : 10,
-              height: 10, borderRadius: 5,
-              background: activeSection === s.id ? 'var(--accent)' : 'var(--text-muted)',
-              transition: 'all 0.3s ease',
-              display: 'block',
-              opacity: activeSection === s.id ? 1 : 0.4,
-            }} title={s.label} />
-          ))}
-        </nav>
-      );
-    }
+  /* ---------- day cards ---------- */
+  var grid = document.getElementById("daysGrid");
+  DAY_META.forEach(function (m, i) {
+    var card = document.createElement("div");
+    card.className = "day-card reveal";
+    card.style.setProperty("--dc", DAY_COLORS[i]);
+    card.innerHTML =
+      '<div class="day-top"><div><span class="day-num">DAY ' + m.n + "</span> &nbsp;<span class=\"day-date\">" + m.date + '</span></div><span class="today-flag">RIDING NOW</span></div>' +
+      '<div class="day-route">' + m.from + " → " + m.to + "</div>" +
+      '<div class="day-stats"><span>📏 <b>' + m.km + ' km</b></span><span>⛰ <b>+' + m.gain + " m</b></span></div>" +
+      '<div class="day-hl">' + m.hl.map(function (h) { return "<span>" + h + "</span>"; }).join("") + "</div>" +
+      '<div style="margin-top:10px;font-size:12.5px;color:var(--text-3);line-height:1.5">' + m.terrain + "</div>" +
+      '<svg class="spark" id="spark' + i + '" preserveAspectRatio="none"></svg>';
+    grid.appendChild(card);
+    revealIO.observe(card);
+  });
 
-    function MountainSVG() {
-      return (
-        <svg viewBox="0 0 1440 320" style={{
-          position: 'absolute', bottom: 0, left: 0, width: '100%',
-          opacity: 0.15, pointerEvents: 'none',
-        }}>
-          <path fill="var(--accent)" d="M0,224L60,213.3C120,203,240,181,360,186.7C480,192,600,224,720,218.7C840,213,960,171,1080,160C1200,149,1320,171,1380,181.3L1440,192L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z" />
-          <path fill="var(--accent-secondary)" opacity="0.5" d="M0,288L80,272C160,256,320,224,480,224C640,224,800,256,960,261.3C1120,267,1280,245,1360,234.7L1440,224L1440,320L1360,320C1280,320,1120,320,960,320C800,320,640,320,480,320C320,320,160,320,80,320L0,320Z" />
-        </svg>
-      );
-    }
+  /* ---------- sparklines ---------- */
+  function sparkline(svg, elev, color) {
+    var W = 300, H = 44, P = 2;
+    svg.setAttribute("viewBox", "0 0 " + W + " " + H);
+    var min = Infinity, max = -Infinity, maxD = elev[elev.length - 1][0];
+    elev.forEach(function (p) { min = Math.min(min, p[1]); max = Math.max(max, p[1]); });
+    var pts = elev.map(function (p) {
+      return [(p[0] / maxD) * (W - P * 2) + P, H - P - ((p[1] - min) / (max - min || 1)) * (H - P * 2)];
+    });
+    var line = pts.map(function (p, i) { return (i ? "L" : "M") + p[0].toFixed(1) + "," + p[1].toFixed(1); }).join("");
+    svg.innerHTML = '<path d="' + line + " L" + (W - P) + "," + H + " L" + P + "," + H + ' Z" fill="' + color + '22"/><path d="' + line + '" fill="none" stroke="' + color + '" stroke-width="2"/>';
+  }
 
-    function Hero() {
-      const [ref, visible] = useIntersection();
-      return (
-        <section id="hero" ref={ref} style={{
-          minHeight: '100vh',
-          background: 'var(--hero-gradient)',
-          display: 'flex', flexDirection: 'column',
-          alignItems: 'center', justifyContent: 'center',
-          position: 'relative', overflow: 'hidden',
-          padding: '40px 20px',
-        }}>
-          {/* Animated background particles */}
-          <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none' }}>
-            {[...Array(20)].map((_, i) => (
-              <div key={i} style={{
-                position: 'absolute',
-                width: Math.random() * 4 + 1,
-                height: Math.random() * 4 + 1,
-                background: 'var(--accent)',
-                borderRadius: '50%',
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                opacity: Math.random() * 0.3 + 0.1,
-                animation: `float ${Math.random() * 4 + 3}s ease-in-out infinite`,
-                animationDelay: `${Math.random() * 2}s`,
-              }} />
-            ))}
-          </div>
-
-          <MountainSVG />
-
-          <div className={`fade-in ${visible ? 'visible' : ''}`} style={{
-            textAlign: 'center', position: 'relative', zIndex: 1,
-            maxWidth: 900,
-          }}>
-            <div style={{
-              display: 'inline-block',
-              padding: '8px 20px', borderRadius: 50,
-              background: 'var(--accent-glow)',
-              border: '1px solid var(--accent)',
-              color: 'var(--accent)',
-              fontSize: 14, fontWeight: 600, letterSpacing: 2,
-              textTransform: 'uppercase',
-              marginBottom: 24,
-            }}>
-              Bikepacking 2026
-            </div>
-
-            <h1 style={{
-              fontFamily: "'Playfair Display', serif",
-              fontSize: 'clamp(48px, 8vw, 96px)',
-              fontWeight: 900,
-              lineHeight: 1.05,
-              marginBottom: 16,
-              background: `linear-gradient(135deg, var(--text-primary) 0%, var(--accent) 50%, var(--accent-secondary) 100%)`,
-              backgroundSize: '200% 200%',
-              animation: 'shimmer 6s linear infinite',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-            }}>
-              BC Epic 1000
-            </h1>
-
-            <p style={{
-              fontSize: 'clamp(18px, 3vw, 26px)',
-              color: 'var(--text-secondary)',
-              fontWeight: 300,
-              marginBottom: 8,
-              letterSpacing: 1,
-            }}>
-              Penticton → Fernie
-            </p>
-            <p style={{
-              fontSize: 16,
-              color: 'var(--text-muted)',
-              marginBottom: 40,
-            }}>
-              820 km &middot; 8,443 m elevation &middot; 5 days &middot; ~80% off-road gravel
-            </p>
-
-            <div style={{
-              display: 'flex', gap: 16, justifyContent: 'center', flexWrap: 'wrap',
-            }}>
-              <a href="#overview" style={{
-                padding: '14px 32px', borderRadius: 50,
-                background: `linear-gradient(135deg, var(--gradient-start), var(--gradient-end))`,
-                color: '#fff', textDecoration: 'none',
-                fontWeight: 600, fontSize: 16,
-                boxShadow: '0 4px 20px var(--accent-glow)',
-                transition: 'transform 0.2s, box-shadow 0.2s',
-              }}
-              onMouseOver={e => { e.target.style.transform = 'translateY(-2px)'; e.target.style.boxShadow = '0 8px 30px var(--accent-glow)'; }}
-              onMouseOut={e => { e.target.style.transform = 'translateY(0)'; e.target.style.boxShadow = '0 4px 20px var(--accent-glow)'; }}
-              >
-                Explore the Route ↓
-              </a>
-              <a href="#discuss" style={{
-                padding: '14px 32px', borderRadius: 50,
-                background: 'transparent',
-                border: '2px solid var(--accent)',
-                color: 'var(--accent)', textDecoration: 'none',
-                fontWeight: 600, fontSize: 16,
-                transition: 'all 0.2s',
-              }}
-              onMouseOver={e => { e.target.style.background = 'var(--accent-glow)'; }}
-              onMouseOut={e => { e.target.style.background = 'transparent'; }}
-              >
-                Discussion Points
-              </a>
-            </div>
-
-            <p style={{
-              marginTop: 48,
-              fontSize: 14,
-              color: 'var(--text-muted)',
-              fontStyle: 'italic',
-            }}>
-              June 2026 &middot; Self-paced, our own adventure
-            </p>
-          </div>
-        </section>
-      );
-    }
-
-    function StatCard({ stat, delay }) {
-      const [ref, visible] = useIntersection();
-      return (
-        <div ref={ref} className={`fade-in ${visible ? 'visible' : ''}`} style={{
-          background: 'var(--bg-card)',
-          borderRadius: 16, padding: 28,
-          border: '1px solid var(--border)',
-          textAlign: 'center', flex: '1 1 180px',
-          transition: 'all 0.3s ease',
-          transitionDelay: `${delay}ms`,
-          cursor: 'default',
-        }}
-        onMouseOver={e => { e.currentTarget.style.background = 'var(--bg-card-hover)'; e.currentTarget.style.borderColor = 'var(--accent)'; e.currentTarget.style.transform = 'translateY(-4px)'; }}
-        onMouseOut={e => { e.currentTarget.style.background = 'var(--bg-card)'; e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.transform = 'translateY(0)'; }}
-        >
-          <div style={{ fontSize: 32, marginBottom: 8 }}>{stat.icon}</div>
-          <div style={{ fontSize: 36, fontWeight: 800, color: 'var(--accent)', lineHeight: 1 }}>
-            {stat.value}<span style={{ fontSize: 16, fontWeight: 400, color: 'var(--text-muted)' }}> {stat.unit}</span>
-          </div>
-          <div style={{ fontSize: 14, color: 'var(--text-secondary)', marginTop: 6 }}>{stat.label}</div>
-        </div>
-      );
-    }
-
-    function Overview() {
-      const [ref, visible] = useIntersection();
-      return (
-        <section id="overview" style={{ padding: '100px 20px', maxWidth: 1100, margin: '0 auto' }}>
-          <div ref={ref} className={`fade-in ${visible ? 'visible' : ''}`}>
-            <h2 style={{
-              fontFamily: "'Playfair Display', serif",
-              fontSize: 'clamp(32px, 5vw, 48px)',
-              fontWeight: 800, marginBottom: 12, textAlign: 'center',
-            }}>
-              The Route at a Glance
-            </h2>
-            <p style={{
-              textAlign: 'center', color: 'var(--text-secondary)',
-              maxWidth: 700, margin: '0 auto 48px',
-              fontSize: 17, lineHeight: 1.7,
-            }}>
-              A portion of the legendary BC Epic 1000 — traversing South Central British Columbia along
-              historic Kettle Valley Rail Trail corridors, decommissioned railway grades,
-              and rugged gravel forest service roads through some of the most spectacular mountain scenery in Canada.
-            </p>
-          </div>
-
-          <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap', justifyContent: 'center' }}>
-            {ROUTE_STATS.map((stat, i) => (
-              <StatCard key={stat.label} stat={stat} delay={i * 100} />
-            ))}
-          </div>
-
-          {/* Elevation Profile Visualization */}
-          <div style={{ marginTop: 60 }}>
-            <ElevationProfile />
-          </div>
-        </section>
-      );
-    }
-
-    function ElevationProfile() {
-      const [ref, visible] = useIntersection();
-      // Simplified elevation profile data (approximate)
-      const points = [
-        { km: 0, elev: 390, label: 'Penticton' },
-        { km: 60, elev: 1250, label: '' },
-        { km: 100, elev: 1100, label: '' },
-        { km: 150, elev: 780, label: 'Beaverdell' },
-        { km: 190, elev: 520, label: 'Kettle River' },
-        { km: 230, elev: 600, label: 'Rock Creek' },
-        { km: 270, elev: 700, label: 'Midway' },
-        { km: 320, elev: 530, label: 'Grand Forks' },
-        { km: 390, elev: 480, label: 'Castlegar' },
-        { km: 440, elev: 680, label: '' },
-        { km: 490, elev: 560, label: '' },
-        { km: 530, elev: 540, label: 'Nelson' },
-        { km: 580, elev: 900, label: '' },
-        { km: 610, elev: 1650, label: 'White Grouse' },
-        { km: 650, elev: 1120, label: 'Kimberley' },
-        { km: 720, elev: 1300, label: '' },
-        { km: 770, elev: 1100, label: '' },
-        { km: 820, elev: 1010, label: 'Fernie' },
-      ];
-
-      const maxElev = 1800;
-      const minElev = 300;
-      const width = 1060;
-      const height = 200;
-
-      const pathPoints = points.map(p => {
-        const x = (p.km / 820) * width;
-        const y = height - ((p.elev - minElev) / (maxElev - minElev)) * height;
-        return { x, y, ...p };
+  /* ---------- big elevation profile ---------- */
+  var DATA = window.ROUTE_DATA || [];
+  function buildProfile() {
+    var svg = document.getElementById("elevSVG");
+    var W = 1000, H = 150, PB = 16, PT = 10;
+    svg.setAttribute("viewBox", "0 0 " + W + " " + H);
+    var total = 0, min = Infinity, max = -Infinity;
+    DATA.forEach(function (d) {
+      total += d.elev[d.elev.length - 1][0];
+      d.elev.forEach(function (p) { min = Math.min(min, p[1]); max = Math.max(max, p[1]); });
+    });
+    var html = "", offset = 0, allPts = [];
+    DATA.forEach(function (d, i) {
+      var pts = d.elev.map(function (p) {
+        var x = ((offset + p[0]) / total) * W;
+        var y = H - PB - ((p[1] - min) / (max - min)) * (H - PB - PT);
+        return [x, y];
       });
+      allPts = allPts.concat(pts);
+      var line = pts.map(function (p, j) { return (j ? "L" : "M") + p[0].toFixed(1) + "," + p[1].toFixed(1); }).join("");
+      html += '<path d="' + line + " L" + pts[pts.length - 1][0].toFixed(1) + "," + (H - 2) + " L" + pts[0][0].toFixed(1) + "," + (H - 2) + ' Z" fill="' + DAY_COLORS[i] + '30"/>';
+      html += '<path d="' + line + '" fill="none" stroke="' + DAY_COLORS[i] + '" stroke-width="2.5" stroke-linejoin="round"/>';
+      var midX = ((offset + d.elev[d.elev.length - 1][0] / 2) / total) * W;
+      html += '<text x="' + midX.toFixed(0) + '" y="' + (H - 4) + '" text-anchor="middle" font-size="10" font-weight="700" fill="' + DAY_COLORS[i] + '" font-family="Space Grotesk">D' + (i + 1) + "</text>";
+      offset += d.elev[d.elev.length - 1][0];
+    });
+    // summit flag
+    var sx = 0, sy = 0, se = -Infinity, off2 = 0;
+    DATA.forEach(function (d) {
+      d.elev.forEach(function (p) {
+        if (p[1] > se) { se = p[1]; sx = ((off2 + p[0]) / total) * W; sy = H - PB - ((p[1] - min) / (max - min)) * (H - PB - PT); }
+      });
+      off2 += d.elev[d.elev.length - 1][0];
+    });
+    html += '<text x="' + sx.toFixed(0) + '" y="' + (sy - 6).toFixed(0) + '" text-anchor="middle" font-size="11" fill="#eef4ff" font-family="Space Grotesk" font-weight="700">⛰ ' + Math.round(se).toLocaleString() + " m</text>";
+    html += '<circle id="profBike" r="5" fill="#fff" stroke="#ff4d6d" stroke-width="3"/>';
+    svg.innerHTML = html;
 
-      const pathD = pathPoints.reduce((d, p, i) => {
-        if (i === 0) return `M ${p.x} ${p.y}`;
-        const prev = pathPoints[i - 1];
-        const cpx1 = prev.x + (p.x - prev.x) * 0.5;
-        const cpx2 = prev.x + (p.x - prev.x) * 0.5;
-        return `${d} C ${cpx1} ${prev.y}, ${cpx2} ${p.y}, ${p.x} ${p.y}`;
-      }, '');
-
-      const areaD = `${pathD} L ${width} ${height} L 0 ${height} Z`;
-
-      return (
-        <div ref={ref} className={`fade-in ${visible ? 'visible' : ''}`} style={{
-          background: 'var(--bg-card)', borderRadius: 16,
-          padding: '28px 28px 16px', border: '1px solid var(--border)',
-        }}>
-          <h3 style={{ fontSize: 18, fontWeight: 600, marginBottom: 20, color: 'var(--text-secondary)' }}>
-            Elevation Profile
-          </h3>
-          <div style={{ overflowX: 'auto' }}>
-            <svg viewBox={`-20 -30 ${width + 40} ${height + 60}`} style={{ width: '100%', minWidth: 600, height: 'auto' }}>
-              <defs>
-                <linearGradient id="elevGrad" x1="0" y1="0" x2="1" y2="0">
-                  <stop offset="0%" stopColor="var(--accent)" />
-                  <stop offset="50%" stopColor="var(--accent-secondary)" />
-                  <stop offset="100%" stopColor="var(--accent)" />
-                </linearGradient>
-                <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="var(--accent)" stopOpacity="0.3" />
-                  <stop offset="100%" stopColor="var(--accent)" stopOpacity="0.02" />
-                </linearGradient>
-              </defs>
-
-              {/* Grid lines */}
-              {[500, 1000, 1500].map(elev => {
-                const y = height - ((elev - minElev) / (maxElev - minElev)) * height;
-                return (
-                  <g key={elev}>
-                    <line x1={0} y1={y} x2={width} y2={y} stroke="var(--border)" strokeDasharray="4,4" />
-                    <text x={-8} y={y + 4} fill="var(--text-muted)" fontSize="10" textAnchor="end">{elev}m</text>
-                  </g>
-                );
-              })}
-
-              {/* Area fill */}
-              <path d={areaD} fill="url(#areaGrad)" />
-
-              {/* Line */}
-              <path d={pathD} fill="none" stroke="url(#elevGrad)" strokeWidth="3" strokeLinecap="round" />
-
-              {/* Day markers */}
-              {[0, 190, 390, 530, 650, 820].map((km, i) => {
-                const x = (km / 820) * width;
-                return (
-                  <line key={km} x1={x} y1={0} x2={x} y2={height}
-                    stroke="var(--accent)" strokeOpacity="0.2" strokeDasharray="2,4" />
-                );
-              })}
-
-              {/* Labeled points */}
-              {pathPoints.filter(p => p.label).map(p => (
-                <g key={p.label}>
-                  <circle cx={p.x} cy={p.y} r="4" fill="var(--accent)" />
-                  <circle cx={p.x} cy={p.y} r="7" fill="none" stroke="var(--accent)" strokeOpacity="0.3" />
-                  <text x={p.x} y={p.y - 14} fill="var(--text-secondary)" fontSize="10" textAnchor="middle" fontWeight="500">
-                    {p.label}
-                  </text>
-                </g>
-              ))}
-
-              {/* KM axis */}
-              {[0, 200, 400, 600, 800].map(km => {
-                const x = (km / 820) * width;
-                return (
-                  <text key={km} x={x} y={height + 20} fill="var(--text-muted)" fontSize="10" textAnchor="middle">
-                    {km} km
-                  </text>
-                );
-              })}
-            </svg>
-          </div>
-        </div>
-      );
+    // little dot riding the full profile, forever
+    if (!REDUCED && allPts.length) {
+      var bike = svg.querySelector("#profBike"), n = allPts.length;
+      var start = performance.now(), LOOP = 24000;
+      (function ride(t) {
+        var p = ((((t - start) % LOOP) + LOOP) % LOOP) / LOOP;
+        var idx = p * (n - 1), i0 = Math.min(n - 2, Math.floor(idx)), f = idx - i0;
+        var a = allPts[i0], b = allPts[Math.min(n - 1, i0 + 1)];
+        bike.setAttribute("cx", (a[0] + (b[0] - a[0]) * f).toFixed(1));
+        bike.setAttribute("cy", (a[1] + (b[1] - a[1]) * f).toFixed(1));
+        requestAnimationFrame(ride);
+      })(start);
     }
+  }
 
-    function DifficultyBar({ level }) {
-      return (
-        <div style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
-          {[1,2,3,4,5].map(i => (
-            <div key={i} style={{
-              width: 20, height: 6, borderRadius: 3,
-              background: i <= level
-                ? (level >= 5 ? 'var(--danger)' : level >= 3 ? 'var(--accent)' : 'var(--success)')
-                : 'var(--border)',
-              transition: 'all 0.3s ease',
-            }} />
-          ))}
-          <span style={{ fontSize: 12, color: 'var(--text-muted)', marginLeft: 6 }}>
-            {level <= 2 ? 'Easy' : level <= 3 ? 'Moderate' : level <= 4 ? 'Hard' : 'Beast'}
-          </span>
-        </div>
-      );
+  /* ---------- Leaflet map ---------- */
+  var dayLayers = [], map;
+  function buildMap() {
+    map = L.map("routeMap", { scrollWheelZoom: false, tap: true });
+    L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+      maxZoom: 18
+    }).addTo(map);
+
+    var towns = ["Penticton", "Beaverdell", "Grand Forks", "Castlegar", "Gray Creek", "Cranbrook"];
+    var all = [];
+    DATA.forEach(function (d, i) {
+      var glow = L.polyline(d.points, { color: DAY_COLORS[i], weight: 9, opacity: 0.18 });
+      var line = L.polyline(d.points, { color: DAY_COLORS[i], weight: 3.5, opacity: 0.95 });
+      line.bindPopup("<b>Day " + (i + 1) + ":</b> " + DAY_META[i].from + " → " + DAY_META[i].to + "<br/>" + DAY_META[i].km + " km · +" + DAY_META[i].gain + " m");
+      var g = L.layerGroup([glow, line]).addTo(map);
+      dayLayers.push({ group: g, line: line });
+      all = all.concat(d.points);
+    });
+
+    // town pins at each day boundary
+    function pin(latlng, name, color) {
+      L.marker(latlng, { icon: L.divIcon({ className: "town-label", html: '<div class="pin" style="--pinc:' + color + '"></div>', iconSize: [14, 14], iconAnchor: [7, 7] }) }).addTo(map);
+      L.marker(latlng, { icon: L.divIcon({ className: "town-label", html: "<span>" + name + "</span>", iconSize: [0, 0], iconAnchor: [-10, 8] }) }).addTo(map);
     }
+    DATA.forEach(function (d, i) { pin(d.points[0], towns[i], DAY_COLORS[i]); });
+    var last = DATA[DATA.length - 1];
+    pin(last.points[last.points.length - 1], "🏁 " + towns[5], "#ff4d6d");
 
-    function DayCard({ day, index }) {
-      const [ref, visible] = useIntersection();
-      const [expanded, setExpanded] = useState(false);
+    // Gray Creek Pass summit pin (highest point of day 5)
+    var d5 = DATA[4], hiIdx = 0, hi = -Infinity;
+    d5.elev.forEach(function (p, j) { if (p[1] > hi) { hi = p[1]; hiIdx = j; } });
+    var summitPt = d5.points[Math.round((hiIdx / (d5.elev.length - 1)) * (d5.points.length - 1))];
+    pin(summitPt, "⛰ Gray Creek Pass · " + Math.round(hi).toLocaleString() + " m", "#a78bfa");
 
-      return (
-        <div ref={ref} className={`fade-in ${visible ? 'visible' : ''}`} style={{
-          background: 'var(--bg-card)',
-          borderRadius: 16, overflow: 'hidden',
-          border: '1px solid var(--border)',
-          transition: 'all 0.4s ease',
-          transitionDelay: `${index * 80}ms`,
-          cursor: 'pointer',
-        }}
-        onClick={() => setExpanded(!expanded)}
-        onMouseOver={e => { e.currentTarget.style.borderColor = 'var(--accent)'; e.currentTarget.style.boxShadow = '0 8px 32px rgba(0,0,0,0.3)'; }}
-        onMouseOut={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.boxShadow = 'none'; }}
-        >
-          {/* Header */}
-          <div style={{ padding: '24px 28px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-            <div style={{ flex: 1 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 8 }}>
-                <span style={{
-                  fontSize: 28,
-                  animation: expanded ? 'float 3s ease-in-out infinite' : 'none',
-                }}>{day.emoji}</span>
-                <div>
-                  <div style={{ fontSize: 12, color: 'var(--accent)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: 1.5 }}>
-                    Day {day.day}
-                  </div>
-                  <h3 style={{ fontSize: 20, fontWeight: 700 }}>{day.title}</h3>
-                </div>
-              </div>
-              <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap', marginTop: 12 }}>
-                <span style={{ fontSize: 14, color: 'var(--text-secondary)' }}>📏 {day.distance}</span>
-                <span style={{ fontSize: 14, color: 'var(--text-secondary)' }}>⛰️ {day.elevation}</span>
-                <span style={{ fontSize: 14, color: 'var(--text-secondary)' }}>🛤️ {day.terrain}</span>
-              </div>
-              <div style={{ marginTop: 10 }}>
-                <DifficultyBar level={day.difficulty} />
-              </div>
-            </div>
-            <div style={{
-              fontSize: 20, color: 'var(--text-muted)',
-              transform: expanded ? 'rotate(180deg)' : 'rotate(0)',
-              transition: 'transform 0.3s ease',
-            }}>▼</div>
-          </div>
+    map.fitBounds(L.latLngBounds(all), { padding: [30, 30] });
+  }
 
-          {/* Expandable content */}
-          <div style={{
-            maxHeight: expanded ? 400 : 0,
-            overflow: 'hidden',
-            transition: 'max-height 0.4s ease',
-          }}>
-            <div style={{ padding: '0 28px 24px', borderTop: '1px solid var(--border)', paddingTop: 20 }}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
-                <div>
-                  <h4 style={{ fontSize: 13, color: 'var(--accent)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 10 }}>
-                    Highlights
-                  </h4>
-                  {day.highlights.map((h, i) => (
-                    <div key={i} style={{ fontSize: 14, color: 'var(--text-secondary)', marginBottom: 6, paddingLeft: 14, position: 'relative' }}>
-                      <span style={{ position: 'absolute', left: 0, color: 'var(--accent)' }}>•</span>
-                      {h}
-                    </div>
-                  ))}
-                </div>
-                <div>
-                  <h4 style={{ fontSize: 13, color: 'var(--accent)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 10 }}>
-                    Details
-                  </h4>
-                  <div style={{ fontSize: 14, color: 'var(--text-secondary)', marginBottom: 10 }}>
-                    <strong style={{ color: 'var(--text-primary)' }}>Resupply:</strong> {day.resupply}
-                  </div>
-                  <div style={{
-                    fontSize: 13, color: 'var(--danger)',
-                    background: 'rgba(249,115,22,0.1)',
-                    padding: '10px 14px', borderRadius: 8,
-                    border: '1px solid rgba(249,115,22,0.2)',
-                  }}>
-                    💡 {day.tip}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      );
-    }
-
-    function RouteSection() {
-      const [ref, visible] = useIntersection();
-      return (
-        <section id="route" style={{ padding: '100px 20px', maxWidth: 900, margin: '0 auto' }}>
-          <div ref={ref} className={`fade-in ${visible ? 'visible' : ''}`} style={{ textAlign: 'center', marginBottom: 48 }}>
-            <h2 style={{
-              fontFamily: "'Playfair Display', serif",
-              fontSize: 'clamp(32px, 5vw, 48px)',
-              fontWeight: 800, marginBottom: 12,
-            }}>
-              Day by Day
-            </h2>
-            <p style={{ color: 'var(--text-secondary)', maxWidth: 600, margin: '0 auto', fontSize: 16 }}>
-              Click each day to expand details. 5 days of epic riding through BC's interior ranges.
-            </p>
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-            {DAYS.map((day, i) => (
-              <DayCard key={day.day} day={day} index={i} />
-            ))}
-          </div>
-        </section>
-      );
-    }
-
-    function TerrainSection() {
-      const [ref, visible] = useIntersection();
-      const terrain = [
-        { type: 'Rail Grade (KVR, Columbia Western, Great Northern)', pct: 55, color: 'var(--accent)' },
-        { type: 'Gravel Forest Service Road', pct: 20, color: 'var(--accent-secondary)' },
-        { type: 'Paved Road', pct: 12, color: 'var(--success)' },
-        { type: 'Singletrack', pct: 8, color: 'var(--danger)' },
-        { type: 'Mixed / Other', pct: 5, color: 'var(--text-muted)' },
-      ];
-
-      return (
-        <section id="terrain" style={{ padding: '100px 20px', maxWidth: 1000, margin: '0 auto' }}>
-          <div ref={ref} className={`fade-in ${visible ? 'visible' : ''}`}>
-            <h2 style={{
-              fontFamily: "'Playfair Display', serif",
-              fontSize: 'clamp(32px, 5vw, 48px)',
-              fontWeight: 800, marginBottom: 12, textAlign: 'center',
-            }}>
-              What to Expect
-            </h2>
-            <p style={{ textAlign: 'center', color: 'var(--text-secondary)', maxWidth: 700, margin: '0 auto 48px', fontSize: 16, lineHeight: 1.7 }}>
-              Historic rail beds, rugged gravel roads, and some gnarly singletrack.
-              Don't let the "rail grade" label fool you — the terrain is rough with loose gravel,
-              washouts, and washboard. Only 7 of 15 riders finished the inaugural event.
-            </p>
-          </div>
-
-          <div style={{
-            display: 'grid', gridTemplateColumns: '1fr 1fr',
-            gap: 24, marginBottom: 48,
-          }}>
-            {/* Terrain breakdown */}
-            <div style={{
-              background: 'var(--bg-card)', borderRadius: 16, padding: 28,
-              border: '1px solid var(--border)',
-            }}>
-              <h3 style={{ fontSize: 16, fontWeight: 600, marginBottom: 20, color: 'var(--text-secondary)' }}>
-                Surface Breakdown (approx.)
-              </h3>
-              {terrain.map((t, i) => {
-                const [barRef, barVis] = useIntersection();
-                return (
-                  <div key={i} ref={barRef} style={{ marginBottom: 16 }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
-                      <span style={{ fontSize: 13, color: 'var(--text-secondary)' }}>{t.type}</span>
-                      <span style={{ fontSize: 13, fontWeight: 600, color: t.color }}>{t.pct}%</span>
-                    </div>
-                    <div style={{ height: 8, background: 'var(--bg-secondary)', borderRadius: 4, overflow: 'hidden' }}>
-                      <div style={{
-                        width: barVis ? `${t.pct}%` : '0%',
-                        height: '100%', borderRadius: 4,
-                        background: t.color,
-                        transition: `width 1s ease ${i * 0.15}s`,
-                      }} />
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* Key features */}
-            <div style={{
-              background: 'var(--bg-card)', borderRadius: 16, padding: 28,
-              border: '1px solid var(--border)',
-            }}>
-              <h3 style={{ fontSize: 16, fontWeight: 600, marginBottom: 20, color: 'var(--text-secondary)' }}>
-                Notable Features
-              </h3>
-              {[
-                { icon: '🌉', title: 'Historic Trestles', desc: 'Hundreds of feet high, spanning dramatic valleys' },
-                { icon: '🚇', title: 'Railway Tunnels', desc: 'Longest is almost 1 km — bring a headlamp!' },
-                { icon: '⛴️', title: 'Ferry Crossing', desc: 'Kootenay Lake ferry on Day 4' },
-                { icon: '🏔️', title: 'Mountain Passes', desc: 'White Grouse Pass, Farron Pass area' },
-                { icon: '🐻', title: 'Wildlife Country', desc: 'Grizzly, black bear, moose, elk territory' },
-                { icon: '📵', title: 'Off-Grid Sections', desc: 'No cell service for up to 8 hours between towns' },
-              ].map((f, i) => (
-                <div key={i} style={{
-                  display: 'flex', gap: 14, alignItems: 'flex-start',
-                  marginBottom: 16, padding: '10px 12px', borderRadius: 10,
-                  transition: 'background 0.2s',
-                }}
-                onMouseOver={e => e.currentTarget.style.background = 'var(--bg-card-hover)'}
-                onMouseOut={e => e.currentTarget.style.background = 'transparent'}
-                >
-                  <span style={{ fontSize: 22, flexShrink: 0 }}>{f.icon}</span>
-                  <div>
-                    <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary)' }}>{f.title}</div>
-                    <div style={{ fontSize: 13, color: 'var(--text-muted)' }}>{f.desc}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      );
-    }
-
-    function GearSection() {
-      const [ref, visible] = useIntersection();
-      return (
-        <section id="gear" style={{ padding: '100px 20px', maxWidth: 900, margin: '0 auto' }}>
-          <div ref={ref} className={`fade-in ${visible ? 'visible' : ''}`}>
-            <h2 style={{
-              fontFamily: "'Playfair Display', serif",
-              fontSize: 'clamp(32px, 5vw, 48px)',
-              fontWeight: 800, marginBottom: 12, textAlign: 'center',
-            }}>
-              Gear Essentials
-            </h2>
-            <p style={{ textAlign: 'center', color: 'var(--text-secondary)', maxWidth: 600, margin: '0 auto 48px', fontSize: 16 }}>
-              Gravel bike with 2"+ tires or hardtail MTB. Bikepacking bags recommended.
-              Cyclocross bikes with skinny tires won't cut it on this terrain.
-            </p>
-          </div>
-
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 16 }}>
-            {GEAR_ESSENTIALS.map((g, i) => {
-              const [cardRef, cardVis] = useIntersection();
-              return (
-                <div key={i} ref={cardRef} className={`fade-in ${cardVis ? 'visible' : ''}`} style={{
-                  background: 'var(--bg-card)', borderRadius: 14, padding: 22,
-                  border: '1px solid var(--border)',
-                  transition: 'all 0.3s ease',
-                  transitionDelay: `${i * 60}ms`,
-                }}
-                onMouseOver={e => { e.currentTarget.style.borderColor = 'var(--accent)'; e.currentTarget.style.transform = 'translateY(-3px)'; }}
-                onMouseOut={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.transform = 'translateY(0)'; }}
-                >
-                  <span style={{ fontSize: 28 }}>{g.icon}</span>
-                  <h4 style={{ fontSize: 15, fontWeight: 700, marginTop: 10, marginBottom: 6 }}>{g.item}</h4>
-                  <p style={{ fontSize: 13, color: 'var(--text-muted)', lineHeight: 1.5 }}>{g.note}</p>
-                </div>
-              );
-            })}
-          </div>
-        </section>
-      );
-    }
-
-    function DiscussSection() {
-      const [ref, visible] = useIntersection();
-      return (
-        <section id="discuss" style={{
-          padding: '100px 20px 120px',
-          background: 'var(--bg-secondary)',
-        }}>
-          <div style={{ maxWidth: 900, margin: '0 auto' }}>
-            <div ref={ref} className={`fade-in ${visible ? 'visible' : ''}`} style={{ textAlign: 'center', marginBottom: 48 }}>
-              <h2 style={{
-                fontFamily: "'Playfair Display', serif",
-                fontSize: 'clamp(32px, 5vw, 48px)',
-                fontWeight: 800, marginBottom: 12,
-              }}>
-                Let's Talk
-              </h2>
-              <p style={{ color: 'var(--text-secondary)', maxWidth: 600, margin: '0 auto', fontSize: 16, lineHeight: 1.7 }}>
-                Lots to figure out together. Here's what's on the table for discussion.
-                Nothing is set in stone — this is our ride, our pace.
-              </p>
-            </div>
-
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 16 }}>
-              {DISCUSSION_TOPICS.map((d, i) => {
-                const [cardRef, cardVis] = useIntersection();
-                return (
-                  <div key={i} ref={cardRef} className={`fade-in ${cardVis ? 'visible' : ''}`} style={{
-                    background: 'var(--bg-card)', borderRadius: 14, padding: 24,
-                    border: '1px solid var(--border)',
-                    transition: 'all 0.3s ease',
-                    transitionDelay: `${i * 80}ms`,
-                  }}
-                  onMouseOver={e => { e.currentTarget.style.borderColor = 'var(--accent)'; e.currentTarget.style.background = 'var(--bg-card-hover)'; }}
-                  onMouseOut={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.background = 'var(--bg-card)'; }}
-                  >
-                    <span style={{ fontSize: 28 }}>{d.icon}</span>
-                    <h4 style={{ fontSize: 16, fontWeight: 700, marginTop: 10, marginBottom: 8 }}>{d.topic}</h4>
-                    <p style={{ fontSize: 14, color: 'var(--text-muted)', lineHeight: 1.6 }}>{d.detail}</p>
-                  </div>
-                );
-              })}
-            </div>
-
-            <div style={{
-              marginTop: 56, textAlign: 'center',
-              background: 'var(--bg-card)', borderRadius: 16, padding: 36,
-              border: '1px solid var(--border)',
-            }}>
-              <h3 style={{ fontSize: 22, fontWeight: 700, marginBottom: 12 }}>Key Dates</h3>
-              <div style={{ display: 'flex', justifyContent: 'center', gap: 40, flexWrap: 'wrap' }}>
-                <div>
-                  <div style={{ fontSize: 32, fontWeight: 800, color: 'var(--accent)' }}>June 8–21</div>
-                  <div style={{ fontSize: 14, color: 'var(--text-muted)' }}>Target window (weeks 2-3)</div>
-                </div>
-                <div>
-                  <div style={{ fontSize: 32, fontWeight: 800, color: 'var(--accent-secondary)' }}>5 Days</div>
-                  <div style={{ fontSize: 14, color: 'var(--text-muted)' }}>Riding (+ potential rest day)</div>
-                </div>
-              </div>
-              <p style={{ marginTop: 20, fontSize: 14, color: 'var(--text-muted)', fontStyle: 'italic' }}>
-                Note: Snow at higher passes (Grey Creek, Farron) usually clears by late June.
-                Earlier dates mean higher snow risk.
-              </p>
-            </div>
-          </div>
-        </section>
-      );
-    }
-
-    function Footer() {
-      return (
-        <footer style={{
-          padding: '32px 20px',
-          textAlign: 'center',
-          borderTop: '1px solid var(--border)',
-          background: 'var(--bg-primary)',
-        }}>
-          <p style={{ fontSize: 14, color: 'var(--text-muted)', marginBottom: 8 }}>
-            BC Epic 1000 — Penticton to Fernie — June 2026
-          </p>
-          <div style={{ display: 'flex', justifyContent: 'center', gap: 20, fontSize: 13 }}>
-            <a href="https://www.strava.com/routes/3463368757543966168" target="_blank" rel="noopener noreferrer"
-              style={{ color: 'var(--accent)', textDecoration: 'none' }}>
-              View on Strava ↗
-            </a>
-            <a href="https://www.bcepic1000.com/route-map" target="_blank" rel="noopener noreferrer"
-              style={{ color: 'var(--accent)', textDecoration: 'none' }}>
-              Official Route Map ↗
-            </a>
-          </div>
-          <p style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 16, opacity: 0.5 }}>
-            Self-paced, self-supported. Not affiliated with the official BC Epic 1000 event.
-          </p>
-        </footer>
-      );
-    }
-
-    // ─── App ──────────────────────────────────────────────
-    function App() {
-      const [theme, setTheme] = useState('alpine');
-      const [activeSection, setActiveSection] = useState('hero');
-
-      useEffect(() => {
-        document.body.setAttribute('data-theme', theme);
-      }, [theme]);
-
-      useEffect(() => {
-        const sections = ['hero', 'overview', 'route', 'terrain', 'gear', 'discuss'];
-        const observer = new IntersectionObserver((entries) => {
-          entries.forEach(entry => {
-            if (entry.isIntersecting) {
-              setActiveSection(entry.target.id);
-            }
-          });
-        }, { threshold: 0.3 });
-
-        sections.forEach(id => {
-          const el = document.getElementById(id);
-          if (el) observer.observe(el);
+  /* ---------- day chips ---------- */
+  var chips = document.querySelectorAll("#dayChips .chip");
+  chips.forEach(function (chip) {
+    var di = +chip.dataset.day;
+    if (di >= 0) { chip.style.setProperty("--chip-glow", DAY_COLORS[di] + "66"); }
+    chip.addEventListener("click", function () {
+      chips.forEach(function (c) { c.classList.remove("on"); c.style.background = ""; c.style.color = ""; });
+      chip.classList.add("on");
+      if (di >= 0) { chip.style.background = DAY_COLORS[di]; chip.style.color = "#06121f"; }
+      else { chip.style.background = "#eef4ff"; chip.style.color = "#06121f"; }
+      var sub = document.getElementById("profileSub");
+      if (di === -1) {
+        var bounds = [];
+        DATA.forEach(function (d) { bounds = bounds.concat(d.points); });
+        map.fitBounds(L.latLngBounds(bounds), { padding: [30, 30] });
+        dayLayers.forEach(function (l) { l.group.eachLayer(function (x) { x.setStyle({ opacity: x === l.line ? 0.95 : 0.18 }); }); });
+        sub.textContent = "595 km · +6,346 m";
+      } else {
+        map.fitBounds(dayLayers[di].line.getBounds(), { padding: [30, 30] });
+        dayLayers.forEach(function (l, j) {
+          l.group.eachLayer(function (x) { x.setStyle({ opacity: j === di ? (x === l.line ? 1 : 0.25) : 0.06 }); });
         });
+        var m = DAY_META[di];
+        sub.textContent = "Day " + (di + 1) + ": " + m.km + " km · +" + m.gain + " m";
+      }
+    });
+  });
 
-        return () => observer.disconnect();
-      }, []);
-
-      return (
-        <>
-          <ThemeSwitcher theme={theme} setTheme={setTheme} />
-          <Nav activeSection={activeSection} />
-          <Hero />
-          <Overview />
-          <RouteSection />
-          <TerrainSection />
-          <GearSection />
-          <DiscussSection />
-          <Footer />
-        </>
-      );
-    }
-
-    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
-  </script>
+  /* ---------- boot ---------- */
+  if (DATA.length === 5) {
+    if (window.L) { buildMap(); }
+    else { document.getElementById("routeMap").innerHTML = '<div style="display:grid;place-items:center;height:100%;color:var(--text-3);font-size:14px;padding:20px;text-align:center">Map library didn\'t load — check your connection and refresh.</div>'; }
+    buildProfile();
+    DATA.forEach(function (d, i) { sparkline(document.getElementById("spark" + i), d.elev, DAY_COLORS[i]); });
+    tickStatus(); // re-run so "today" card highlighting lands after cards exist
+  }
+})();
+</script>
 </body>
 </html>
